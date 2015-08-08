@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+	<!--
+		Licensed to the Apache Software Foundation (ASF) under one or more
+		contributor license agreements. See the NOTICE file distributed with
+		this work for additional information regarding copyright ownership.
+		The ASF licenses this file to You under the Apache License, Version
+		2.0 (the "License"); you may not use this file except in compliance
+		with the License. You may obtain a copy of the License at
+
+		http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+		applicable law or agreed to in writing, software distributed under the
+		License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+		CONDITIONS OF ANY KIND, either express or implied. See the License for
+		the specific language governing permissions and limitations under the
+		License.
+	-->
+
+<!DOCTYPE form-validation PUBLIC
+     "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.3.0//EN"
+     "http://jakarta.apache.org/commons/dtds/validator_1_3_0.dtd">
+
+<form-validation>
+	<!-- This is a minimal Validator form file with a couple of examples. -->
+	<global>
+		<!-- An example global constant 
+			<constant>
+				<constant-name>postalCode</constant-name>
+				<constant-value>^\d{5}\d*$</constant-value> 
+			</constant> 
+			end example
+		-->
+	</global>
+
+	<formset>
+		<form name="loginForm">
+			<field property="emailAddress" depends="required, email">
+				<arg key="loginForm.label.emailAddress" />
+			</field>
+			<field property="password" depends="required">
+				<arg key="loginForm.label.password" />
+			</field>
+		</form>
+		<form name="forgotPasswordForm">
+			<field property="forgotPwdEmailAddress" depends="required, email">
+				<arg key="forgotPasswordForm.label.emailAddress" />
+			</field>
+		</form>
+		<form name="changePasswordForm">
+			<field property="oldPassword" depends="required">
+				<arg key="changePasswordForm.label.oldPassword" />
+			</field>
+			<field property="newPassword" depends="required">
+				<arg key="changePasswordForm.label.newPassword" />
+			</field>
+			<field property="confirmNewPassword" depends="required">
+				<arg key="changePasswordForm.label.confirmNewPassword" />
+			</field>
+		</form>
+		<form name="registerForm">
+			<field property="registerEmailAddress" depends="required, email">
+				<arg key="registerForm.label.registerEmailAddress" />
+			</field>
+			
+			<field property="confirmEmailAddress" depends="required, email">
+				<arg key="registerForm.label.confirmEmailAddress" />
+			</field>
+			
+			<field property="firstName" depends="required">
+				<arg key="registerForm.label.firstName" />
+			</field>
+			
+			<field property="lastName" depends="required">
+				<arg key="registerForm.label.lastName" />
+			</field>
+			
+			<field property="gender" depends="required">
+				<arg key="registerForm.label.gender" />
+			</field>
+			
+			<field property="birthDate" depends="required, date">
+				<arg key="registerForm.label.birthDate" />
+				<msg name="date" key="registerForm.error.birthDate" />
+				<var><var-name>datePattern</var-name><var-value>dd/MM/yyyy</var-value></var>
+			</field>
+			
+			<field property="password" depends="required">
+				<arg key="registerForm.label.password" />
+			</field>
+			
+			<field property="confirmPassword" depends="required">
+				<arg key="registerForm.label.confirmPassword" />
+			</field>
+			
+			<field property="agree" depends="required">
+				<arg key="registerForm.label.agree" />
+				<msg name="required" key="registerForm.error.agree.terms" />
+			</field>
+		</form>
+	</formset>
+
+</form-validation>

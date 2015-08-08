@@ -1,0 +1,191 @@
+@charset "UTF-8";
+/****************** Header table Start ************************/
+table.header-table {
+	width:100%;
+	background: #FCF8D3;
+	border: 2px solid #F19545;
+}
+
+.website-title {
+	padding-left: 10px;
+	font-size: 24px;
+	color: #F19545;
+}
+
+.header-menu-table {
+	width:100%;
+	background: #FCF8D3;
+	border: 2px solid #F19545;
+	border-top: none;
+	border-bottom: 2px solid #FFE0C1;
+}
+
+.header-menu {
+	width:100%;
+	background: #F19545;
+	border: 3px solid #FFE0C1;
+}
+
+/****************** Header menu Start ************************/
+ul#list-nav {
+	margin: 0px;
+	padding: 0;
+	list-style:none;
+	font-size: 13px;
+	font-family: arial;
+}
+
+ul#list-nav li {
+	display:inline;
+}
+
+ul#list-nav li a {
+	text-decoration: none;
+	padding: 3px 20px 3px 20px;
+	color: #FCF8D3;
+	float: left;
+}
+
+ul#list-nav li a {
+	text-align: center;
+	border-left: 3px solid #FCF8D3;
+	font-weight: bold;
+}
+
+ul#list-nav li a.selected {
+	background-color: #FFE0C1;
+	color: #B42807;
+}
+
+ul#list-nav li a:hover {
+	background-color: #FFE0C1;
+	color: #B42807;
+	/*
+	background:#675445;
+	color:white;
+	*/
+	/*
+	background:#a2b3a1;
+	color:#000
+	*/
+}
+/****************** Header menu End ************************/
+/****************** Header table End ************************/
+
+/****************** Body Start ************************/
+table.body-table {
+	width: 100%;
+	background: #FFE0C1;
+	border: 2px solid #F19545;
+	border-top: none;
+	padding-top: 5px; 
+	padding-bottom: 8px;
+}
+
+.border-top {
+ border-top:3px solid white;
+}
+
+td.contents-block {
+	border: 1px solid #F19545;
+	padding: 5px;
+	background: #FCF8D3;
+}
+
+td.contents {
+	padding: 5px;
+	color: #B42807;
+	font: normal normal 14px/25px arial;
+}
+
+.contents-header {
+	background: #F19545;
+	color: white;
+	padding-left: 10px;
+	font-weight: bold;
+	font: bold normal 13px/25px arial;
+}
+
+td.side-menu-item {
+	padding: 5px;
+	color: #B42807;
+	border-bottom: 1px solid #FF8C1A;
+	height: 20px;
+}
+
+.side-menu-link {
+	font:normal normal bold 13px/25px arial;
+	color: #B42807;
+	text-decoration:none;
+	text-align:left;	
+	display:block;
+	padding-left:10px;
+}
+.side-menu-link:hover {
+	text-decoration: none;
+	background-color:#FFE0C1;
+}
+
+.link {
+	color: blue;
+	text-decoration: underline;
+	font:normal normal normal 14px/25px arial;
+}
+/****************** Form fields Start ************************/
+.LoginInputBox, .InputBox, .WaterMarkClass {
+    background-color: #FFFFFF;
+    border: 1px solid #F3A15D;
+    color: #000000;
+    font-family: Arial;
+    font-size: 13px;
+    height: 20px;
+    padding-left: 3px;
+}
+
+.label {
+	color: #B42807;
+    font: bold 12px/12px Verdana;
+}
+
+.LoginButtonClass, .Form_Button {
+    background: url("button.gif") repeat-x scroll left top transparent;
+    border: 1px solid #D77D32;
+    color: #953102;
+    cursor: pointer;
+    font: bold 12px/12px Verdana;
+    height: 20px;
+}
+/****************** Form fields End ************************/
+/****************** Body End ************************/
+
+/****************** Bottom Bar Start ************************/
+table.footer-table {
+	width: 100%;
+	background: #FFE0C1;
+	border: 2px solid #F19545;
+	border-top: none;
+	padding-top: 0px; 
+	padding-bottom: 0px;
+}
+
+.footer {
+	font-size: 12px;
+	background: #FCF8D3;
+	color: #B42807;
+}
+
+.BottomBar {
+	float: left; 
+	padding-left: 10px;
+}
+
+.BottomBarText,.BottomBarLink
+{
+	font:normal normal normal 11px Verdana;
+	color: blue;
+	text-decoration:none;
+}
+.BottomBarLink:hover {
+	text-decoration:underline;
+}
+/****************** Bottom Bar End ************************/

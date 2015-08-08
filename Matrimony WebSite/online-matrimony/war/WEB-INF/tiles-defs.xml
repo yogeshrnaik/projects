@@ -1,0 +1,104 @@
+<!DOCTYPE tiles-definitions PUBLIC
+"-//Apache Software Foundation//DTD Tiles Configuration 1.3//EN"
+"http://struts.apache.org/dtds/tiles-config_1_3.dtd">
+<tiles-definitions>
+	<definition name="default-layout" path="/pages/default-layout.jsp">
+		<put name="header" value="/pages/header.jsp" />
+		<put name="sidemenu" value="/pages/sidemenu.jsp" />
+		<put name="footer" value="/pages/footer.jsp" />
+	</definition>
+
+	<definition name="tiles.register" extends="default-layout">
+		<put name="body" value="/pages/register.jsp" />
+	</definition>
+
+	<definition name="tiles.forgotPassword" extends="default-layout">
+		<put name="body" value="/pages/forgotPassword.jsp" />
+	</definition>
+
+	<definition name="tiles.home" extends="default-layout">
+		<put name="body" value="/pages/aboutUs.jsp" />
+	</definition>
+
+	<definition name="tiles.membership" extends="default-layout">
+		<put name="body" value="/pages/membership.jsp" />
+	</definition>
+
+	<definition name="tiles.contactUs" extends="default-layout">
+		<put name="body" value="/pages/contactUs.jsp" />
+	</definition>
+
+	<definition name="tiles.siteMap" extends="default-layout">
+		<put name="body" value="/pages/siteMap.jsp" />
+	</definition>
+
+	<definition name="tiles.features" extends="default-layout">
+		<put name="body" value="/pages/features.jsp" />
+	</definition>
+
+	<definition name="tiles.guidelines" extends="default-layout">
+		<put name="body" value="/pages/guidelines.jsp" />
+	</definition>
+
+	<definition name="tiles.faqs" extends="default-layout">
+		<put name="body" value="/pages/faqs.jsp" />
+	</definition>
+
+	<definition name="tiles.privacy" extends="default-layout">
+		<put name="body" value="/pages/privacy.jsp" />
+	</definition>
+
+	<definition name="tiles.terms" extends="default-layout">
+		<put name="body" value="/pages/terms.jsp" />
+	</definition>
+
+	<definition name="tiles.contactUs" extends="default-layout">
+		<put name="body" value="/pages/contactUs.jsp" />
+	</definition>
+
+	<!-- ===================== My Profile related pages ===================== -->
+	<definition name="tiles.viewMyProfile" extends="default-layout">
+		<put name="sidemenu" value="/pages/myProfileMenu.jsp" />
+		<put name="body" value="/pages/viewMyProfile.jsp" />
+	</definition>
+	<definition name="tiles.personalInfo" extends="default-layout">
+		<put name="sidemenu" value="/pages/myProfileMenu.jsp" />
+		<put name="body" value="/pages/personalInfo.jsp" />
+	</definition>
+	<definition name="tiles.mySoulMate" extends="default-layout">
+		<put name="sidemenu" value="/pages/myProfileMenu.jsp" />
+		<put name="body" value="/pages/mySoulMate.jsp" />
+	</definition>
+	<definition name="tiles.myContact" extends="default-layout">
+		<put name="sidemenu" value="/pages/myProfileMenu.jsp" />
+		<put name="body" value="/pages/myContact.jsp" />
+	</definition>
+	<definition name="tiles.familyRelatives" extends="default-layout">
+		<put name="sidemenu" value="/pages/myProfileMenu.jsp" />
+		<put name="body" value="/pages/familyRelatives.jsp" />
+	</definition>
+	<definition name="tiles.educationCareer" extends="default-layout">
+		<put name="sidemenu" value="/pages/myProfileMenu.jsp" />
+		<put name="body" value="/pages/educationCareer.jsp" />
+	</definition>
+	<definition name="tiles.myInterests" extends="default-layout">
+		<put name="sidemenu" value="/pages/myProfileMenu.jsp" />
+		<put name="body" value="/pages/myInterests.jsp" />
+	</definition>
+	<definition name="tiles.profilePhoto" extends="default-layout">
+		<put name="sidemenu" value="/pages/myProfileMenu.jsp" />
+		<put name="body" value="/pages/profilePhoto.jsp" />
+	</definition>
+	<definition name="tiles.horoscope" extends="default-layout">
+		<put name="sidemenu" value="/pages/myProfileMenu.jsp" />
+		<put name="body" value="/pages/horoscope.jsp" />
+	</definition>
+	<definition name="tiles.mySettings" extends="default-layout">
+		<put name="sidemenu" value="/pages/myProfileMenu.jsp" />
+		<put name="body" value="/pages/mySettings.jsp" />
+	</definition>
+	<definition name="tiles.changePassword" extends="default-layout">
+		<put name="sidemenu" value="/pages/myProfileMenu.jsp" />
+		<put name="body" value="/pages/changePassword.jsp" />
+	</definition>
+</tiles-definitions>

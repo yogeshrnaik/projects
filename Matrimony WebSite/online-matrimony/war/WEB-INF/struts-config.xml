@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+	<!--
+		Licensed to the Apache Software Foundation (ASF) under one or more
+		contributor license agreements. See the NOTICE file distributed with
+		this work for additional information regarding copyright ownership.
+		The ASF licenses this file to You under the Apache License, Version
+		2.0 (the "License"); you may not use this file except in compliance
+		with the License. You may obtain a copy of the License at
+
+		http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+		applicable law or agreed to in writing, software distributed under the
+		License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+		CONDITIONS OF ANY KIND, either express or implied. See the License for
+		the specific language governing permissions and limitations under the
+		License.
+	-->
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN"
+          "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+
+	<!--
+		This is a blank Struts configuration file with an example welcome
+		action/page and other commented sample elements. Struts Validator is
+		configured using the factory defaults and is ready-to-use. NOTE: If
+		you have a generator tool to create the corresponding Java classes for
+		you, you could include the details in the "form-bean" declarations.
+		Otherwise, you would only define the "form-bean" element itself, with
+		the corresponding "name" and "type" attributes, as shown here.
+	-->
+
+
+<struts-config>
+
+
+	<!-- ======================== Form Bean Definitions ======================== -->
+	<form-beans>
+		<!--
+			sample form bean descriptor for an ActionForm 
+			<form-bean name="inputForm" type="app.InputForm"/> end sample
+		-->
+		<!--
+			sample form bean descriptor for a DynaActionForm 
+			<form-bean name="logonForm" type="org.apache.struts.action.DynaActionForm">
+				<form-property name="username" type="java.lang.String"/>
+				<form-property name="password" type="java.lang.String"/> 
+			</form-bean>
+			end sample
+		-->
+		<form-bean name="forgotPasswordForm" type="org.apache.struts.validator.DynaValidatorForm">
+			<form-property name="forgotPwdEmailAddress" type="java.lang.String"/> 
+		</form-bean>
+		<form-bean name="changePasswordForm" type="org.apache.struts.validator.DynaValidatorForm">
+			<form-property name="oldPassword" type="java.lang.String"/>
+			<form-property name="newPassword" type="java.lang.String"/>
+			<form-property name="confirmNewPassword" type="java.lang.String"/> 
+		</form-bean>
+		
+		<form-bean name="loginForm" type="org.apache.struts.validator.DynaValidatorForm">
+			<form-property name="emailAddress" type="java.lang.String"/>
+			<form-property name="password" type="java.lang.String"/>
+		</form-bean>
+		
+		<form-bean name="registerForm" type="org.apache.struts.validator.DynaValidatorForm">
+			<form-property name="registerEmailAddress" type="java.lang.String"/>
+			<form-property name="confirmEmailAddress" type="java.lang.String"/>
+			<form-property name="firstName" type="java.lang.String"/> 
+			<form-property name="lastName" type="java.lang.String"/>
+			<form-property name="gender" type="java.lang.String"/>
+			<form-property name="birthDate" type="java.lang.String"/>
+			<form-property name="password" type="java.lang.String"/>
+			<form-property name="confirmPassword" type="java.lang.String"/>
+			<form-property name="relationWithCandidate" type="java.lang.String"/>
+			<form-property name="agree" type="java.lang.String"/>
+		</form-bean>
+		
+		<form-bean name="userForm" type="com.matrimony.forms.UserForm" />
+	</form-beans>
+
+
+	<!-- ===================== Global Exception Definitions ==================== -->
+
+	<global-exceptions>
+		<!--
+			sample exception handler 
+			<exception key="expired.password" type="app.ExpiredPasswordException" path="/changePassword.jsp"/> 
+			end sample
+		-->
+	</global-exceptions>
+
+
+	<!-- ===================== Global Forward Definitions ====================== -->
+
+	<global-forwards>
+		<!-- Default forward to "Welcome" action -->
+		<!-- Demonstrates using index.jsp to forward -->
+		<forward name="home" path="/Menu.do?action=view" />
+		<forward name="login" path="tiles.home" />
+	</global-forwards>
+
+
+	<!-- ===================== Action Mapping Definitions ====================== -->
+
+	<action-mappings>
+		<!-- Default "Welcome" action -->
+		<!-- Forwards to Welcome.jsp -->
+		<action path="/Home" forward="tiles.home" />
+
+		<action path="/Menu" parameter="action" type="com.matrimony.actions.MenuAction">
+			<forward name="home" path="tiles.home" />
+			<forward name="login" path="tiles.home" />
+			<forward name="forgotPassword" path="tiles.forgotPassword" />
+			<forward name="register" path="tiles.register" />
+			<forward name="aboutUs" path="tiles.home" />
+			<forward name="membership" path="tiles.membership" />
+			<forward name="features" path="tiles.features" />
+			<forward name="guidelines" path="tiles.guidelines" />
+			<forward name="faqs" path="tiles.faqs" />
+			<forward name="privacy" path="tiles.privacy" />
+			<forward name="terms" path="tiles.terms" />
+			<forward name="contactUs" path="tiles.contactUs" />
+			<forward name="siteMap" path="tiles.siteMap" />
+			<!-- 
+			<forward name="viewMyProfile" path="tiles.viewMyProfile" />
+			<forward name="personalInfo" path="tiles.personalInfo" />
+			<forward name="myContact" path="tiles.myContact" />
+			<forward name="familyRelatives" path="tiles.familyRelatives" />
+			<forward name="educationCareer" path="tiles.educationCareer" />
+			<forward name="myInterests" path="tiles.myInterests" />
+			<forward name="profilePhoto" path="tiles.profilePhoto" />
+			<forward name="janmakundali" path="tiles.janmakundali" />
+			<forward name="mySettings" path="tiles.mySettings" />
+			<forward name="changePassword" path="tiles.changePassword" />
+			 -->
+		</action>
+		
+		<action path="/ForgotPassword" name="forgotPasswordForm" parameter="action" input="tiles.forgotPassword"
+				type="com.matrimony.actions.ForgotPasswordAction" validate="true" scope="request">
+			<forward name="success" path="tiles.forgotPassword" />
+			<forward name="failure" path="tiles.forgotPassword" />
+		</action>
+		
+		<action path="/ChangePassword" name="changePasswordForm" parameter="action" input="tiles.changePassword"
+				type="com.matrimony.actions.ChangePasswordAction" validate="true" scope="request">
+			<forward name="success" path="tiles.changePassword" />
+			<forward name="failure" path="tiles.changePassword" />
+		</action>
+		
+		<action path="/Login" name="loginForm" parameter="action" input="tiles.home" 
+				type="com.matrimony.actions.LoginAction" validate="true" scope="request">
+			<forward name="success" path="/MyProfile.do?action=view" />
+			<forward name="failure" path="tiles.home" />
+			<!-- 
+			<forward name="login" path="tiles.home" />
+			<forward name="forgotPassword" path="tiles.forgotPassword" />
+			<forward name="register" path="tiles.register" />
+			<forward name="aboutUs" path="tiles.home" />
+			<forward name="membership" path="tiles.membership" />
+			<forward name="features" path="tiles.features" />
+			<forward name="guidelines" path="tiles.guidelines" />
+			<forward name="faqs" path="tiles.faqs" />
+			<forward name="privacy" path="tiles.privacy" />
+			<forward name="terms" path="tiles.terms" />
+			<forward name="contactUs" path="tiles.contactUs" />
+			<forward name="siteMap" path="tiles.siteMap" />
+			 -->
+		</action>
+		
+		<action path="/Logout" parameter="action" 
+				type="com.matrimony.actions.LogoutAction" scope="request">
+			<forward name="success" path="/Menu.do?action=view" />
+			<forward name="failure" path="tiles.home" />
+		</action>
+		
+		<action path="/Register" name="registerForm" parameter="action" input="tiles.register" 
+				type="com.matrimony.actions.RegisterAction" validate="true" scope="request" >
+			<forward name="success" path="/MyProfile.do?action=view" />
+			<forward name="failure" path="tiles.register" />
+		</action>
+		
+		<action path="/MyProfile" name="userForm" parameter="action"
+				type="com.matrimony.actions.MyProfileAction" scope="session" >
+			<forward name="viewMyProfile" path="tiles.viewMyProfile" />
+			<forward name="personalInfo" path="tiles.personalInfo" />
+			<forward name="mySoulMate" path="tiles.mySoulMate" />
+			<forward name="myContact" path="tiles.myContact" />
+			<forward name="familyRelatives" path="tiles.familyRelatives" />
+			<forward name="educationCareer" path="tiles.educationCareer" />
+			<forward name="myInterests" path="tiles.myInterests" />
+			<forward name="profilePhoto" path="tiles.profilePhoto" />
+			<forward name="horoscope" path="tiles.horoscope" />
+			<forward name="mySettings" path="tiles.mySettings" />
+			<forward name="changePassword" path="tiles.changePassword" />
+		</action>
+
+	</action-mappings>
+
+	<!-- ==================== Message Resources Definitions ==================== -->
+	<message-resources parameter="com.matrimony.resources.ApplicationMessages" />
+
+
+	<!-- ======================= Plug Ins Configuration ======================== -->
+
+	<!-- ========================= Tiles plugin ============================== -->
+	<!--
+		This plugin initialize Tiles definition factory. This later can takes
+		some parameters explained here after. The plugin first read parameters
+		from web.xml, thenoverload them with parameters defined here. All
+		parameters are optional. The plugin should be declared in each
+		struts-config file. - definitions-config: (optional) Specify
+		configuration file names. There can be several comma separated file
+		names (default: ?? ) - moduleAware: (optional - struts1.1) Specify if
+		the Tiles definition factory is module aware. If true (default), there
+		will be one factory for each Struts module. If false, there will be
+		one common factory for all module. In this later case, it is still
+		needed to declare one plugin per module. The factory will be
+		initialized with parameters found in the first initialized plugin
+		(generally the one associated with the default module). true : One
+		factory per module. (default) false : one single shared factory for
+		all modules - definitions-parser-validate: (optional) Specify if xml
+		parser should validate the Tiles configuration file. true : validate.
+		DTD should be specified in file header (default) false : no validation
+
+		Paths found in Tiles definitions are relative to the main context. To
+		use this plugin, download and add the Tiles jar to your WEB-INF/lib
+		directory then uncomment the plugin definition below.
+	-->
+	<plug-in className="org.apache.struts.tiles.TilesPlugin">
+		<set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml" />
+		<set-property property="moduleAware" value="true" />
+	</plug-in>
+
+	<!-- ========================= Validator plugin ========================== -->
+	<plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+		<set-property property="pathnames"
+			value="/org/apache/struts/validator/validator-rules.xml,/WEB-INF/validation.xml" />
+		<set-property property="stopOnFirstError" value="false"/>
+	</plug-in>
+
+</struts-config>
+

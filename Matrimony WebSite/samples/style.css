@@ -1,0 +1,188 @@
+/****************** General Styles Start ************************/
+.border-bottom {
+	border-bottom:3px solid white;
+}
+
+.border-top {
+ border-top:3px solid white;
+}
+
+table.body-table {
+	width:100%;
+	background: #FFE0C1;
+}
+
+.stats {
+	font-size: 12px;
+}
+/****************** General Styles End ************************/
+
+/****************** Header table Start ************************/
+table.header-table {
+	width:100%;
+	background:#FCF8D3;
+	border: 2px solid #FFE0C1;
+}
+
+.website-title {
+	padding-left: 10px;
+	font-size:24px;
+	color:#E67300;
+}
+
+/****************** Header menu Start ************************/
+.header-menu {
+	width:100%;
+	background: #F19545;
+}
+
+ul#list-nav {
+	margin: 0px;
+	padding: 0;
+	list-style:none;
+	font-size: 13px;
+	font-family: arial;
+}
+
+ul#list-nav li {
+	display:inline;
+}
+
+ul#list-nav li a {
+	text-decoration: none;
+	padding: 3px 20px 3px 20px;
+	color: white; /*#675445;*/
+	float: left;
+}
+
+ul#list-nav li a {
+	text-align: center;
+	border-left: 3px solid white;
+	font-weight: bold;
+}
+
+ul#list-nav li a.selected {
+	background-color:#FFE0C1;
+	color:#B42807;
+}
+
+ul#list-nav li a:hover {
+	background-color:#FFE0C1;
+	color:#B42807;
+	/*
+	background:#675445;
+	color:white;
+	*/
+	/*
+	background:#a2b3a1;
+	color:#000
+	*/
+}
+/****************** Header menu End ************************/
+
+/****************** Header table End ************************/
+
+/****************** Main contents Start ************************/
+td.contents {
+	padding: 5px;
+	color: #B42807;
+	font: normal normal 14px/25px arial;
+}
+.contents-header {
+	background: #F19545;
+	color: white;
+	padding:5px;
+	padding-left: 10px;
+	font-weight: bold;
+}
+
+td.menuItem {
+	padding: 5px;
+	color: #B42807;
+	border-bottom: 1px solid #FF8C1A;
+	height: 20px;
+}
+.side-menu-link {
+	font:normal normal bold 13px/25px arial;
+	color: #B42807; /*#9A1400;*/
+	text-decoration:none;
+	text-align:left;	
+	display:block;
+	padding-left:10px;
+}
+.side-menu-link:hover {
+	text-decoration: none;
+	background-color:#FFE0C1;
+}
+td.side-menu-block {
+	border:1px solid #FF8040/*#675445*/;
+	padding:5px;
+	background: #FCF8D3;
+}
+
+td.contents-block {
+	border:1px solid #FF8040/*#675445*/;
+	padding:5px;
+	background: #FCF8D3;
+}
+.link {
+	color: blue;
+	text-decoration: underline;
+}
+/****************** Main contents End ************************/
+table {
+	font-family: arial;
+	font-size: 14px;
+}
+
+
+/****************** Form fields Start ************************/
+.LoginInputBox, .InputBox, .WaterMarkClass {
+    background-color: #FFFFFF;
+    border: 1px solid #F3A15D;
+    color: #000000;
+    font-family: Arial;
+    font-size: 13px;
+    height: 20px;
+    padding-left: 3px;
+}
+
+.label {
+	color: #B42807;
+    font: bold 12px/12px Verdana;
+}
+
+.LoginButtonClass, .Form_Button {
+    background: url("button.gif") repeat-x scroll left top transparent;
+    border: 1px solid #D77D32;
+    color: #953102;
+    cursor: pointer;
+    font: bold 12px/12px Verdana;
+    height: 20px;
+}
+/****************** Form fields End ************************/
+
+/****************** Bottom Bar Start ************************/
+.footer {
+	font-size: 12px;
+	border: 1px solid #FF8040;
+	height:2px;
+	background-color:#FCF8D3;
+	color:black;
+}
+
+.BottomBar {
+	float: left; 
+	padding-left: 10px;
+}
+
+.BottomBarText,.BottomBarLink
+{
+	font:normal normal normal 11px Verdana;
+	color: blue;
+	text-decoration:none;
+}
+.BottomBarLink:hover {
+	text-decoration:underline;
+}
+/****************** Bottom Bar End ************************/

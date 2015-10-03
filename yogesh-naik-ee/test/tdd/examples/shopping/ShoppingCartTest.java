@@ -1,4 +1,4 @@
-package com.ee;
+package tdd.examples.shopping;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -72,7 +72,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    @Ignore
+    @Ignore("Not yet implemented")
     public void applyDiscountBasedOnTotalPriceOfCart() {
         ShoppingCart cart = new ShoppingCart();
         Product dove = new Product("Dove Soap", 30, new BuyXGetYFreeRule(2, 1));

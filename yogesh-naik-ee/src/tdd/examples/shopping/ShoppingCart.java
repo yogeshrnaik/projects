@@ -1,4 +1,4 @@
-package com.ee;
+package tdd.examples.shopping;
 
 import java.util.ArrayList;
 import java.util.List;

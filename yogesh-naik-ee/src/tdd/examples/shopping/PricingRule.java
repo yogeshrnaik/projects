@@ -1,4 +1,4 @@
-package com.ee;
+package tdd.examples.shopping;
 
 public interface PricingRule {
     public double calculatePrice(double unitPrice, int quantity);

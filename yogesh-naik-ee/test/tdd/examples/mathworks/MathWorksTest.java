@@ -1,6 +1,7 @@
 package tdd.examples.mathworks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -12,13 +13,8 @@ public class MathWorksTest {
 	@Test
 	public void givenListOfNumbers_FindPrimeNumbers() {
 		// given
-		List<Integer> numbers = new ArrayList<Integer>();
-		numbers.add(1);
-		numbers.add(2);
-		numbers.add(3);
-		numbers.add(4);
-		numbers.add(5);
-		
+		List<Integer> numbers = new ArrayList<Integer>(Arrays.asList(new Integer[]{1, 2, 3, 4, 5}));
+
 		NumberFilter filter = new NumberFilter();
 		List<Integer> primes = filter.filter(numbers, new PrimeNumberFilter());
 		
@@ -34,12 +30,7 @@ public class MathWorksTest {
 	@Test
 	public void givenListOfNumbers_FindOddNumbers() {
 		// given
-		List<Integer> numbers = new ArrayList<Integer>();
-		numbers.add(1);
-		numbers.add(2);
-		numbers.add(3);
-		numbers.add(4);
-		numbers.add(5);
+		List<Integer> numbers = new ArrayList<Integer>(Arrays.asList(new Integer[]{1, 2, 3, 4, 5}));
 		
 		NumberFilter filter = new NumberFilter();
 		List<Integer> odds = filter.filter(numbers, new OddNumberFilter());
@@ -58,12 +49,7 @@ public class MathWorksTest {
 	@Test
 	public void givenListOfNumbers_FindOddPrimes() {
 		// given
-		List<Integer> numbers = new ArrayList<Integer>();
-		numbers.add(1);
-		numbers.add(2);
-		numbers.add(3);
-		numbers.add(4);
-		numbers.add(5);
+		List<Integer> numbers = new ArrayList<Integer>(Arrays.asList(new Integer[]{1, 2, 3, 4, 5}));
 		
 		NumberFilter filter = new NumberFilter();
 		List<Integer> oddPrimes = filter.filter(numbers, new OddNumberFilter(), new PrimeNumberFilter());

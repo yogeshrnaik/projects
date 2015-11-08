@@ -35,7 +35,7 @@
 	</beans:bean>
 
 	<!-- Hibernate 4 SessionFactory Bean definition -->
-	<beans:bean id="hibernate4AnnotatedSessionFactory"
+	<beans:bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<beans:property name="dataSource" ref="dataSource" />
 		<beans:property name="annotatedClasses">
@@ -51,19 +51,14 @@
 			</beans:props>
 		</beans:property>
 	</beans:bean>
-	
-	<beans:bean id="personDAO" class="com.journaldev.spring.dao.PersonDAO">
-		<beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
-	</beans:bean>
-	<beans:bean id="personService" class="com.journaldev.spring.service.PersonService">
-		<beans:property name="personDAO" ref="personDAO"></beans:property>
-	</beans:bean>
+
 	<context:component-scan base-package="com.journaldev" />
-	
-	<tx:annotation-driven transaction-manager="transactionManager"/>
-	
-	<beans:bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-		<beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<beans:bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<beans:property name="sessionFactory" ref="sessionFactory" />
 	</beans:bean>
 
 

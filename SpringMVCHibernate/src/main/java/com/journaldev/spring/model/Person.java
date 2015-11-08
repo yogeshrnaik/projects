@@ -6,24 +6,28 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
- * Entity bean with JPA annotations
- * Hibernate provides JPA implementation
- * @author pankaj
- *
+ * Entity bean with JPA annotations Hibernate provides JPA implementation
  */
 @Entity
-@Table(name="PERSON")
+@Table(name = "PERSON")
 public class Person {
 
 	@Id
-	@Column(name="id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+
+	@NotEmpty
+	@Size(min = 2, max = 50)
 	private String name;
-	
+
+	@NotEmpty
+	@Size(min = 2, max = 30)
 	private String country;
 
 	public int getId() {
@@ -49,9 +53,9 @@ public class Person {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	
+
 	@Override
-	public String toString(){
-		return "id="+id+", name="+name+", country="+country;
+	public String toString() {
+		return "id=" + id + ", name=" + name + ", country=" + country;
 	}
 }

@@ -1,8 +1,11 @@
 package com.journaldev.spring.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,25 +22,24 @@ public class PersonController {
 
 	@RequestMapping(value = "/persons", method = RequestMethod.GET)
 	public String listPersons(Model model) {
-		model.addAttribute("person", new Person());
-		model.addAttribute("listPersons", this.personService.listPersons());
-		return "person";
+		return listPersons(new Person(), model);
 	}
 
 	// For add and update person both
 	@RequestMapping(value = "/person/add", method = RequestMethod.POST)
-	public String addPerson(@ModelAttribute("person") Person p) {
-
-		if (p.getId() == 0) {
-			// new person, add it
-			this.personService.addPerson(p);
+	public String addPerson(@Valid @ModelAttribute("person") Person p, BindingResult result, Model model) {
+		if (!result.hasErrors()) {
+			if (p.getId() == 0) {
+				// new person, add it
+				this.personService.addPerson(p);
+			} else {
+				// existing person, call update
+				this.personService.updatePerson(p);
+			}
+			return "redirect:/persons";
 		} else {
-			// existing person, call update
-			this.personService.updatePerson(p);
+			return listPersons(p, model);
 		}
-
-		return "redirect:/persons";
-
 	}
 
 	@RequestMapping("/remove/{id}")
@@ -49,6 +51,12 @@ public class PersonController {
 	@RequestMapping("/edit/{id}")
 	public String editPerson(@PathVariable("id") int id, Model model) {
 		model.addAttribute("person", this.personService.getPersonById(id));
+		model.addAttribute("listPersons", this.personService.listPersons());
+		return "person";
+	}
+	
+	private String listPersons(Person p, Model model) {
+		model.addAttribute("person", p);
 		model.addAttribute("listPersons", this.personService.listPersons());
 		return "person";
 	}

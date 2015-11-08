@@ -6,6 +6,11 @@
 <head>
 <title>Person Page</title>
 <style type="text/css">
+.error {
+	color: red;
+	font-weight: bold;
+}
+
 .tg {
 	border-collapse: collapse;
 	border-spacing: 0;
@@ -51,13 +56,14 @@
 
 	<form:form action="${addAction}" commandName="person">
 		<table>
-			<c:if test="${!empty person.name}">
+			<c:if test="${person.id != 0}">
 				<tr>
 					<td><form:label path="id">
 							<spring:message text="ID" />
 						</form:label></td>
 					<td><form:input path="id" readonly="true" size="8"
 							disabled="true" /> <form:hidden path="id" /></td>
+					<td align="left"><br></td>
 				</tr>
 			</c:if>
 			<tr>
@@ -65,17 +71,19 @@
 						<spring:message text="Name" />
 					</form:label></td>
 				<td><form:input path="name" /></td>
+				<td align="left"><form:errors path="name" cssClass="error"/></td>
 			</tr>
 			<tr>
 				<td><form:label path="country">
 						<spring:message text="Country" />
 					</form:label></td>
 				<td><form:input path="country" /></td>
+				<td align="left"><form:errors path="country" cssClass="error"/></td>
 			</tr>
 			<tr>
-				<td colspan="2"><c:if test="${!empty person.name}">
+				<td colspan="2"><c:if test="${person.id != 0}">
 						<input type="submit" value="<spring:message text="Edit Person"/>" />
-					</c:if> <c:if test="${empty person.name}">
+					</c:if> <c:if test="${person.id == 0}">
 						<input type="submit" value="<spring:message text="Add Person"/>" />
 					</c:if></td>
 			</tr>

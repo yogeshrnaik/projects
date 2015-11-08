@@ -22,17 +22,17 @@
 <form:form action="${addAction}" commandName="person">
 <table>
 	<c:if test="${!empty person.name}">
-	<tr>
-		<td>
-			<form:label path="id">
-				<spring:message text="ID"/>
-			</form:label>
-		</td>
-		<td>
-			<form:input path="id" readonly="true" size="8"  disabled="true" />
-			<form:hidden path="id" />
-		</td> 
-	</tr>
+		<tr>
+			<td>
+				<form:label path="id">
+					<spring:message text="ID"/>
+				</form:label>
+			</td>
+			<td>
+				<form:input path="id" readonly="true" size="8"  disabled="true" />
+				<form:hidden path="id" />
+			</td> 
+		</tr>
 	</c:if>
 	<tr>
 		<td>

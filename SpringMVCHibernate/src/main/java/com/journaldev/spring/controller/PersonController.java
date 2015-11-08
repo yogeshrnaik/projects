@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.journaldev.spring.model.Person;
 import com.journaldev.spring.service.PersonService;
@@ -20,44 +21,55 @@ public class PersonController {
 	@Autowired(required = true)
 	private PersonService personService;
 
-	@RequestMapping(value = "/persons", method = RequestMethod.GET)
-	public String listPersons(Model model) {
-		return listPersons(new Person(), model);
+	@RequestMapping(value = "/people", method = RequestMethod.GET)
+	public ModelAndView listPeople(Model model) {
+		model.addAttribute("listPersons", this.personService.listPersons());
+		return new ModelAndView("listPeople");
 	}
 
-	// For add and update person both
+	@RequestMapping(value = "/showAddPerson", method = RequestMethod.GET)
+	public ModelAndView showAddPerson(Model model) {
+		return showAddPerson(new Person(), model);
+	}
+
 	@RequestMapping(value = "/person/add", method = RequestMethod.POST)
-	public String addPerson(@Valid @ModelAttribute("person") Person p, BindingResult result, Model model) {
+	public ModelAndView addPerson(@Valid @ModelAttribute("person") Person p, BindingResult result, Model model) {
 		if (!result.hasErrors()) {
-			if (p.getId() == 0) {
-				// new person, add it
-				this.personService.addPerson(p);
-			} else {
-				// existing person, call update
-				this.personService.updatePerson(p);
-			}
-			return "redirect:/persons";
+			this.personService.addPerson(p);
+			return new ModelAndView("redirect:/people");
 		} else {
-			return listPersons(p, model);
+			return showAddPerson(p, model);
+		}
+	}
+
+	@RequestMapping(value = "/person/edit", method = RequestMethod.POST)
+	public ModelAndView editPerson(@Valid @ModelAttribute("person") Person p, BindingResult result, Model model) {
+		if (!result.hasErrors()) {
+			this.personService.updatePerson(p);
+			return new ModelAndView("redirect:/people");
+		} else {
+			return showEditPerson(p, model);
 		}
 	}
 
 	@RequestMapping("/remove/{id}")
 	public String removePerson(@PathVariable("id") int id) {
 		this.personService.removePerson(id);
-		return "redirect:/persons";
+		return "redirect:/people";
 	}
 
 	@RequestMapping("/edit/{id}")
-	public String editPerson(@PathVariable("id") int id, Model model) {
-		model.addAttribute("person", this.personService.getPersonById(id));
-		model.addAttribute("listPersons", this.personService.listPersons());
-		return "person";
+	public ModelAndView showEditPerson(@PathVariable("id") int id, Model model) {
+		return showEditPerson(this.personService.getPersonById(id), model);
 	}
-	
-	private String listPersons(Person p, Model model) {
-		model.addAttribute("person", p);
-		model.addAttribute("listPersons", this.personService.listPersons());
-		return "person";
+
+	private ModelAndView showAddPerson(Person person, Model model) {
+		model.addAttribute("person", person);
+		return new ModelAndView("showAddPerson");
+	}
+
+	private ModelAndView showEditPerson(Person person, Model model) {
+		model.addAttribute("person", person);
+		return new ModelAndView("showEditPerson");
 	}
 }

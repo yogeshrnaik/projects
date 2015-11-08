@@ -65,5 +65,23 @@
 		<beans:property name="sessionFactory" ref="sessionFactory" />
 	</beans:bean>
 
+	<!-- Tiles -->
+	<beans:bean id="tilesViewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<beans:property name="viewClass">
+			<beans:value>
+				org.springframework.web.servlet.view.tiles3.TilesView
+			</beans:value>
+		</beans:property>
+		<beans:property name="order" value="0" />
+	</beans:bean>
 
+	<beans:bean id="tilesConfigurer"
+		class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+		<beans:property name="definitions">
+			<beans:list>
+				<beans:value>/WEB-INF/tiles.xml</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
 </beans:beans>

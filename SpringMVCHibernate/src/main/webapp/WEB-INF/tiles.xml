@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE tiles-definitions PUBLIC  
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"  
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<definition name="base.definition" template="/WEB-INF/views/layout.jsp">
+		<put-attribute name="title" value="" />
+		<put-attribute name="header" value="/WEB-INF/views/header.jsp" />
+		<put-attribute name="menu" value="/WEB-INF/views/menu.jsp" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/WEB-INF/views/footer.jsp" />
+	</definition>
+
+	<definition name="contact" extends="base.definition">
+		<put-attribute name="title" value="Contact Manager" />
+		<put-attribute name="body" value="/WEB-INF/views/contact.jsp" />
+	</definition>
+
+	<definition name="hello" extends="base.definition">
+		<put-attribute name="title" value="Hello Spring MVC" />
+		<put-attribute name="body" value="/WEB-INF/views/hello.jsp" />
+	</definition>
+
+	<definition name="person" extends="base.definition">
+		<put-attribute name="title" value="Person" />
+		<put-attribute name="body" value="/WEB-INF/views/person.jsp" />
+	</definition>
+
+	<definition name="listPeople" extends="base.definition">
+		<put-attribute name="title" value="List of People" />
+		<put-attribute name="body" value="/WEB-INF/views/listPeople.jsp" />
+	</definition>
+
+	<definition name="showAddPerson" extends="base.definition">
+		<put-attribute name="title" value="Add Person" />
+		<put-attribute name="body" value="/WEB-INF/views/addPerson.jsp" />
+	</definition>
+
+	<definition name="showEditPerson" extends="base.definition">
+		<put-attribute name="title" value="Add Person" />
+		<put-attribute name="body" value="/WEB-INF/views/editPerson.jsp" />
+	</definition>
+
+</tiles-definitions>

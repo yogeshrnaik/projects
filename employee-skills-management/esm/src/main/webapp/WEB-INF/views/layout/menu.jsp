@@ -15,3 +15,8 @@
 		<spring:message code="menu.manage.employees" />
 	</a>
 </p>
+<p>
+	<a href="${pageContext.request.contextPath}/showAddEmployee">
+		<spring:message code="menu.add.employee" />
+	</a>
+</p>

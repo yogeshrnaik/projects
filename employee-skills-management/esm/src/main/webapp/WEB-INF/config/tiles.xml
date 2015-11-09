@@ -33,4 +33,14 @@
 		<put-attribute name="body" value="/WEB-INF/views/skill/editSkill.jsp" />
 	</definition>
 
+	<definition name="showAddEmployee" extends="base.definition">
+		<put-attribute name="title" value="Add Employee" />
+		<put-attribute name="body" value="/WEB-INF/views/employee/addEmployee.jsp" />
+	</definition>
+
+	<definition name="showEditEmployee" extends="base.definition">
+		<put-attribute name="title" value="Add Employee" />
+		<put-attribute name="body" value="/WEB-INF/views/employee/editEmployee.jsp" />
+	</definition>
+
 </tiles-definitions>

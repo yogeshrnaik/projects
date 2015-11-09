@@ -6,11 +6,17 @@ body {
 
 table {
 	border-collapse: collapse;
-	border-spacing: 0;
+	border-spacing: 5;
 	border-color: #ccc;
 }
+th {
+	background-color: #C3E1FF;
+}
 
+td {
+	padding: 10px;
+}
 .error {
 	color: red;
-	font-weight: bold;
+	font-weight: normal;
 }

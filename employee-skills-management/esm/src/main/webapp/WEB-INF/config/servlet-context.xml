@@ -60,6 +60,7 @@
 		<beans:property name="annotatedClasses">
 			<beans:list>
 				<beans:value>com.spoton.esm.model.Skill</beans:value>
+				<beans:value>com.spoton.esm.model.Employee</beans:value>
 			</beans:list>
 		</beans:property>
 		<beans:property name="hibernateProperties">

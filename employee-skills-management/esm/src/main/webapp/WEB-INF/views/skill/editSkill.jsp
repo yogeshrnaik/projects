@@ -12,7 +12,7 @@
 	<table>
 		<tr>
 			<td><form:label path="id">
-					<spring:message text="ID" />
+					<spring:message code="page.skills.id"/>
 				</form:label></td>
 			<td><form:input path="id" readonly="true" size="8"
 					disabled="true" /> <form:hidden path="id" /></td>

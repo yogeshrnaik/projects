@@ -9,3 +9,8 @@ table {
 	border-spacing: 0;
 	border-color: #ccc;
 }
+
+.error {
+	color: red;
+	font-weight: bold;
+}

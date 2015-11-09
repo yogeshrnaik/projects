@@ -36,7 +36,7 @@ public class SkillService {
 	}
 
 	@Transactional
-	public void removeSkill(int id) {
+	public void deleteSkill(int id) {
 		this.skillDAO.removeSkill(id);
 	}
 

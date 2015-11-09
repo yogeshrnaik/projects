@@ -6,6 +6,11 @@
 	</a>
 </p>
 <p>
+	<a href="${pageContext.request.contextPath}/showAddSkill">
+		<spring:message code="menu.add.skill" />
+	</a>
+</p>
+<p>
 	<a href="${pageContext.request.contextPath}/employees">
 		<spring:message code="menu.manage.employees" />
 	</a>

@@ -16,8 +16,8 @@
 			<tr>
 				<td>${skill.id}</td>
 				<td nowrap>${skill.name}</td>
-				<td><a href="<c:url value='/skills/edit/${skill.id}' />"><spring:message code="link.edit" /></a></td>
-				<td><a href="<c:url value='/skills/remove/${skill.id}' />"><spring:message code="link.delete" /></a></td>
+				<td><a href="<c:url value='/showEditSkill/${skill.id}' />"><spring:message code="link.edit" /></a></td>
+				<td><a href="<c:url value='/deleteSkill/${skill.id}' />"><spring:message code="link.delete" /></a></td>
 			</tr>
 		</c:forEach>
 	</table>

@@ -2,22 +2,22 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<h3>List of Skills</h3>
+<h3><spring:message code="page.skills.header" /></h3>
 
 <c:if test="${!empty skills}">
 	<table border="1" cellspacing="5" cellpadding="5">
 		<tr>
-			<th>Skill ID</th>
-			<th>Skill Name</th>
-			<th>Edit</th>
-			<th>Delete</th>
+			<th><spring:message code="page.skills.id" /></th>
+			<th><spring:message code="page.skills.name" /></th>
+			<th><spring:message code="link.edit" /></th>
+			<th><spring:message code="link.delete" /></th>
 		</tr>
 		<c:forEach items="${skills}" var="skill">
 			<tr>
 				<td>${skill.id}</td>
 				<td nowrap>${skill.name}</td>
-				<td><a href="<c:url value='/skills/edit/${skill.id}' />">Edit</a></td>
-				<td><a href="<c:url value='/skills/remove/${skill.id}' />">Delete</a></td>
+				<td><a href="<c:url value='/skills/edit/${skill.id}' />"><spring:message code="link.edit" /></a></td>
+				<td><a href="<c:url value='/skills/remove/${skill.id}' />"><spring:message code="link.delete" /></a></td>
 			</tr>
 		</c:forEach>
 	</table>

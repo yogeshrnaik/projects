@@ -20,3 +20,8 @@ td {
 	color: red;
 	font-weight: normal;
 }
+
+div.success {
+	color: green;
+	font-weight: normal;
+}

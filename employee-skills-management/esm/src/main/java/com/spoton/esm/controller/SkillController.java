@@ -3,6 +3,7 @@ package com.spoton.esm.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,12 +12,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.spoton.esm.model.Skill;
 import com.spoton.esm.service.SkillService;
 
 @Controller
 public class SkillController {
+
+	@Autowired
+	private MessageSource msgResource;
 
 	@Autowired
 	private SkillService skillService;
@@ -38,9 +43,11 @@ public class SkillController {
 	}
 
 	@RequestMapping(value = "/addSkill", method = RequestMethod.POST)
-	public ModelAndView addSkill(@Valid @ModelAttribute("skill") Skill skill, BindingResult result, Model model) {
+	public ModelAndView addSkill(@Valid @ModelAttribute("skill") Skill skill, BindingResult result, Model model,
+			RedirectAttributes redirectAttr) {
 		if (!result.hasErrors()) {
 			this.skillService.addSkill(skill);
+			redirectAttr.addFlashAttribute("message", msgResource.getMessage("skill.add.success", null, null));
 			return new ModelAndView("redirect:/skills");
 		} else {
 			return showAddSkill(skill, model);
@@ -48,9 +55,11 @@ public class SkillController {
 	}
 
 	@RequestMapping(value = "/editSkill", method = RequestMethod.POST)
-	public ModelAndView editSkill(@Valid @ModelAttribute("skill") Skill skill, BindingResult result, Model model) {
+	public ModelAndView editSkill(@Valid @ModelAttribute("skill") Skill skill, BindingResult result, Model model,
+			RedirectAttributes redirectAttr) {
 		if (!result.hasErrors()) {
 			this.skillService.updateSkill(skill);
+			redirectAttr.addFlashAttribute("message", msgResource.getMessage("skill.edit.success", null, null));
 			return new ModelAndView("redirect:/skills");
 		} else {
 			return showEditSkill(skill, model);
@@ -58,8 +67,9 @@ public class SkillController {
 	}
 
 	@RequestMapping("/deleteSkill/{id}")
-	public String deleteSkill(@PathVariable("id") int id) {
+	public String deleteSkill(@PathVariable("id") int id, RedirectAttributes redirectAttr) {
 		skillService.deleteSkill(id);
+		redirectAttr.addFlashAttribute("message", msgResource.getMessage("skill.delete.success", null, null));
 		return "redirect:/skills";
 	}
 

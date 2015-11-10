@@ -3,6 +3,7 @@ package com.spoton.esm.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.spoton.esm.model.Employee;
 import com.spoton.esm.service.EmployeeService;
@@ -18,6 +20,9 @@ import com.spoton.esm.service.SkillService;
 
 @Controller
 public class EmployeeController {
+
+	@Autowired
+	private MessageSource msgResource;
 
 	@Autowired
 	private EmployeeService employeeService;
@@ -42,9 +47,11 @@ public class EmployeeController {
 	}
 
 	@RequestMapping(value = "/addEmployee", method = RequestMethod.POST)
-	public ModelAndView addEmployee(@Valid @ModelAttribute("employee") Employee employee, BindingResult result, Model model) {
+	public ModelAndView addEmployee(@Valid @ModelAttribute("employee") Employee employee, BindingResult result, Model model,
+			RedirectAttributes redirectAttr) {
 		if (!result.hasErrors()) {
 			this.employeeService.addEmployee(employee);
+			redirectAttr.addFlashAttribute("message", msgResource.getMessage("employee.add.success", null, null));
 			return new ModelAndView("redirect:/employees");
 		} else {
 			return showAddEmployee(employee, model);
@@ -52,9 +59,11 @@ public class EmployeeController {
 	}
 
 	@RequestMapping(value = "/editEmployee", method = RequestMethod.POST)
-	public ModelAndView editEmployee(@Valid @ModelAttribute("employee") Employee employee, BindingResult result, Model model) {
+	public ModelAndView editEmployee(@Valid @ModelAttribute("employee") Employee employee, BindingResult result,
+			Model model, RedirectAttributes redirectAttr) {
 		if (!result.hasErrors()) {
 			this.employeeService.updateEmployee(employee);
+			redirectAttr.addFlashAttribute("message", msgResource.getMessage("employee.edit.success", null, null));
 			return new ModelAndView("redirect:/employees");
 		} else {
 			return showEditEmployee(employee, model);
@@ -62,8 +71,9 @@ public class EmployeeController {
 	}
 
 	@RequestMapping("/deleteEmployee/{id}")
-	public String deleteEmployee(@PathVariable("id") int id) {
+	public String deleteEmployee(@PathVariable("id") int id, RedirectAttributes redirectAttr) {
 		employeeService.deleteEmployee(id);
+		redirectAttr.addFlashAttribute("message", msgResource.getMessage("employee.delete.success", null, null));
 		return "redirect:/employees";
 	}
 

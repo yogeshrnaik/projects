@@ -4,6 +4,13 @@
 
 <h3><spring:message code="page.skills.header" /></h3>
 
+<c:if test="${!empty message}">
+	<div class="success">
+		${message}
+	</div>
+	<br/>
+</c:if>
+
 <c:if test="${!empty skills}">
 	<table border="1" cellspacing="5" cellpadding="5">
 		<tr>

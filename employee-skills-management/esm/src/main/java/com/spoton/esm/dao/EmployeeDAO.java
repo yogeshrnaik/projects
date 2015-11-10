@@ -2,6 +2,7 @@ package com.spoton.esm.dao;
 
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -34,25 +35,28 @@ public class EmployeeDAO {
 	public List<Employee> listEmployees() {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Employee> EmployeesList = session.createQuery("from Employee").list();
-		for (Employee p : EmployeesList) {
-			logger.info("Employee List::" + p);
+		for (Employee employee : EmployeesList) {
+			logger.info("Employee List::" + employee);
 		}
 		return EmployeesList;
 	}
 
 	public Employee getEmployeeById(int id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Employee p = (Employee) session.load(Employee.class, new Integer(id));
-		logger.info("Employee loaded successfully, Employee details=" + p);
-		return p;
+		Employee employee = (Employee) session.load(Employee.class, new Integer(id));
+		if (employee != null) {
+			Hibernate.initialize(employee.getSkills());
+		}
+		logger.info("Employee loaded successfully, Employee details=" + employee);
+		return employee;
 	}
 
 	public void removeEmployee(int id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Employee p = (Employee) session.load(Employee.class, new Integer(id));
-		if (null != p) {
-			session.delete(p);
+		Employee employee = (Employee) session.load(Employee.class, new Integer(id));
+		if (null != employee) {
+			session.delete(employee);
 		}
-		logger.info("Employee deleted successfully, Employee details=" + p);
+		logger.info("Employee deleted successfully, Employee details=" + employee);
 	}
 }

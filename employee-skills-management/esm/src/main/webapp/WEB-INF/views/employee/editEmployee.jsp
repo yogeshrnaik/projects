@@ -33,6 +33,15 @@
 			<td align="left"><form:errors path="lastName" cssClass="error" /></td>
 		</tr>
 		<tr>
+			<td valign="top" nowrap><spring:message code="page.employees.select.skills" /></td>
+			<td>
+				<form:select path="skills" multiple="true" size="10" style="width:100%">
+					<form:options items="${allSkills}" itemValue="id" itemLabel="name"/>
+				</form:select>
+			</td>
+			<td align="left" nowrap><form:errors path="skills" cssClass="error" /></td>
+		</tr>
+		<tr>
 			<td colspan="2"><input type="submit"
 				value="<spring:message code="button.edit.employee"/>" /></td>
 		</tr>

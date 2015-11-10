@@ -14,12 +14,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.spoton.esm.model.Employee;
 import com.spoton.esm.service.EmployeeService;
+import com.spoton.esm.service.SkillService;
 
 @Controller
 public class EmployeeController {
 
 	@Autowired
 	private EmployeeService employeeService;
+
+	@Autowired
+	private SkillService skillService;
 
 	@RequestMapping(value = "/employees", method = RequestMethod.GET)
 	public ModelAndView showEmployees(Model model) {
@@ -65,11 +69,13 @@ public class EmployeeController {
 
 	private ModelAndView showAddEmployee(Employee employee, Model model) {
 		model.addAttribute("employee", employee);
+		model.addAttribute("allSkills", skillService.listSkills());
 		return new ModelAndView("showAddEmployee");
 	}
 
 	private ModelAndView showEditEmployee(Employee employee, Model model) {
 		model.addAttribute("employee", employee);
+		model.addAttribute("allSkills", skillService.listSkills());
 		return new ModelAndView("showEditEmployee");
 	}
 

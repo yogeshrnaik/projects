@@ -11,7 +11,17 @@
 		infrastructure -->
 
 	<!-- Enables the Spring MVC @Controller programming model -->
-	<mvc:annotation-driven />
+	<mvc:annotation-driven conversion-service="conversionService" />
+
+	<beans:bean id="conversionService"
+		class="org.springframework.context.support.ConversionServiceFactoryBean">
+		<beans:property name="converters">
+			<beans:set>
+				<beans:bean class="com.spoton.esm.converter.SkillIdToSkillConverter" />
+				<beans:bean class="com.spoton.esm.converter.SkillSetToSkillIdStringConverter" />
+			</beans:set>
+		</beans:property>
+	</beans:bean>
 
 	<context:property-placeholder location="classpath:database.properties" />
 

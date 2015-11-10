@@ -29,7 +29,7 @@
 	</definition>
 
 	<definition name="showEditSkill" extends="base.definition">
-		<put-attribute name="title" value="Add Skill" />
+		<put-attribute name="title" value="Edit Skill" />
 		<put-attribute name="body" value="/WEB-INF/views/skill/editSkill.jsp" />
 	</definition>
 
@@ -39,7 +39,7 @@
 	</definition>
 
 	<definition name="showEditEmployee" extends="base.definition">
-		<put-attribute name="title" value="Add Employee" />
+		<put-attribute name="title" value="Edit Employee" />
 		<put-attribute name="body" value="/WEB-INF/views/employee/editEmployee.jsp" />
 	</definition>
 

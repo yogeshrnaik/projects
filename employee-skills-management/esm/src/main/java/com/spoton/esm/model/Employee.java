@@ -1,10 +1,17 @@
 package com.spoton.esm.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -27,6 +34,11 @@ public class Employee {
 	@NotEmpty
 	@Size(min = 2, max = 50)
 	private String lastName;
+
+	@NotEmpty
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "EMPLOYEE_SKILLS", joinColumns = { @JoinColumn(name = "EMPLOYEE_ID") }, inverseJoinColumns = { @JoinColumn(name = "EMPLOYEE_SKILL_ID") })
+	private Set<Skill> skills = new HashSet<Skill>();
 
 	public int getId() {
 		return id;
@@ -52,9 +64,39 @@ public class Employee {
 		this.lastName = lastName;
 	}
 
+	public Set<Skill> getSkills() {
+		return skills;
+	}
+
+	public void setSkills(Set<Skill> skills) {
+		this.skills = skills;
+	}
+
 	@Override
 	public String toString() {
 		return String.format("[id=%d, firstName=%s, lastName=%s]", id, firstName, lastName);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Employee other = (Employee) obj;
+		if (id != other.id)
+			return false;
+		return true;
 	}
 
 }

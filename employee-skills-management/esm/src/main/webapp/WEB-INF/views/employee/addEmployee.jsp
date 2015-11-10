@@ -9,23 +9,32 @@
 <c:url var="addAction" value="/addEmployee"></c:url>
 
 <form:form action="${addAction}" commandName="employee">
-	<table>
+	<table style="width: 50%">
 		<tr>
 			<td><form:label path="firstName">
 					<spring:message code="page.employees.first.name" />
 				</form:label></td>
 			<td><form:input path="firstName" /></td>
-			<td align="left"><form:errors path="firstName" cssClass="error" /></td>
+			<td align="left" nowrap><form:errors path="firstName" cssClass="error" /></td>
 		</tr>
 		<tr>
 			<td><form:label path="lastName">
 					<spring:message code="page.employees.last.name" />
 				</form:label></td>
 			<td><form:input path="lastName" /></td>
-			<td align="left"><form:errors path="lastName" cssClass="error" /></td>
+			<td align="left" nowrap><form:errors path="lastName" cssClass="error" /></td>
 		</tr>
 		<tr>
-			<td colspan="2"><input type="submit"
+			<td valign="top" nowrap><spring:message code="page.employees.select.skills" /></td>
+			<td>
+				<form:select path="skills" multiple="true" size="10" style="width:100%">
+					<form:options items="${allSkills}" itemValue="id" itemLabel="name"/>
+				</form:select>
+			</td>
+			<td align="left" nowrap><form:errors path="skills" cssClass="error" /></td>
+		</tr>
+		<tr>
+			<td colspan="3"><input type="submit"
 				value="<spring:message code="button.add.employee"/>" /></td>
 		</tr>
 	</table>

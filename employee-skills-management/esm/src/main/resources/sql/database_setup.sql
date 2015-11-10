@@ -11,3 +11,10 @@ CREATE TABLE `employee` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
+CREATE TABLE employee_skills (
+   employee_id INT(11) UNSIGNED NOT NULL,
+   employee_skill_id INT(11) UNSIGNED NOT NULL,
+  CONSTRAINT FK_EMPLOYEE FOREIGN KEY (employee_id) REFERENCES employee (id),
+  CONSTRAINT FK_SKILL FOREIGN KEY (employee_skill_id) REFERENCES skill (id),
+  PRIMARY KEY (employee_id, employee_skill_id)
+) ENGINE = InnoDB ROW_FORMAT = DEFAULT CHARACTER SET utf8;

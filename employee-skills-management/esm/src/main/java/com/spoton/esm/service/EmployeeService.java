@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spoton.esm.dao.EmployeeDAO;
 import com.spoton.esm.model.Employee;
+import com.spoton.esm.model.Skill;
 
 @Service
 public class EmployeeService {
@@ -38,6 +39,11 @@ public class EmployeeService {
 	@Transactional
 	public void deleteEmployee(int id) {
 		this.employeeDAO.removeEmployee(id);
+	}
+
+	@Transactional
+	public List<Employee> searchEmployeeBySkill(Skill skill) {
+		return employeeDAO.searchEmployeeBySkill(skill);
 	}
 
 }

@@ -36,7 +36,7 @@ public class Employee {
 	private String lastName;
 
 	@NotEmpty
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "EMPLOYEE_SKILLS", joinColumns = { @JoinColumn(name = "EMPLOYEE_ID") }, inverseJoinColumns = { @JoinColumn(name = "EMPLOYEE_SKILL_ID") })
 	private Set<Skill> skills = new HashSet<Skill>();
 
@@ -70,6 +70,21 @@ public class Employee {
 
 	public void setSkills(Set<Skill> skills) {
 		this.skills = skills;
+	}
+
+	public String getSkillsString() {
+		StringBuilder result = new StringBuilder();
+
+		for (Skill skill : skills) {
+			result.append(skill.getName()).append(", ");
+		}
+
+		if (result.length() != 0) {
+			// remove last comma and space
+			result.delete(result.length() - 2, result.length());
+		}
+
+		return result.toString();
 	}
 
 	@Override

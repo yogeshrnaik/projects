@@ -1,6 +1,11 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <p>
+	<a href="${pageContext.request.contextPath}/showSearchEmployeeBySkill">
+		<spring:message code="menu.search.employee.by.skill" />
+	</a>
+</p>
+<p>
 	<a href="${pageContext.request.contextPath}/skills">
 		<spring:message code="menu.manage.skills" />
 	</a>

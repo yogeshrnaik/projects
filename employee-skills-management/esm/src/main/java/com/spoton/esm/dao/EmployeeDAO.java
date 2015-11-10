@@ -3,6 +3,7 @@ package com.spoton.esm.dao;
 import java.util.List;
 
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.spoton.esm.model.Employee;
+import com.spoton.esm.model.Skill;
 
 @Repository
 public class EmployeeDAO {
@@ -58,5 +60,14 @@ public class EmployeeDAO {
 			session.delete(employee);
 		}
 		logger.info("Employee deleted successfully, Employee details=" + employee);
+	}
+
+	public List<Employee> searchEmployeeBySkill(Skill skill) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String hql = "select distinct e from Employee e join e.skills s where upper(s.name) like :skill";
+		Query query = session.createQuery(hql);
+		query.setParameter("skill", "%" + skill.getName().toUpperCase() + "%");
+		List<Employee> employees = query.list();		
+		return employees;
 	}
 }

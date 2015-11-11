@@ -8,22 +8,22 @@
 
 <c:url var="searchAction" value="/searchEmployeeBySkill"></c:url>
 
-<form:form action="${searchAction}" commandName="skill">
+<form:form action="${searchAction}" commandName="searchDto">
   <table>
     <tr>
       <td>
-        <form:label path="name">
+        <form:label path="skill">
           <spring:message code="page.skills.name" />
         </form:label>
       </td>
       <td>
-        <form:input path="name" />
-      </td>
-      <td align="left">
-        <form:errors path="name" cssClass="error" />
+        <form:input path="skill" />
       </td>
       <td>
         <input type="submit" value="<spring:message code="button.search"/>" />
+      </td>
+      <td align="left">
+        <form:errors path="skill" cssClass="error" />
       </td>
     </tr>
   </table>

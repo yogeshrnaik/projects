@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spoton.esm.dao.EmployeeDAO;
+import com.spoton.esm.dto.EmployeeSearchDto;
 import com.spoton.esm.model.Employee;
 import com.spoton.esm.model.Skill;
 
@@ -42,8 +43,8 @@ public class EmployeeService {
 	}
 
 	@Transactional
-	public List<Employee> searchEmployeeBySkill(Skill skill) {
-		return employeeDAO.searchEmployeeBySkill(skill);
+	public List<Employee> searchEmployeeBySkill(EmployeeSearchDto dto) {
+		return employeeDAO.searchEmployeeBySkill(dto);
 	}
 
 }

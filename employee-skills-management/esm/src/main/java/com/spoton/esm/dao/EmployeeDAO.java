@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.spoton.esm.dto.EmployeeSearchDto;
 import com.spoton.esm.model.Employee;
 import com.spoton.esm.model.Skill;
 
@@ -57,11 +58,11 @@ public class EmployeeDAO {
 		}
 	}
 
-	public List<Employee> searchEmployeeBySkill(Skill skill) {
+	public List<Employee> searchEmployeeBySkill(EmployeeSearchDto dto) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String hql = "select e from Employee e join fetch e.skills s where upper(s.name) like :skill order by e.firstName, e.lastName asc";
 		Query query = session.createQuery(hql);
-		query.setParameter("skill", "%" + skill.getName().toUpperCase() + "%");
+		query.setParameter("skill", "%" + dto.getSkill().toUpperCase() + "%");
 		List<Employee> employeesSkillsList = query.list();
 		return employeesSkillsList.stream().distinct().collect(Collectors.toList());
 	}

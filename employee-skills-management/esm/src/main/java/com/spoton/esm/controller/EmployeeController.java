@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.spoton.esm.exception.ESMException;
 import com.spoton.esm.model.Employee;
 import com.spoton.esm.service.EmployeeService;
 import com.spoton.esm.service.SkillService;
@@ -42,8 +43,12 @@ public class EmployeeController {
 	}
 
 	@RequestMapping("/showEditEmployee/{id}")
-	public ModelAndView showEditPerson(@PathVariable("id") int id, Model model) {
-		return showEditEmployee(this.employeeService.getEmployeeById(id), model);
+	public ModelAndView showEditPerson(@PathVariable("id") int id, Model model) throws ESMException {
+		Employee employee = this.employeeService.getEmployeeById(id);
+		if (employee == null) {
+			throw new ESMException(msgResource.getMessage("employee.not.found", new Integer[] { id }, null));
+		}
+		return showEditEmployee(employee, model);
 	}
 
 	@RequestMapping(value = "/addEmployee", method = RequestMethod.POST)

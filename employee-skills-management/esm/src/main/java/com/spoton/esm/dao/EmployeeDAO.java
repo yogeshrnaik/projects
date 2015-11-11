@@ -42,7 +42,7 @@ public class EmployeeDAO {
 
 	public Employee getEmployeeById(int id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Employee employee = (Employee) session.load(Employee.class, new Integer(id));
+		Employee employee = (Employee) session.get(Employee.class, new Integer(id));
 		if (employee != null) {
 			Hibernate.initialize(employee.getSkills());
 		}

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 
 import com.spoton.esm.dto.EmployeeSearchDto;
 import com.spoton.esm.model.Employee;
-import com.spoton.esm.model.Skill;
 
 @Repository
 public class EmployeeDAO {
@@ -59,11 +58,40 @@ public class EmployeeDAO {
 	}
 
 	public List<Employee> searchEmployeeBySkill(EmployeeSearchDto dto) {
+		List<Integer> empIds = searchEmployeeIds(dto);
+		return getEmployeesByIds(empIds);
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<Integer> searchEmployeeIds(EmployeeSearchDto dto) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String hql = "select e from Employee e join fetch e.skills s where upper(s.name) like :skill order by e.firstName, e.lastName asc";
+		String hql = "select distinct e.id from Employee e join e.skills s where upper(s.name) like :skill order by e.firstName, e.lastName asc";
 		Query query = session.createQuery(hql);
 		query.setParameter("skill", "%" + dto.getSkill().toUpperCase() + "%");
-		List<Employee> employeesSkillsList = query.list();
-		return employeesSkillsList.stream().distinct().collect(Collectors.toList());
+		List<Integer> empIds = query.list();
+		return empIds;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Integer> searchEmployeeIdsBySkillWithPaging(EmployeeSearchDto dto, int start, int maxResult) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String hql = "select distinct e.id from Employee e join e.skills s where upper(s.name) like :skill order by e.firstName, e.lastName asc";
+		Query query = session.createQuery(hql);
+		query.setParameter("skill", "%" + dto.getSkill().toUpperCase() + "%");
+		query.setFirstResult(start);
+		query.setMaxResults(maxResult);
+		List<Integer> empIds = query.list();
+		return empIds;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Employee> getEmployeesByIds(List<Integer> empIds) {
+		Session session = this.sessionFactory.getCurrentSession();
+		// query employees with Ids and join fetch to get all skills of each employee
+		String hql = "select distinct e from Employee e join fetch e.skills s where e.id in (:ids) order by e.firstName, e.lastName asc";
+		Query query = session.createQuery(hql);
+		query.setParameterList("ids", empIds);
+		List<Employee> emps = query.list();
+		return emps;
 	}
 }

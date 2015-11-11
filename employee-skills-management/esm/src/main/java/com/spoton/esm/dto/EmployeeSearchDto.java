@@ -6,6 +6,13 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 public class EmployeeSearchDto {
 
+	public EmployeeSearchDto() {
+	}
+
+	public EmployeeSearchDto(String skill) {
+		this.skill = skill;
+	}
+
 	@NotEmpty
 	@Size(min = 2, max = 50)
 	private String skill;

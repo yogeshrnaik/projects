@@ -19,40 +19,27 @@ public class SkillDAO {
 	private SessionFactory sessionFactory;
 
 	public void addSkill(Skill skill) {
-		Session session = this.sessionFactory.getCurrentSession();
-		session.persist(skill);
-		logger.info("Skill saved successfully, Skill Details=" + skill);
+		this.sessionFactory.getCurrentSession().persist(skill);
 	}
 
 	public void updateSkill(Skill skill) {
-		Session session = this.sessionFactory.getCurrentSession();
-		session.update(skill);
-		logger.info("Skill updated successfully, Skill Details=" + skill);
+		this.sessionFactory.getCurrentSession().update(skill);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Skill> listSkills() {
-		Session session = this.sessionFactory.getCurrentSession();
-		List<Skill> SkillsList = session.createQuery("from Skill order by name asc").list();
-		for (Skill p : SkillsList) {
-			logger.info("Skill List::" + p);
-		}
-		return SkillsList;
+		return this.sessionFactory.getCurrentSession().createQuery("from Skill order by name asc").list();
 	}
 
 	public Skill getSkillById(int id) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Skill p = (Skill) session.load(Skill.class, new Integer(id));
-		logger.info("Skill loaded successfully, Skill details=" + p);
-		return p;
+		return (Skill) this.sessionFactory.getCurrentSession().load(Skill.class, new Integer(id));
 	}
 
 	public void removeSkill(int id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Skill p = (Skill) session.load(Skill.class, new Integer(id));
-		if (null != p) {
-			session.delete(p);
+		Skill s = (Skill) session.load(Skill.class, new Integer(id));
+		if (null != s) {
+			session.delete(s);
 		}
-		logger.info("Skill deleted successfully, Skill details=" + p);
 	}
 }

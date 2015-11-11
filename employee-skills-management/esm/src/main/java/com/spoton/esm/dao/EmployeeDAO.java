@@ -1,10 +1,6 @@
 package com.spoton.esm.dao;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.hibernate.Hibernate;
@@ -29,13 +25,11 @@ public class EmployeeDAO {
 	public void addEmployee(Employee employee) {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.persist(employee);
-		logger.info("Employee saved successfully, Employee Details=" + employee);
 	}
 
 	public void updateEmployee(Employee employee) {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.update(employee);
-		logger.info("Employee updated successfully, Employee Details=" + employee);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -52,7 +46,6 @@ public class EmployeeDAO {
 		if (employee != null) {
 			Hibernate.initialize(employee.getSkills());
 		}
-		logger.info("Employee loaded successfully, Employee details=" + employee);
 		return employee;
 	}
 
@@ -62,7 +55,6 @@ public class EmployeeDAO {
 		if (null != employee) {
 			session.delete(employee);
 		}
-		logger.info("Employee deleted successfully, Employee details=" + employee);
 	}
 
 	public List<Employee> searchEmployeeBySkill(Skill skill) {

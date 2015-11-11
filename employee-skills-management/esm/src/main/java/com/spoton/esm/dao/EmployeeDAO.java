@@ -36,7 +36,7 @@ public class EmployeeDAO {
 	@SuppressWarnings("unchecked")
 	public List<Employee> listEmployees() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Employee> EmployeesList = session.createQuery("from Employee").list();
+		List<Employee> EmployeesList = session.createQuery("from Employee order by firstName, lastName asc").list();
 		for (Employee employee : EmployeesList) {
 			logger.info("Employee List::" + employee);
 		}
@@ -64,10 +64,10 @@ public class EmployeeDAO {
 
 	public List<Employee> searchEmployeeBySkill(Skill skill) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String hql = "select distinct e from Employee e join e.skills s where upper(s.name) like :skill";
+		String hql = "select distinct e from Employee e join e.skills s where upper(s.name) like :skill order by e.firstName, e.lastName asc";
 		Query query = session.createQuery(hql);
 		query.setParameter("skill", "%" + skill.getName().toUpperCase() + "%");
-		List<Employee> employees = query.list();		
+		List<Employee> employees = query.list();
 		return employees;
 	}
 }

@@ -33,7 +33,7 @@ public class SkillDAO {
 	@SuppressWarnings("unchecked")
 	public List<Skill> listSkills() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Skill> SkillsList = session.createQuery("from Skill").list();
+		List<Skill> SkillsList = session.createQuery("from Skill order by name asc").list();
 		for (Skill p : SkillsList) {
 			logger.info("Skill List::" + p);
 		}

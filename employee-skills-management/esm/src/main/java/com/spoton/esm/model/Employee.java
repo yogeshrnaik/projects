@@ -37,7 +37,7 @@ public class Employee {
 	private String lastName;
 
 	@NotEmpty
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "EMPLOYEE_SKILLS", joinColumns = { @JoinColumn(name = "EMPLOYEE_ID") }, inverseJoinColumns = { @JoinColumn(name = "EMPLOYEE_SKILL_ID") })
 	@OrderBy(value = "name asc")
 	private Set<Skill> skills = new HashSet<Skill>();

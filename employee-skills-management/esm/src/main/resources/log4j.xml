@@ -9,7 +9,7 @@
 			<param name="ConversionPattern" value="%-d %-5p: %c - %m%n" />
 		</layout>
 	</appender>
-	<appender name="RollingAppender" class="org.apache.log4j.DailyRollingFileAppender">
+	<appender name="dailyRollingAppender" class="org.apache.log4j.DailyRollingFileAppender">
 		<param name="file" value="esm.log" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd" />
 		<layout class="org.apache.log4j.PatternLayout">
@@ -18,7 +18,7 @@
 	</appender>
 
 	<!-- Application Loggers -->
-	<logger name="com.journaldev.spring">
+	<logger name="com.spoton.esm">
 		<level value="info" />
 	</logger>
 
@@ -47,7 +47,7 @@
 	<root>
 		<priority value="warn" />
 		<appender-ref ref="console" />
-		<appender-ref ref="RollingAppender" />
+		<appender-ref ref="dailyRollingAppender" />
 	</root>
 
 </log4j:configuration>

@@ -18,7 +18,7 @@
 	</definition>
 
 	<definition name="employees" extends="base.definition">
-		<put-attribute name="title" value="Manage Skills" />
+		<put-attribute name="title" value="Manage Employees" />
 		<put-attribute name="body"
 			value="/WEB-INF/views/employee/employees.jsp" />
 	</definition>

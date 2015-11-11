@@ -1,6 +1,11 @@
 package com.spoton.esm.dao;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
@@ -36,11 +41,9 @@ public class EmployeeDAO {
 	@SuppressWarnings("unchecked")
 	public List<Employee> listEmployees() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Employee> EmployeesList = session.createQuery("from Employee order by firstName, lastName asc").list();
-		for (Employee employee : EmployeesList) {
-			logger.info("Employee List::" + employee);
-		}
-		return EmployeesList;
+		List<Employee> employeesSkillsList = session.createQuery(
+				"from Employee e join fetch e.skills order by e.firstName, e.lastName asc").list();
+		return employeesSkillsList.stream().distinct().collect(Collectors.toList());
 	}
 
 	public Employee getEmployeeById(int id) {
@@ -64,7 +67,7 @@ public class EmployeeDAO {
 
 	public List<Employee> searchEmployeeBySkill(Skill skill) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String hql = "select distinct e from Employee e join e.skills s where upper(s.name) like :skill order by e.firstName, e.lastName asc";
+		String hql = "select distinct e from Employee e join fetch e.skills s where upper(s.name) like :skill order by e.firstName, e.lastName asc";
 		Query query = session.createQuery(hql);
 		query.setParameter("skill", "%" + skill.getName().toUpperCase() + "%");
 		List<Employee> employees = query.list();

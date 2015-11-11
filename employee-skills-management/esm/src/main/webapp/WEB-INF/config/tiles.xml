@@ -50,7 +50,7 @@
 	
 	<definition name="searchEmployeeBySkillResult" extends="base.definition">
 		<put-attribute name="title" value="Search Employee by Skill - Result" />
-		<put-attribute name="body" value="/WEB-INF/views/employee/searchEmployeeBySkillResult.jsp" />
+		<put-attribute name="body" value="/WEB-INF/views/employee/searchEmployeeBySkill.jsp" />
 	</definition>
 	
 

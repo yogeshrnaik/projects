@@ -3,23 +3,55 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <h3>
-	<spring:message code="page.search.employee.by.skill.header" />
+  <spring:message code="page.search.employee.by.skill.header" />
 </h3>
 
 <c:url var="searchAction" value="/searchEmployeeBySkill"></c:url>
 
 <form:form action="${searchAction}" commandName="skill">
-	<table>
-		<tr>
-			<td><form:label path="name">
-					<spring:message code="page.skills.name" />
-				</form:label></td>
-			<td><form:input path="name" /></td>
-			<td align="left"><form:errors path="name" cssClass="error" /></td>
-		</tr>
-		<tr>
-			<td colspan="2"><input type="submit"
-				value="<spring:message code="button.search"/>" /></td>
-		</tr>
-	</table>
+  <table>
+    <tr>
+      <td>
+        <form:label path="name">
+          <spring:message code="page.skills.name" />
+        </form:label>
+      </td>
+      <td>
+        <form:input path="name" />
+      </td>
+      <td align="left">
+        <form:errors path="name" cssClass="error" />
+      </td>
+      <td>
+        <input type="submit" value="<spring:message code="button.search"/>" />
+      </td>
+    </tr>
+  </table>
 </form:form>
+<br />
+<c:if test="${!empty employees}">
+  <table border="1" cellspacing="5" cellpadding="5">
+    <tr>
+      <th><spring:message code="page.employees.id" /></th>
+      <th><spring:message code="page.employees.first.name" /></th>
+      <th><spring:message code="page.employees.last.name" /></th>
+      <th><spring:message code="page.employees.skills" /></th>
+      <th><spring:message code="link.edit" /></th>
+      <th><spring:message code="link.delete" /></th>
+    </tr>
+    <c:forEach items="${employees}" var="employee">
+      <tr>
+        <td>${employee.id}</td>
+        <td nowrap>${employee.firstName}</td>
+        <td nowrap>${employee.lastName}</td>
+        <td>${employee.skillsString}</td>
+        <td>
+          <a href="<c:url value='/showEditEmployee/${employee.id}' />"><spring:message code="link.edit" /></a>
+        </td>
+        <td>
+          <a href="<c:url value='/deleteEmployee/${employee.id}' />"><spring:message code="link.delete" /></a>
+        </td>
+      </tr>
+    </c:forEach>
+  </table>
+</c:if>

@@ -67,10 +67,10 @@ public class EmployeeDAO {
 
 	public List<Employee> searchEmployeeBySkill(Skill skill) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String hql = "select distinct e from Employee e join fetch e.skills s where upper(s.name) like :skill order by e.firstName, e.lastName asc";
+		String hql = "select e from Employee e join fetch e.skills s where upper(s.name) like :skill order by e.firstName, e.lastName asc";
 		Query query = session.createQuery(hql);
 		query.setParameter("skill", "%" + skill.getName().toUpperCase() + "%");
-		List<Employee> employees = query.list();
-		return employees;
+		List<Employee> employeesSkillsList = query.list();
+		return employeesSkillsList.stream().distinct().collect(Collectors.toList());
 	}
 }

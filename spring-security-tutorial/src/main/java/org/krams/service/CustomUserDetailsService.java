@@ -3,6 +3,7 @@ package org.krams.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.krams.domain.Role;
 import org.krams.repository.UserRepository;
@@ -40,7 +41,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 			boolean accountNonLocked = true;
 
 			return new User(domainUser.getUsername(), domainUser.getPassword().toLowerCase(), enabled, accountNonExpired,
-					credentialsNonExpired, accountNonLocked, getAuthorities(domainUser.getRole()));
+					credentialsNonExpired, accountNonLocked, getAuthorities(domainUser.getRoles()));
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -54,29 +55,19 @@ public class CustomUserDetailsService implements UserDetailsService {
 	 *            the numerical role
 	 * @return a collection of {@link GrantedAuthority
 	 */
-	public Collection<? extends GrantedAuthority> getAuthorities(Role role) {
-		List<GrantedAuthority> authList = getGrantedAuthorities(getRoles(role));
+	public Collection<? extends GrantedAuthority> getAuthorities(Set<Role> roles) {
+		List<GrantedAuthority> authList = getGrantedAuthorities(getRoleNames(roles));
 		return authList;
 	}
 
-	/**
-	 * Converts a numerical role to an equivalent list of roles
-	 * 
-	 * @param role
-	 *            the numerical role
-	 * @return list of roles as as a list of {@link String}
-	 */
-	public List<String> getRoles(Role role) {
-		List<String> roles = new ArrayList<String>();
+	public List<String> getRoleNames(Set<Role> roles) {
+		List<String> roleNames = new ArrayList<String>();
 
-		roles.add(role.getRolename());
+		for (Role role : roles) {
+			roleNames.add(role.getRolename());
+		}
 
-		/*
-		 * if (role.intValue() == 1) { roles.add("ROLE_USER"); roles.add("ROLE_ADMIN"); } else if (role.intValue() == 2) {
-		 * roles.add("ROLE_USER"); } else if (role.intValue() == 3) { roles.add("ROLE_USER"); roles.add("ROLE_HR"); }
-		 */
-
-		return roles;
+		return roleNames;
 	}
 
 	/**

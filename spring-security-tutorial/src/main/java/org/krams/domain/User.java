@@ -2,11 +2,13 @@ package org.krams.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -25,10 +27,8 @@ import com.google.common.base.Objects;
 @Table(name = "USERS")
 public class User extends BaseEntity implements UserDetails {
 	/*
-	 * CREATE TABLE `USERS` ( `ID` int(6) NOT NULL AUTO_INCREMENT, `USERNAME`
-	 * VARCHAR(50) NOT NULL UNIQUE, `PASSWORD` VARCHAR(50) NOT NULL, `ENABLED`
-	 * BOOLEAN NOT NULL, PRIMARY KEY (`ID`) ) ENGINE=InnoDB DEFAULT
-	 * CHARSET=utf8;
+	 * CREATE TABLE `USERS` ( `ID` int(6) NOT NULL AUTO_INCREMENT, `USERNAME` VARCHAR(50) NOT NULL UNIQUE, `PASSWORD`
+	 * VARCHAR(50) NOT NULL, `ENABLED` BOOLEAN NOT NULL, PRIMARY KEY (`ID`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	 */
 
 	private static final long serialVersionUID = 6311364761937265306L;
@@ -49,9 +49,9 @@ public class User extends BaseEntity implements UserDetails {
 	@Column(name = "enabled")
 	private boolean enabled;
 
-	@OneToOne
+	@ManyToMany
 	@JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName = "id") })
-	private Role role;
+	private Set<Role> roles;
 
 	public String getUsername() {
 		return username;
@@ -77,21 +77,18 @@ public class User extends BaseEntity implements UserDetails {
 		this.enabled = enabled;
 	}
 
-	public Role getRole() {
-		return role;
+	public Set<Role> getRoles() {
+		return roles;
 	}
 
-	public void setRole(Role role) {
-		this.role = role;
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
 	}
 
 	@Override
 	public String toString() {
-		return String.format(
-				"%s(id=%d, username=%s, password=%s, role=%s, enabled=%b)",
-				this.getClass().getSimpleName(), this.getId(), this
-						.getUsername(), this.getPassword(), this.getRole()
-						.getRolename(), this.getEnabled());
+		return String.format("%s(id=%d, username=%s, password=%s, roles=%s, enabled=%b)", this.getClass().getSimpleName(),
+				this.getId(), this.getUsername(), this.getPassword(), this.getRoles(), this.getEnabled());
 	}
 
 	@Override
@@ -103,32 +100,29 @@ public class User extends BaseEntity implements UserDetails {
 
 		if (o instanceof User) {
 			final User other = (User) o;
-			return Objects.equal(getId(), other.getId())
-					&& Objects.equal(getUsername(), other.getUsername())
-					&& Objects.equal(getPassword(), other.getPassword())
-					&& Objects.equal(getRole().getRolename(), other.getRole()
-							.getRolename())
-					&& Objects.equal(getEnabled(), other.getEnabled());
+			return Objects.equal(getId(), other.getId()) && Objects.equal(getUsername(), other.getUsername())
+					&& Objects.equal(getPassword(), other.getPassword()) && Objects.equal(getEnabled(), other.getEnabled());
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(getId(), getUsername(), getPassword(),
-				getRole().getRolename(), getEnabled());
+		return Objects.hashCode(getId(), getUsername(), getPassword(), getEnabled());
 	}
 
 	@Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        Role userRoles = this.getRole();
-        if(userRoles != null) {
-                SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userRoles.getRolename());
-                authorities.add(authority);
-        }
-        return authorities;
-    }
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		Collection<GrantedAuthority> authorities = new ArrayList<>();
+		Set<Role> userRoles = this.getRoles();
+		if (userRoles != null) {
+			for (Role role : userRoles) {
+				SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getRolename());
+				authorities.add(authority);
+			}
+		}
+		return authorities;
+	}
 
 	@Override
 	public boolean isAccountNonExpired() {

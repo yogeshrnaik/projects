@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -40,7 +41,7 @@ public class Role extends BaseEntity implements Serializable {
     private String rolename;
     
     //@OneToMany(cascade = CascadeType.ALL)  
-    @OneToMany  
+    @ManyToMany  
     @JoinTable(name = "user_roles",   
         joinColumns        = {@JoinColumn(name = "role_id", referencedColumnName = "id")},  
         inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}  

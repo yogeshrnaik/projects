@@ -15,6 +15,13 @@ It differs from the original project in following aspects:
 
 ### SpringMVCHibernate
 Sample project in Spring MVC + Hibernate + Maven + MySQL + Tomcat 8.0 + Eclipse
+The original project described in article:
+http://www.journaldev.com/3531/spring-mvc-hibernate-mysql-integration-crud-example-tutorial
+
+The original project is modified to experiment with various frameworks/tools such as Apache Tiles intergration with Spring MVC, Hibernate Validator API, etc.
+
+Like to download original project: 
+http://www.journaldev.com/?wpdmact=process&did=NzYuaG90bGluaw==
 
 ### SpringMVCHibernateManyToManyCRUDExample
 Project from article:

@@ -8,6 +8,7 @@ To read the whole guide, please see the original blog:
 http://krams915.blogspot.com/2012/01/spring-security-31-implement_5023.html
 
 This project here is based on original project at: https://github.com/krams915/spring-security-tutorial
+
 It differs from the original project in following aspects:
 - Database model changed a bit
 - Added a new role ROLE_HR

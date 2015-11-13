@@ -13,7 +13,7 @@ It differs from the original project in following aspects:
 - Database model changed a bit
 - Added a new role ROLE_HR
 - Users that can be used to login to the applications: user/1234, hr/1234 and admin/1234
-- 
+
 ********
 ### TODO - Add ManyToMany relationship between users and roles.
 ********

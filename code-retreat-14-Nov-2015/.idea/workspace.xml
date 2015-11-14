@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="624dd65f-5956-49c7-9fb0-f331190adf29" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/java/com/coderetreat/EETest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../employee-skills-management/esm/.classpath" afterPath="$PROJECT_DIR$/../employee-skills-management/esm/.classpath" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../employee-skills-management/esm/src/main/resources/database.properties" afterPath="$PROJECT_DIR$/../employee-skills-management/esm/src/main/resources/database.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../employee-skills-management/esm/src/main/webapp/resources/messages/esm_messages.properties" afterPath="$PROJECT_DIR$/../employee-skills-management/esm/src/main/webapp/resources/messages/esm_messages.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../employee-skills-management/esm/src/main/webapp/WEB-INF/views/layout/menu.jsp" afterPath="$PROJECT_DIR$/../employee-skills-management/esm/src/main/webapp/WEB-INF/views/layout/menu.jsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../employee-skills-management/esm/pom.xml" afterPath="$PROJECT_DIR$/../employee-skills-management/esm/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../spring-security-tutorial/pom.xml" afterPath="$PROJECT_DIR$/../spring-security-tutorial/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../employee-skills-management/esm/src/main/resources/sql/populate_data.sql" afterPath="$PROJECT_DIR$/../employee-skills-management/esm/src/main/resources/sql/populate_data.sql" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../employee-skills-management/esm/src/main/webapp/WEB-INF/config/servlet-context.xml" afterPath="$PROJECT_DIR$/../employee-skills-management/esm/src/main/webapp/WEB-INF/config/servlet-context.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../employee-skills-management/esm/src/main/webapp/WEB-INF/config/tiles.xml" afterPath="$PROJECT_DIR$/../employee-skills-management/esm/src/main/webapp/WEB-INF/config/tiles.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../employee-skills-management/esm/src/main/webapp/WEB-INF/web.xml" afterPath="$PROJECT_DIR$/../employee-skills-management/esm/src/main/webapp/WEB-INF/web.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="code-retreat.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -35,28 +25,7 @@
     <favorites_list name="code-retreat" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="11" column="10" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="EETest.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/test/java/com/coderetreat/EETest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.23529412">
-              <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -464,6 +433,12 @@
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <pass-parent-envs>true</pass-parent-envs>
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="osgi.bnd.run" factoryName="Run Launcher">
@@ -501,12 +476,12 @@
       <created>1447475019967</created>
       <option name="number" value="Default" />
       <updated>1447475019967</updated>
-      <workItem from="1447475021426" duration="203000" />
+      <workItem from="1447475021426" duration="290000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="203000" />
+    <option name="totallyTimeSpent" value="290000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-4" y="-4" width="1374" height="748" extended-state="6" />
@@ -523,6 +498,7 @@
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24320242" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.571192" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -546,7 +522,6 @@
       <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.571192" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -557,18 +532,18 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="10" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/com/coderetreat/EETest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.23529412">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.32352942">
+          <caret line="11" column="10" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
           <folding />
         </state>
       </provider>

@@ -12,6 +12,14 @@
 		<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />
 	</definition>
 
+	<definition name="login" template="/WEB-INF/views/layout/layout.jsp">
+		<put-attribute name="title" value="Login" />
+		<put-attribute name="header" value="/WEB-INF/views/layout/header.jsp" />
+		<put-attribute name="menu" value="" />
+		<put-attribute name="body" value="/WEB-INF/views/common/login.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />
+	</definition>
+
 	<definition name="skills" extends="base.definition">
 		<put-attribute name="title" value="Manage Skills" />
 		<put-attribute name="body" value="/WEB-INF/views/skill/skills.jsp" />
@@ -35,27 +43,36 @@
 
 	<definition name="showAddEmployee" extends="base.definition">
 		<put-attribute name="title" value="Add Employee" />
-		<put-attribute name="body" value="/WEB-INF/views/employee/addEmployee.jsp" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/employee/addEmployee.jsp" />
 	</definition>
 
 	<definition name="showEditEmployee" extends="base.definition">
 		<put-attribute name="title" value="Edit Employee" />
-		<put-attribute name="body" value="/WEB-INF/views/employee/editEmployee.jsp" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/employee/editEmployee.jsp" />
 	</definition>
-	
+
 	<definition name="showSearchEmployeeBySkill" extends="base.definition">
 		<put-attribute name="title" value="Search Employee by Skill" />
-		<put-attribute name="body" value="/WEB-INF/views/employee/searchEmployeeBySkill.jsp" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/employee/searchEmployeeBySkill.jsp" />
 	</definition>
-	
+
 	<definition name="searchEmployeeBySkillResult" extends="base.definition">
 		<put-attribute name="title" value="Search Employee by Skill - Result" />
-		<put-attribute name="body" value="/WEB-INF/views/employee/searchEmployeeBySkill.jsp" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/employee/searchEmployeeBySkill.jsp" />
 	</definition>
-	
+
 	<definition name="error" extends="base.definition">
 		<put-attribute name="title" value="Error" />
 		<put-attribute name="body" value="/WEB-INF/views/common/error.jsp" />
+	</definition>
+
+	<definition name="denied" extends="base.definition">
+		<put-attribute name="title" value="Error" />
+		<put-attribute name="body" value="/WEB-INF/views/common/denied.jsp" />
 	</definition>
 
 </tiles-definitions>

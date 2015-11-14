@@ -2,10 +2,14 @@
 <beans:beans xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        http://www.springframework.org/schema/data/repository
+        http://www.springframework.org/schema/data/repository/spring-repository-1.5.xsd">
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing 
 		infrastructure -->
@@ -13,12 +17,16 @@
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<mvc:annotation-driven conversion-service="conversionService" />
 
+	<!-- Activate Spring Data JPA repository support -->
+	<jpa:repositories base-package="com.spoton.esm.repository" />
+
 	<beans:bean id="conversionService"
 		class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<beans:property name="converters">
 			<beans:set>
 				<beans:bean class="com.spoton.esm.converter.SkillIdToSkillConverter" />
-				<beans:bean class="com.spoton.esm.converter.SkillSetToSkillIdStringConverter" />
+				<beans:bean
+					class="com.spoton.esm.converter.SkillSetToSkillIdStringConverter" />
 			</beans:set>
 		</beans:property>
 	</beans:bean>

@@ -2,12 +2,10 @@ package com.coderetreat;
 
 import org.junit.Test;
 
-public class EETest {
+public class GameOfLifeTest {
 
     @Test
     public void test() {
 
     }
-
-
 }

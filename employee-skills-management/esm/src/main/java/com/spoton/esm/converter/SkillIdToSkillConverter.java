@@ -16,7 +16,6 @@ public class SkillIdToSkillConverter implements Converter<Object, Skill> {
 	public Skill convert(Object element) {
 		Integer id = Integer.parseInt((String) element);
 		Skill skill = skillService.getSkillById(id);
-		System.out.println("Skill: " + skill);
 		return skill;
 	}
 

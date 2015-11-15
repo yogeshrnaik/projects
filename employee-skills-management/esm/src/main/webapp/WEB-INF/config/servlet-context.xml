@@ -18,8 +18,6 @@
 		<beans:property name="converters">
 			<beans:set>
 				<beans:bean class="com.spoton.esm.converter.SkillIdToSkillConverter" />
-				<beans:bean
-					class="com.spoton.esm.converter.SkillSetToSkillIdStringConverter" />
 			</beans:set>
 		</beans:property>
 	</beans:bean>

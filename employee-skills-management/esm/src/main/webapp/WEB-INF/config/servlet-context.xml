@@ -18,7 +18,8 @@
 		<beans:property name="converters">
 			<beans:set>
 				<beans:bean class="com.spoton.esm.converter.SkillIdToSkillConverter" />
-				<beans:bean class="com.spoton.esm.converter.SkillSetToSkillIdStringConverter" />
+				<beans:bean
+					class="com.spoton.esm.converter.SkillSetToSkillIdStringConverter" />
 			</beans:set>
 		</beans:property>
 	</beans:bean>
@@ -49,6 +50,11 @@
 		<beans:property name="cookieMaxAge" value="3600"></beans:property>
 	</beans:bean>
 	<mvc:interceptors>
+		<beans:bean id="openSessionInViewInterceptor"
+			class="org.springframework.orm.hibernate4.support.OpenSessionInViewInterceptor">
+			<beans:property name="sessionFactory" ref="sessionFactory" />
+		</beans:bean>
+
 		<beans:bean
 			class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
 			<beans:property name="paramName" value="locale" />

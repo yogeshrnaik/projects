@@ -36,6 +36,11 @@ public class SkillService {
 	}
 
 	@Transactional
+	public Skill getSkillByName(String name) {
+		return this.skillDAO.getSkillByName(name);
+	}
+
+	@Transactional
 	public void deleteSkill(int id) {
 		this.skillDAO.removeSkill(id);
 	}

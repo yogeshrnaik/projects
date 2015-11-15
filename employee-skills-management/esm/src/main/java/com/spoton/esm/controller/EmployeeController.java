@@ -43,7 +43,7 @@ public class EmployeeController {
 	}
 
 	@RequestMapping("/showEditEmployee/{id}")
-	public ModelAndView showEditPerson(@PathVariable("id") int id, Model model) throws ESMException {
+	public ModelAndView showEditEmployee(@PathVariable("id") int id, Model model) throws ESMException {
 		Employee employee = this.employeeService.getEmployeeById(id);
 		if (employee == null) {
 			throw new ESMException(msgResource.getMessage("employee.not.found", new Integer[] { id }, null));

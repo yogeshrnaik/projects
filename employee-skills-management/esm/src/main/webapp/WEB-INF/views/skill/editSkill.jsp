@@ -6,6 +6,11 @@
   <spring:message code="page.editSkill.header" />
 </h3>
 
+<c:if test="${!empty errorMsg}">
+  <div class="error">${errorMsg}</div>
+  <br />
+</c:if>
+
 <c:url var="editAction" value="/editSkill"></c:url>
 
 <form:form action="${editAction}" commandName="skill">

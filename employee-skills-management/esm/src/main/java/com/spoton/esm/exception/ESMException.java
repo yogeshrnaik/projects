@@ -1,6 +1,6 @@
 package com.spoton.esm.exception;
 
-public class ESMException extends Exception {
+public class ESMException extends RuntimeException {
 
 	public ESMException(String msg) {
 		this(msg, null);

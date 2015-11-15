@@ -6,6 +6,11 @@
   <spring:message code="page.addSkill.header" />
 </h3>
 
+<c:if test="${!empty errorMsg}">
+  <div class="error">${errorMsg}</div>
+  <br />
+</c:if>
+
 <c:url var="addAction" value="/addSkill"></c:url>
 
 <form:form action="${addAction}" commandName="skill">

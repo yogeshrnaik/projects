@@ -2,6 +2,7 @@ package com.spoton.esm.dao;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ public class SkillDAO {
 	}
 
 	public void updateSkill(Skill skill) {
-		this.sessionFactory.getCurrentSession().update(skill);
+		this.sessionFactory.getCurrentSession().merge(skill);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -41,5 +42,17 @@ public class SkillDAO {
 		if (null != s) {
 			session.delete(s);
 		}
+	}
+
+	public Skill getSkillByName(String name) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String hql = "select distinct s from Skill s where upper(s.name) = :name";
+		Query query = session.createQuery(hql);
+		query.setParameter("name", name.toUpperCase());
+		List<Skill> skills = query.list();
+		if (skills.size() > 0) {
+			return skills.get(0);
+		}
+		return null;
 	}
 }

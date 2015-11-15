@@ -32,10 +32,9 @@
 	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<beans:property name="url"
-			value="jdbc:mysql://localhost:3306/mysql" />
-		<beans:property name="username" value="esm" />
-		<beans:property name="password" value="esm123" />
+		<beans:property name="url" value="jdbc:mysql://localhost:3306/journaldev" />
+		<beans:property name="username" value="root" />
+		<beans:property name="password" value="root" />
 	</beans:bean>
 
 	<!-- Hibernate 4 SessionFactory Bean definition -->
@@ -52,6 +51,8 @@
 				<beans:prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect
 				</beans:prop>
 				<beans:prop key="hibernate.show_sql">true</beans:prop>
+				<beans:prop key="hibernate.hbm2ddl.auto">create</beans:prop>
+				<beans:prop key="hibernate.default_schema">journaldev</beans:prop>
 			</beans:props>
 		</beans:property>
 	</beans:bean>

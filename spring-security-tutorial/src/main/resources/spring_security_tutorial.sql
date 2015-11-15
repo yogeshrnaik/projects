@@ -28,7 +28,7 @@ CREATE TABLE `USER_ROLES` (
 INSERT INTO `USERS` (`USERNAME`, `PASSWORD`, `ENABLED`) VALUES
     ('admin', '1234', TRUE),
     ('hr', '1234', TRUE),
-    ('user', '1234', TRUE)
+    ('user', '1234', TRUE),
     ('superadmin', '1234', TRUE);
 
 INSERT INTO `ROLES` (`ROLENAME`) VALUES

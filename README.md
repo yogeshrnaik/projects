@@ -42,7 +42,8 @@ This demonstrates ManyToMany relationship between Employee and Skills.
 
 ### yogesh-naik-ee
 Application developed using Java 8 + JUnit + Intellij Idea during interview processs of EqualExperts.
-This project contains different programs such as
+
+This project contains different programs such as:
 * Shopping Cart
 * Mathworks
 * Keywork Highlighter

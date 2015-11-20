@@ -42,4 +42,10 @@ This demonstrates ManyToMany relationship between Employee and Skills.
 
 ### yogesh-naik-ee
 Application developed using Java 8 + JUnit + Intellij Idea during interview processs of EqualExperts.
-It is a Shopping Cart managing application.
+This project contains different programs such as
+* Shopping Cart
+* Mathworks
+* Keywork Highlighter
+* Train Signal
+* Rate of Interest
+

@@ -1,9 +1,6 @@
 package com.crossover.trial.properties;
 
-import java.io.IOException;
 import java.io.PrintStream;
-import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,11 +16,12 @@ public class TrialAppPropertiesManager implements AppPropertiesManager {
 
     @Override
     public AppProperties loadProps(List<String> propUris) {
-        return new TrialAppProperties();
+        return new TrialAppProperties(propUris);
     }
 
     @Override
     public void printProperties(AppProperties props, PrintStream sync) {
         sync.println(props);
+        System.out.println(props);
     }
 }

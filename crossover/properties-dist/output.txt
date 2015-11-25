@@ -1,0 +1,13 @@
+"key.with.quotes", java.lang.String, "value.with.quotes"
+aws_access_key, java.lang.String, AKIAJSF6XRIJNJTTTL3Q
+aws_account_id, java.lang.Integer, 12345678
+aws_region_id, java.lang.String, us-east-1
+aws_secret_key, java.lang.String, pmqnweEYvdiw7cvCdTOES48sOUvK1rGvvctBsgsa
+hibernate.generate_statistics, java.lang.Boolean, true
+hibernate.show_sql, java.lang.Boolean, true
+JDBC_DRIVER, java.lang.String, com.mysql.jdbc.Driver
+JDBC_PASSWORD, java.lang.String, password123
+JDBC_URL, java.lang.String, jdbc:mysql://localhost/test
+JDBC_USERNAME, java.lang.String, username123
+JPA_SHOWSQL, java.lang.Boolean, true
+

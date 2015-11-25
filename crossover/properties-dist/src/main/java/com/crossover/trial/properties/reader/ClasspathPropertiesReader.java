@@ -12,7 +12,7 @@ public class ClasspathPropertiesReader extends PropertiesReader {
 	}
 
 	public Properties readProperties(String propFile) {
-		Properties props = new Properties();
+		Properties props = new OrderedProperties();
 		try {
 			props.load(getClass().getClassLoader().getResourceAsStream(propFile.substring("classpath:".length())));
 		} catch (IOException e) {

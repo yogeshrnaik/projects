@@ -7,7 +7,7 @@ public class Key implements Comparable<Key> {
 
 	public Key(String key) {
 		this.key = key;
-		this.keyWithoutDotUnderscore = key.toLowerCase().replace(".", "").replace("_", "");
+		this.keyWithoutDotUnderscore = key.toLowerCase().replace(".", "#").replace("_", "#");
 	}
 
 	public String getKey() {
@@ -44,7 +44,7 @@ public class Key implements Comparable<Key> {
 		if (keyWithoutDotUnderscore == null) {
 			if (other.keyWithoutDotUnderscore != null)
 				return false;
-		} else if (!keyWithoutDotUnderscore.equals(other.keyWithoutDotUnderscore))
+		} else if (!keyWithoutDotUnderscore.equalsIgnoreCase(other.keyWithoutDotUnderscore))
 			return false;
 		return true;
 	}

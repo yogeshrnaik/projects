@@ -1,8 +1,8 @@
 package com.crossover.trial.properties.reader;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
 
 import com.crossover.trial.properties.converter.ConverterChain;
 import com.crossover.trial.properties.model.Key;
@@ -36,7 +36,7 @@ public abstract class PropertiesReader {
 	}
 
 	protected Map<Key, Property> convertToMap(Properties props) {
-		Map<Key, Property> result = new TreeMap<Key, Property>();
+		Map<Key, Property> result = new HashMap<>();
 		for (String key : props.stringPropertyNames()) {
 			result.put(new Key(key), new Property(key, converterChain.convertToActualType(props.get(key))));
 		}

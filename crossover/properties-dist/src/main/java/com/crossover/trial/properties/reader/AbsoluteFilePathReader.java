@@ -14,7 +14,7 @@ public class AbsoluteFilePathReader extends PropertiesReader {
 
 	@Override
 	Properties readProperties(String propertyFilePath) {
-		Properties props = new Properties();
+		Properties props = new OrderedProperties();
 		try {
 			// file://<Absoulte_Path> - remove "file://"
 			String file = propertyFilePath.substring("file:".length() + 2);

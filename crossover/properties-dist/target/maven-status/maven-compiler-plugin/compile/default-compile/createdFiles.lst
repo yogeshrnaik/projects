@@ -1,0 +1,5 @@
+com/crossover/trial/properties/TrialAppProperties.class
+com/crossover/trial/properties/AppProperties.class
+com/crossover/trial/properties/TrialAppPropertiesManager.class
+com/crossover/trial/properties/AppPropertiesManager.class
+com/crossover/trial/properties/Main.class

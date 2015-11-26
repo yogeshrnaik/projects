@@ -1,6 +1,6 @@
 aws_access_key, java.lang.String, AKIAJSF6XRIJNJTTTL3Q
 aws_account_id, java.lang.Integer, 12345678
-aws_region_id, java.lang.String, us-east-1
+aws_region_id, com.amazonaws.regions.Regions, us-east-1
 aws_secret_key, java.lang.String, pmqnweEYvdiw7cvCdTOES48sOUvK1rGvvctBsgsa
 index.prop0, java.lang.Double, 0.0
 index.prop1, java.lang.String, property1

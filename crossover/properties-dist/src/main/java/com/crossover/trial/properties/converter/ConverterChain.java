@@ -10,6 +10,7 @@ public class ConverterChain {
 		converters.add(new StringToBooleanConverter());
 		converters.add(new StringToIntegerConverter());
 		converters.add(new StringToDoubleConverter());
+		converters.add(new StringToAwsRegionConverter());
 	}
 
 	public Object convertToActualType(String key, Object value) {

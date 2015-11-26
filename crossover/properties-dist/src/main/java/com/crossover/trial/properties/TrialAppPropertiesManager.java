@@ -1,12 +1,21 @@
 package com.crossover.trial.properties;
 
 import java.io.PrintStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.crossover.trial.properties.converter.ConverterChain;
+import com.crossover.trial.properties.parser.JsonPropertiesParser;
+import com.crossover.trial.properties.parser.PropertiesParser;
+import com.crossover.trial.properties.reader.protocol.ClasspathResourceReader;
+import com.crossover.trial.properties.reader.protocol.FileReader;
+import com.crossover.trial.properties.reader.protocol.HttpBasedReader;
+import com.crossover.trial.properties.reader.protocol.ProtocolBasedReader;
 
 /**
- * A simple main method to load and print properties. You should feel free to change this class
- * or to create additional class. You may add addtional methods, but must implement the 
- * AppPropertiesManager API contract.
+ * A simple main method to load and print properties. You should feel free to change this class or to create additional
+ * class. You may add addtional methods, but must implement the AppPropertiesManager API contract.
  * 
  * Note: a default constructor is required
  *
@@ -14,14 +23,27 @@ import java.util.List;
  */
 public class TrialAppPropertiesManager implements AppPropertiesManager {
 
-    @Override
-    public AppProperties loadProps(List<String> propUris) {
-        return new TrialAppProperties(propUris);
-    }
+	public static final Map<String, ProtocolBasedReader> readers = new HashMap<>();
+	public static final Map<String, PropertiesParser> parsers = new HashMap<>();
+	private static final ConverterChain CONVERTER_CHAIN = new ConverterChain();
 
-    @Override
-    public void printProperties(AppProperties props, PrintStream sync) {
-        sync.println(props);
-        System.out.println(props);
-    }
+	static {
+		readers.put("classpath", new ClasspathResourceReader());
+		readers.put("file", new FileReader());
+		readers.put("http", new HttpBasedReader());
+
+		parsers.put("properties", new PropertiesParser(CONVERTER_CHAIN));
+		parsers.put("json", new JsonPropertiesParser(CONVERTER_CHAIN));
+	}
+
+	@Override
+	public AppProperties loadProps(List<String> propUris) {
+		return new TrialAppProperties(propUris, readers, parsers);
+	}
+
+	@Override
+	public void printProperties(AppProperties props, PrintStream sync) {
+		sync.println(props);
+		System.out.println(props);
+	}
 }

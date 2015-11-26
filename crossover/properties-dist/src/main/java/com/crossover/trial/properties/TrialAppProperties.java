@@ -7,13 +7,10 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import com.crossover.trial.properties.converter.ConverterChain;
 import com.crossover.trial.properties.model.Key;
 import com.crossover.trial.properties.model.Property;
-import com.crossover.trial.properties.reader.AbsoluteFilePathReader;
-import com.crossover.trial.properties.reader.ClasspathPropertiesReader;
-import com.crossover.trial.properties.reader.HttpPropertiesReader;
-import com.crossover.trial.properties.reader.JsonReader;
+import com.crossover.trial.properties.parser.PropertiesParser;
+import com.crossover.trial.properties.reader.protocol.ProtocolBasedReader;
 
 /**
  * A dummy implementation of TrialAppProperties, this clearly doesn't work. Candidates SHOULD change this class to add their
@@ -25,24 +22,32 @@ import com.crossover.trial.properties.reader.JsonReader;
  */
 public class TrialAppProperties implements AppProperties {
 
-	private static final ConverterChain CONVERTER_CHAIN = new ConverterChain();
+	public Map<String, ProtocolBasedReader> readers;
+	public Map<String, PropertiesParser> parsers;
+
 	private Map<Key, Property> props = new TreeMap<>();
 	private Map<Key, Property> missingProps = new TreeMap<>();
 
-	public TrialAppProperties(List<String> propUris) {
+	public TrialAppProperties(List<String> propUris, Map<String, ProtocolBasedReader> readers,
+			Map<String, PropertiesParser> parsers) {
+		this.readers = readers;
+		this.parsers = parsers;
 		propUris.forEach(this::loadProperties);
 	}
 
 	private void loadProperties(String propUri) {
-		if (propUri.startsWith("classpath:") && propUri.endsWith(".properties")) {
-			addProperties(new ClasspathPropertiesReader(CONVERTER_CHAIN).read(propUri));
-		} else if (propUri.startsWith("file:") && propUri.endsWith(".properties")) {
-			addProperties(new AbsoluteFilePathReader(CONVERTER_CHAIN).read(propUri));
-		} else if (propUri.startsWith("http:") && propUri.endsWith(".json")) {
-			addProperties(new JsonReader(CONVERTER_CHAIN).read(propUri));
-		} else if (propUri.startsWith("http:") && propUri.endsWith(".properties")) {
-			addProperties(new HttpPropertiesReader(CONVERTER_CHAIN).read(propUri));
-		}
+
+		// get reader based on prefix and read the contents
+		String prefix = propUri.substring(0, propUri.indexOf(":")).toLowerCase();
+		ProtocolBasedReader reader = readers.get(prefix);
+		String contents = reader.read(propUri);
+
+		// pass the contents to the parser based on suffix to get properties map
+		String suffix = propUri.substring(propUri.lastIndexOf(".") + 1).toLowerCase();
+		Map<Key, Property> props = parsers.get(suffix).parse(contents);
+
+		// add properties
+		addProperties(props);
 	}
 
 	private void addProperties(Map<Key, Property> propsToAdd) {
@@ -77,7 +82,7 @@ public class TrialAppProperties implements AppProperties {
 
 	@Override
 	public boolean isValid() {
-		return true;
+		return missingProps.size() == 0;
 	}
 
 	@Override

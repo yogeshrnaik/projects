@@ -1,0 +1,19 @@
+aws_access_key, java.lang.String, AKIAJSF6XRIJNJTTTL3Q
+aws_account_id, java.lang.Integer, 12345678
+aws_region_id, com.amazonaws.regions.Regions, us-east-1
+aws_secret_key, java.lang.String, pmqnweEYvdiw7cvCdTOES48sOUvK1rGvvctBsgsa
+index.prop0, java.lang.Double, 0.0
+index.prop1, java.lang.String, property1
+index.prop2, java.lang.Integer, 2
+JDBC_DRIVER, java.lang.String, com.mysql.jdbc.Driver
+JDBC_PASSWORD, java.lang.String, password123
+JDBC_URL, java.lang.String, jdbc:mysql://localhost/test
+JDBC_USERNAME, java.lang.String, username123
+jpa.showSql, java.lang.Boolean, false
+json.auth.endpoint.uri, java.lang.String, https://authserver/v1/auth
+json.job.maxretry, java.lang.Integer, 4
+json.job.timeout, java.lang.Integer, 3600
+json.score.factor, java.lang.Double, 2.4
+json.sns.broadcast.topic_name, java.lang.String, broadcast
+json.sns.broadcast.visibility_timeout, java.lang.Integer, 30
+

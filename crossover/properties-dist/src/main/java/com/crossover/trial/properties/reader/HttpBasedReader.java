@@ -1,4 +1,4 @@
-package com.crossover.trial.properties.reader.protocol;
+package com.crossover.trial.properties.reader;
 
 import java.io.BufferedReader;
 import java.io.IOException;

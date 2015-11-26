@@ -1,4 +1,4 @@
-package com.crossover.trial.properties.reader;
+package com.crossover.trial.properties.model;
 
 import java.util.Collections;
 import java.util.Enumeration;

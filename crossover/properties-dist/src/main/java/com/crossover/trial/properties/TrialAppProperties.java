@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import com.crossover.trial.properties.model.Key;
 import com.crossover.trial.properties.model.Property;
 import com.crossover.trial.properties.parser.PropertiesParser;
-import com.crossover.trial.properties.reader.protocol.ProtocolBasedReader;
+import com.crossover.trial.properties.reader.ProtocolBasedReader;
 
 /**
  * A dummy implementation of TrialAppProperties, this clearly doesn't work. Candidates SHOULD change this class to add their

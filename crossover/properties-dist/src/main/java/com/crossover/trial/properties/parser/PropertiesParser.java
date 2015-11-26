@@ -8,8 +8,8 @@ import java.util.Properties;
 
 import com.crossover.trial.properties.converter.ConverterChain;
 import com.crossover.trial.properties.model.Key;
+import com.crossover.trial.properties.model.OrderedProperties;
 import com.crossover.trial.properties.model.Property;
-import com.crossover.trial.properties.reader.OrderedProperties;
 
 public class PropertiesParser {
 

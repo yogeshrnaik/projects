@@ -8,10 +8,10 @@ import java.util.Map;
 import com.crossover.trial.properties.converter.ConverterChain;
 import com.crossover.trial.properties.parser.JsonPropertiesParser;
 import com.crossover.trial.properties.parser.PropertiesParser;
-import com.crossover.trial.properties.reader.protocol.ClasspathResourceReader;
-import com.crossover.trial.properties.reader.protocol.FileReader;
-import com.crossover.trial.properties.reader.protocol.HttpBasedReader;
-import com.crossover.trial.properties.reader.protocol.ProtocolBasedReader;
+import com.crossover.trial.properties.reader.ClasspathResourceReader;
+import com.crossover.trial.properties.reader.FileReader;
+import com.crossover.trial.properties.reader.HttpBasedReader;
+import com.crossover.trial.properties.reader.ProtocolBasedReader;
 
 /**
  * A simple main method to load and print properties. You should feel free to change this class or to create additional

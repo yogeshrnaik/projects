@@ -23,13 +23,22 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
     public final static Logger LOGGER = Logger.getLogger("WeatherQuery");
 
     /** earth radius in KM */
+    // CR: more meaningful name such as EARTH_RADIUS_KM would be better than just "R"
     public static final double R = 6372.8;
 
     /** shared gson json to object factory */
     public static final Gson gson = new Gson();
 
+    // CR: "protected static" fields can be accessed by all classes in the same package
+    // CR: it is not a good idea as we loose encapsulation and these fields become global for the entire package
+    // CR: and hence it is difficult to keep track of the modifications
+    // CR: instead use singleton class to manage this data at a central place
     /** all known airports */
     protected static List<AirportData> airportData = new ArrayList<>();
+
+    // CR: instead of keeping separate lists/maps (one for AirportData and other for AtmosphericInformation of each airport)
+    // CR: these data structures should be encapsulated into one strucutre. e.g. AirportData should hold reference to AtmosphericInformation
+    // CR: of that airport
 
     /** atmospheric information for each airport, idx corresponds with airportData */
     protected static List<AtmosphericInformation> atmosphericInformation = new LinkedList<>();
@@ -40,8 +49,9 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
      * we don't want to write this to disk, but will pull it off using a REST request and aggregate with other
      * performance metrics {@link #ping()}
      */
+    // CR: these maps should be ConcurrentHashMap to take care of concurrent updates
     public static Map<AirportData, Integer> requestFrequency = new HashMap<AirportData, Integer>();
-
+    
     public static Map<Double, Integer> radiusFreq = new HashMap<Double, Integer>();
 
     /**
@@ -52,11 +62,14 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
     @GET
     @Path("/ping")
     public String ping() {
+    	// CR: refactor this method to make it shorter and easy to understand
         Map<String, Object> retval = new HashMap<>();
 
         int datasize = 0;
+        // CR: this for loop can be replaced with stream() available as of Java 1.8
         for (AtmosphericInformation ai : atmosphericInformation) {
             // we only count recent readings
+        	// CR: refactor and move these condition checks into AtmosphericInformation.hasReading()
             if (ai.getCloudCover() != null
                 || ai.getHumidity() != null
                 || ai.getPressure() != null
@@ -64,6 +77,7 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
                 || ai.getTemperature() != null
                 || ai.getWind() != null) {
                 // updated in the last day
+            	// CR: 86400000 should be turned into a constant with meaningful name for better readability
                 if (ai.getLastUpdateTime() > System.currentTimeMillis() - 86400000) {
                     datasize++;
                 }
@@ -106,6 +120,7 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
     @Path("/weather/{iata}/{radius}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response get(@PathParam("iata") String iata, @PathParam("radius") String radiusString) {
+    	// CR: refactor this method for better readability
         double radius = radiusString == null || radiusString.trim().isEmpty() ? 0 : Double.valueOf(radiusString);
         updateRequestFrequency(iata, radius);
 
@@ -118,6 +133,7 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
             for (int i=0;i< airportData.size(); i++){
                 if (calculateDistance(ad, airportData.get(i)) <= radius){
                     AtmosphericInformation ai = atmosphericInformation.get(i);
+                	// CR: refactor and move these condition checks into AtmosphericInformation.hasReading()
                     if (ai.getCloudCover() != null || ai.getHumidity() != null || ai.getPrecipitation() != null
                        || ai.getPressure() != null || ai.getTemperature() != null || ai.getWind() != null){
                         retval.add(ai);
@@ -172,6 +188,7 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
      * @return the distance in KM
      */
     public double calculateDistance(AirportData ad1, AirportData ad2) {
+    	// CR: this method should be moved to a separate utility class so that it can be used by other parts of the code
         double deltaLat = Math.toRadians(ad2.latitude - ad1.latitude);
         double deltaLon = Math.toRadians(ad2.longitude - ad1.longitude);
         double a =  Math.pow(Math.sin(deltaLat / 2), 2) + Math.pow(Math.sin(deltaLon / 2), 2)

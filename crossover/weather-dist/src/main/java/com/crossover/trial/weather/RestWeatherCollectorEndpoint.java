@@ -49,6 +49,8 @@ public class RestWeatherCollectorEndpoint implements WeatherCollector {
         try {
             addDataPoint(iataCode, pointType, gson.fromJson(datapointJson, DataPoint.class));
         } catch (WeatherException e) {
+        	// CR: error should be communicated to client
+        	// CR: sending OK in such a case is incorrect
             e.printStackTrace();
         }
         return Response.status(Response.Status.OK).build();
@@ -120,7 +122,9 @@ public class RestWeatherCollectorEndpoint implements WeatherCollector {
      */
     public void updateAtmosphericInformation(AtmosphericInformation ai, String pointType, DataPoint dp) throws WeatherException {
         final DataPointType dptype = DataPointType.valueOf(pointType.toUpperCase());
-
+        // CR: refactor this method to make it easier to maintain
+        // CR: for example, write method updateDataPoint(DataPointType, DataPoint) in AtmosphericInformation
+        // CR: to encapsulate logic in this method into AtmosphericInformation.updateDataPoint() method
         if (pointType.equalsIgnoreCase(DataPointType.WIND.name())) {
             if (dp.getMean() >= 0) {
                 ai.setWind(dp);
@@ -168,7 +172,9 @@ public class RestWeatherCollectorEndpoint implements WeatherCollector {
                 return;
             }
         }
-
+        
+        // CR: this should be properly handled and reported to client with proper error message 
+        // CR: e.g. incorrect DataPointType sent by client
         throw new IllegalStateException("couldn't update atmospheric data");
     }
 
@@ -198,6 +204,7 @@ public class RestWeatherCollectorEndpoint implements WeatherCollector {
      */
     protected static void init() {
         airportData.clear(); atmosphericInformation.clear(); requestFrequency.clear();
+        // CR: resource not closed. use try with resources available since Java 1.7
         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("airports.dat");
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         String l = null;

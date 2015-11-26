@@ -32,6 +32,9 @@ public class AirportLoader {
         while ((l = reader.readLine()) != null) {
             break;
         }
+        
+        // CR: reader should be closed using finally block before returning from this method
+        // CR: use try with resources available since java 1.7
     }
 
     public static void main(String args[]) throws IOException{
@@ -42,6 +45,7 @@ public class AirportLoader {
         }
 
         AirportLoader al = new AirportLoader();
+        // CR: FileInputStream passed to the upload() method should be closed after the method call using finally block
         al.upload(new FileInputStream(airportDataFile));
         System.exit(0);
     }

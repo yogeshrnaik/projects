@@ -20,6 +20,9 @@ public class AirportData {
     double longitude;
 
     public AirportData() { }
+    
+    // CR: constructor using all the fields should be provided for convenience of creating an object of this class.
+    // CR: with just the default constructor, client of this class has to call all three setters of different fields separately
 
     public String getIata() {
         return iata;
@@ -51,9 +54,13 @@ public class AirportData {
 
     public boolean equals(Object other) {
         if (other instanceof AirportData) {
+        	// CR: null check of the "other" parameter should be done to avoid NullPointerException
             return ((AirportData)other).getIata().equals(this.getIata());
         }
 
         return false;
     }
+    
+    // CR: implementation of hashCode() method should be provided as this class is used as Key in Map
+    // CR: hashCode() method should use only iata field as it is the only field used by equals() method
 }

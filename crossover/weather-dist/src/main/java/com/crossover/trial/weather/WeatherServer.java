@@ -23,8 +23,11 @@ import static java.lang.String.*;
  */
 public class WeatherServer {
 
+	// CR: BASE_URI is also defined in WeatherClient. both should be moved to a Constants class/interface
     private static final String BASE_URL = "http://localhost:8080/";
 
+    // CR: refactor this method to make it shorter. split the logic into small methods with meaningful name
+    // CR: E.g. registerRestEndPoints(), addShutdownHook(), etc.
     public static void main(String[] args) {
         try {
             System.out.println("Starting Weather App local testing server: " + BASE_URL);

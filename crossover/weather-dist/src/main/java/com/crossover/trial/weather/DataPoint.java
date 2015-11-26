@@ -92,26 +92,31 @@ public class DataPoint {
         public Builder() { }
 
         public Builder withFirst(int first) {
+        	// CR: use of this keyword missing while setting this field
             first= first;
             return this;
         }
 
         public Builder withMean(int mean) {
+        	// CR: use of this keyword missing while setting this field
             mean = mean;
             return this;
         }
 
         public Builder withMedian(int median) {
+        	// CR: use of this keyword missing while setting this field
             median = median;
             return this;
         }
 
         public Builder withCount(int count) {
+        	// CR: use of this keyword missing while setting this field
             count = count;
             return this;
         }
 
         public Builder withLast(int last) {
+        	// CR: use of this keyword missing while setting this field
             last = last;
             return this;
         }

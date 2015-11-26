@@ -15,7 +15,9 @@ import javax.ws.rs.core.Response;
  */
 public class WeatherClient {
 
+	// CR: BASE_URI is also defined in WeatherServer. both should be moved to a Constants class/interface
     private static final String BASE_URI = "http://localhost:8080";
+
     /** end point for read queries */
     private WebTarget query;
 
@@ -25,6 +27,7 @@ public class WeatherClient {
     public WeatherClient() {
         Client client = ClientBuilder.newClient();
         query = client.target(BASE_URI + "/query");
+        // CR: use BASE_URI to define /collect URL as well as done in above line for /query
         collect = client.target("http://localhost:8080/collect");
     }
 

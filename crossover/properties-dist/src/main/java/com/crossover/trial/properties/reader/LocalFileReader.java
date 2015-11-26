@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class FileReader extends ProtocolBasedReader {
+public class LocalFileReader extends ProtocolBasedReader {
 
 	@Override
 	public BufferedReader getBufferedReader(String uri) throws IOException {

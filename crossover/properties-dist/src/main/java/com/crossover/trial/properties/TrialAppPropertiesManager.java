@@ -9,7 +9,7 @@ import com.crossover.trial.properties.converter.ConverterChain;
 import com.crossover.trial.properties.parser.JsonPropertiesParser;
 import com.crossover.trial.properties.parser.PropertiesParser;
 import com.crossover.trial.properties.reader.ClasspathResourceReader;
-import com.crossover.trial.properties.reader.FileReader;
+import com.crossover.trial.properties.reader.LocalFileReader;
 import com.crossover.trial.properties.reader.HttpBasedReader;
 import com.crossover.trial.properties.reader.ProtocolBasedReader;
 
@@ -29,7 +29,7 @@ public class TrialAppPropertiesManager implements AppPropertiesManager {
 
 	static {
 		readers.put("classpath", new ClasspathResourceReader());
-		readers.put("file", new FileReader());
+		readers.put("file", new LocalFileReader());
 		readers.put("http", new HttpBasedReader());
 
 		parsers.put("properties", new PropertiesParser(CONVERTER_CHAIN));

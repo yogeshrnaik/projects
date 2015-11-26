@@ -1,9 +1,9 @@
 package com.crossover.trial.properties.converter;
 
-public class StringToIntegerConverter implements Converter<Integer> {
+public class StringToIntegerConverter implements PropertyConverter<Integer> {
 
 	@Override
-	public Integer convert(String value) {
+	public Integer convert(String key, String value) {
 		if (value == null || value.trim().length() == 0) {
 			return null;
 		}

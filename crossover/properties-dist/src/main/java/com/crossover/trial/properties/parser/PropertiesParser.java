@@ -32,7 +32,7 @@ public class PropertiesParser {
 	protected Map<Key, Property> convertToMap(Properties props) {
 		Map<Key, Property> result = new HashMap<>();
 		for (String key : props.stringPropertyNames()) {
-			result.put(new Key(key), new Property(key, converterChain.convertToActualType(props.get(key))));
+			result.put(new Key(key), new Property(key, converterChain.convertToActualType(key, props.get(key))));
 		}
 		return result;
 	}

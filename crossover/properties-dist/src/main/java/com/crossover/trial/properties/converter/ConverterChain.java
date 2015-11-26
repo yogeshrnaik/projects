@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConverterChain {
-	private static List<Converter<?>> converters = new ArrayList<>();
+	private static List<PropertyConverter<?>> converters = new ArrayList<>();
 
 	public ConverterChain() {
 		converters.add(new StringToBooleanConverter());
@@ -12,12 +12,12 @@ public class ConverterChain {
 		converters.add(new StringToDoubleConverter());
 	}
 
-	public Object convertToActualType(Object value) {
+	public Object convertToActualType(String key, Object value) {
 		if (value == null)
 			return null;
 
-		for (Converter<?> converter : converters) {
-			Object result = converter.convert(value.toString());
+		for (PropertyConverter<?> converter : converters) {
+			Object result = converter.convert(key, value.toString());
 			if (result != null) {
 				return result;
 			}

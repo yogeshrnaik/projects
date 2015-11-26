@@ -1,9 +1,9 @@
 package com.crossover.trial.properties.converter;
 
-public class StringToDoubleConverter implements Converter<Double> {
+public class StringToDoubleConverter implements PropertyConverter<Double> {
 
 	@Override
-	public Double convert(String value) {
+	public Double convert(String key, String value) {
 		if (value == null || value.trim().length() == 0) {
 			return null;
 		}

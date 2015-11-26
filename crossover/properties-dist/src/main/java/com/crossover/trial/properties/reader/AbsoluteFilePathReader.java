@@ -13,11 +13,11 @@ public class AbsoluteFilePathReader extends PropertiesReader {
 	}
 
 	@Override
-	Properties readProperties(String propertyFilePath) {
+	Properties readProperties(String propertyResourceUri) {
 		Properties props = new OrderedProperties();
 		try {
 			// file://<Absoulte_Path> - remove "file://"
-			String file = propertyFilePath.substring("file:".length() + 2);
+			String file = propertyResourceUri.substring("file:".length() + 2);
 			props.load(new FileInputStream(file));
 		} catch (IOException e) {
 			e.printStackTrace();

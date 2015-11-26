@@ -11,10 +11,10 @@ public class ClasspathPropertiesReader extends PropertiesReader {
 		super(converterChain);
 	}
 
-	public Properties readProperties(String propFile) {
+	public Properties readProperties(String propertyResourceUri) {
 		Properties props = new OrderedProperties();
 		try {
-			props.load(getClass().getClassLoader().getResourceAsStream(propFile.substring("classpath:".length())));
+			props.load(getClass().getClassLoader().getResourceAsStream(propertyResourceUri.substring("classpath:".length())));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

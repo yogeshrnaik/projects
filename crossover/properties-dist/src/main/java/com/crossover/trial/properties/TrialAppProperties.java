@@ -12,6 +12,8 @@ import com.crossover.trial.properties.model.Key;
 import com.crossover.trial.properties.model.Property;
 import com.crossover.trial.properties.reader.AbsoluteFilePathReader;
 import com.crossover.trial.properties.reader.ClasspathPropertiesReader;
+import com.crossover.trial.properties.reader.HttpPropertiesReader;
+import com.crossover.trial.properties.reader.JsonReader;
 
 /**
  * A dummy implementation of TrialAppProperties, this clearly doesn't work. Candidates SHOULD change this class to add their
@@ -31,11 +33,15 @@ public class TrialAppProperties implements AppProperties {
 		propUris.forEach(this::loadProperties);
 	}
 
-	private void loadProperties(String propFile) {
-		if (propFile.startsWith("classpath:") && propFile.endsWith(".properties")) {
-			addProperties(new ClasspathPropertiesReader(CONVERTER_CHAIN).read(propFile));
-		} else if (propFile.startsWith("file:") && propFile.endsWith(".properties")) {
-			addProperties(new AbsoluteFilePathReader(CONVERTER_CHAIN).read(propFile));
+	private void loadProperties(String propUri) {
+		if (propUri.startsWith("classpath:") && propUri.endsWith(".properties")) {
+			addProperties(new ClasspathPropertiesReader(CONVERTER_CHAIN).read(propUri));
+		} else if (propUri.startsWith("file:") && propUri.endsWith(".properties")) {
+			addProperties(new AbsoluteFilePathReader(CONVERTER_CHAIN).read(propUri));
+		} else if (propUri.startsWith("http:") && propUri.endsWith(".json")) {
+			addProperties(new JsonReader(CONVERTER_CHAIN).read(propUri));
+		} else if (propUri.startsWith("http:") && propUri.endsWith(".properties")) {
+			addProperties(new HttpPropertiesReader(CONVERTER_CHAIN).read(propUri));
 		}
 	}
 

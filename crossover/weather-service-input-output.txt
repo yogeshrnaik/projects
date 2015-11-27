@@ -1,0 +1,64 @@
+**************************************************************************************************************
+GET http://localhost:8080/collect/airports
+[	"EWR",
+	"MMU",
+	"BOS",
+	"LGA",
+	"JFK"
+]
+**************************************************************************************************************
+GET http://localhost:8080/query/ping
+{"iata_freq":{"EWR":0.0,"MMU":0.0,"BOS":0.0,"LGA":0.0,"JFK":0.0},"radius_freq":{"EWR":0.0,"MMU":0.0,"BOS":0.0,"LGA":0.0,"JFK":0.0},"datasize":0}
+**************************************************************************************************************
+GET http://localhost:8080/query/weather/EWR/0
+
+[{"lastUpdateTime":0,"percipitation":null,"temperature":null,"wind":null,"humidity":null,"pressure":null,"cloudCover":null,"updatedInLastDay":false}]
+**************************************************************************************************************
+
+POST http://localhost:8080/collect/weather/EWR/wind
+{mean: 22, first: 10, second: 10, third: 30, count: 10}
+**************************************************************************************************************
+
+
+POST http://localhost:8080/collect/weather/BOS/wind
+{mean: 33, first: 11, second: 22, third: 33, count: 11}
+**************************************************************************************************************
+
+/collect/ping
+/collect/weather/MMU/wind
+/collect/weather/MMU/temperature
+/collect/weather/MMU/humidity
+/collect/weather/MMU/pressure
+/collect/weather/MMU/cloudcover
+/collect/weather/MMU/percipitation
+/collect/weather/BOS/wind
+/collect/weather/BOS/temperature
+/collect/weather/BOS/humidity
+/collect/weather/BOS/pressure
+/collect/weather/BOS/cloudcover
+/collect/weather/BOS/percipitation
+/collect/weather/LGA/wind
+/collect/weather/LGA/temperature
+/collect/weather/LGA/humidity
+/collect/weather/LGA/pressure
+/collect/weather/LGA/cloudcover
+/collect/weather/LGA/percipitation
+/collect/weather/JFK/wind
+/collect/weather/JFK/temperature
+/collect/weather/JFK/humidity
+/collect/weather/JFK/pressure
+/collect/weather/JFK/cloudcover
+/collect/weather/JFK/percipitation
+/collect/weather/EWR/wind
+/collect/weather/EWR/temperature
+/collect/weather/EWR/humidity
+/collect/weather/EWR/pressure
+/collect/weather/EWR/cloudcover
+/collect/weather/EWR/percipitation
+/query/weather/MMU/0
+/query/weather/BOS/0
+/query/weather/LGA/0
+/query/weather/JFK/0
+/query/weather/EWR/0
+/query/ping
+**************************************************************************************************************

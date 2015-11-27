@@ -1,6 +1,8 @@
-package com.crossover.trial.weather;
+package com.crossover.trial.weather.ws;
 
 import javax.ws.rs.core.Response;
+
+import com.crossover.trial.weather.model.AtmosphericInformation;
 
 /**
  * The query only API for the Weather Server App. This API is made available to the public internet.

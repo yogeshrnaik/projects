@@ -1,7 +1,10 @@
-package com.crossover.trial.weather;
+package com.crossover.trial.weather.ws;
 
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+
+import com.crossover.trial.weather.model.AirportData;
+import com.crossover.trial.weather.model.DataPointType;
 
 /**
  * The interface shared to airport weather collection systems.

@@ -1,20 +1,25 @@
 package com.crossover.trial.weather;
 
-import org.glassfish.grizzly.Connection;
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.grizzly.http.server.HttpServerFilter;
-import org.glassfish.grizzly.http.server.HttpServerProbe;
-import org.glassfish.grizzly.http.server.Request;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.glassfish.jersey.server.ResourceConfig;
+import static com.crossover.trial.weather.model.Constants.BASE_URL;
+import static java.lang.String.format;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.lang.String.*;
+import org.glassfish.grizzly.Connection;
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.HttpServerFilter;
+import org.glassfish.grizzly.http.server.HttpServerProbe;
+import org.glassfish.grizzly.http.server.Request;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
 
+import com.crossover.trial.weather.service.WeatherService;
+import com.crossover.trial.weather.ws.RestWeatherCollectorEndpoint;
+import com.crossover.trial.weather.ws.RestWeatherQueryEndpoint;
 
 /**
  * A main method used to test the Weather Application locally -- live deployment is to a tomcat container.
@@ -23,42 +28,79 @@ import static java.lang.String.*;
  */
 public class WeatherServer {
 
-	// CR: BASE_URI is also defined in WeatherClient. both should be moved to a Constants class/interface
-    private static final String BASE_URL = "http://localhost:8080/";
+	private HttpServer httpServer;
 
-    // CR: refactor this method to make it shorter. split the logic into small methods with meaningful name
-    // CR: E.g. registerRestEndPoints(), addShutdownHook(), etc.
-    public static void main(String[] args) {
-        try {
-            System.out.println("Starting Weather App local testing server: " + BASE_URL);
-            System.out.println("Not for production use");
+	public WeatherServer() {
+		init();
+	}
 
-            final ResourceConfig resourceConfig = new ResourceConfig();
-            resourceConfig.register(RestWeatherCollectorEndpoint.class);
-            resourceConfig.register(RestWeatherQueryEndpoint.class);
-            final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URL), resourceConfig, false);
+	public static void main(String[] args) {
+		try {
+			System.out.println("Starting Weather App local testing server: " + BASE_URL);
+			System.out.println("Not for production use");
 
-            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    server.shutdownNow();
-                }
-            }));
+			WeatherServer weatherServer = new WeatherServer();
+			weatherServer.start();
 
-            HttpServerProbe probe = new HttpServerProbe.Adapter() {
-                public void onRequestReceiveEvent(HttpServerFilter filter, Connection connection, Request request) {
-                    System.out.println(request.getRequestURI());
-                }
-            };
+			System.out.println(format("Weather Server started.\n url=%s\n", BASE_URL));
+			Thread.currentThread().join();
+		} catch (IOException | InterruptedException ex) {
+			Logger.getLogger(WeatherServer.class.getName()).log(Level.SEVERE, null, ex);
+		}
 
-            server.getServerConfiguration().getMonitoringConfig().getWebServerConfig().addProbes(probe);
-            System.out.println(format("Weather Server started.\n url=%s\n", BASE_URL));
-            server.start();
+	}
 
-            Thread.currentThread().join();
-        } catch (IOException | InterruptedException ex) {
-            Logger.getLogger(WeatherServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
+	private void start() throws IOException {
+		if (httpServer != null)
+			httpServer.start();
+	}
 
-    }
+	private void init() {
+		final ResourceConfig resourceConfig = registerEndPoints();
+		httpServer = configHttpServer(resourceConfig);
+	}
+
+	private HttpServer configHttpServer(final ResourceConfig resourceConfig) {
+		final HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URL), resourceConfig, false);
+		addShutdownHook(server);
+		addProbes(server);
+		return server;
+	}
+
+	private void addProbes(final HttpServer server) {
+		HttpServerProbe probe = new HttpServerProbe.Adapter() {
+			public void onRequestReceiveEvent(HttpServerFilter filter, Connection connection, Request request) {
+				System.out.println(request.getRequestURI());
+			}
+		};
+
+		server.getServerConfiguration().getMonitoringConfig().getWebServerConfig().addProbes(probe);
+	}
+
+	private void addShutdownHook(final HttpServer server) {
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				server.shutdownNow();
+			}
+		}));
+	}
+
+	private ResourceConfig registerEndPoints() {
+		final ResourceConfig resourceConfig = new ResourceConfig();
+
+		resourceConfig.packages("com.crossover.trial.weather");
+		resourceConfig.register(new AppBinder());
+
+		resourceConfig.register(RestWeatherCollectorEndpoint.class);
+		resourceConfig.register(RestWeatherQueryEndpoint.class);
+		return resourceConfig;
+	}
+
+	public static class AppBinder extends AbstractBinder {
+		@Override
+		protected void configure() {
+			bind(WeatherService.class).to(WeatherService.class);
+		}
+	}
 }

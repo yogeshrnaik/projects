@@ -63,7 +63,7 @@ public class WeatherClient {
 		WeatherClient wc = new WeatherClient();
 		wc.pingCollect();
 
-		wc.populdateDataPoints();
+		wc.populateDataPoints();
 		wc.queryDataPoints();
 
 		wc.pingQuery();
@@ -80,7 +80,7 @@ public class WeatherClient {
 	/**
 	 * populate sample data points of all Types for all airports
 	 */
-	private void populdateDataPoints() {
+	private void populateDataPoints() {
 		int counter = 0;
 		for (Airport a : airportService.getAirports()) {
 			for (DataPointType dpt : DataPointType.values()) {

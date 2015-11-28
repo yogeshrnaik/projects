@@ -4,9 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.ManagedBean;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jvnet.hk2.annotations.Service;
 
@@ -30,14 +28,29 @@ public class RequestStatsServiceInMemory implements RequestStatsService {
 		this.airportService = airportService;
 	}
 
-	private static enum Data {
+	private static final RequestStats reqStats = RequestStats.INSTANCE;
+
+	private static enum RequestStats {
 		INSTANCE;
 
 		/** Request frequency by Airport's IATA. ConcurrentHashMap is used to avoid concurrency issues */
-		public Map<String, Integer> iataRequestFrequency = new ConcurrentHashMap<String, Integer>();
+		public Map<String, Integer> iataRequestFrequency = new ConcurrentHashMap<>();
 
 		/** Stores request frequency for radius. ConcurrentHashMap is used to avoid concurrency issues */
-		public Map<Double, Integer> radiusFreq = new ConcurrentHashMap<Double, Integer>();
+		public Map<Double, Integer> radiusFreq = new ConcurrentHashMap<>();
+
+		private void incrementIataRequestFrequency(String iata) {
+			iataRequestFrequency.put(iata, iataRequestFrequency.getOrDefault(iata, 0) + 1);
+		}
+
+		public void incrementRadiusFrequency(Double radius) {
+			radiusFreq.put(radius, radiusFreq.getOrDefault(radius, 0) + 1);
+		}
+
+		public void clear() {
+			iataRequestFrequency.clear();
+			radiusFreq.clear();
+		}
 	}
 
 	@Inject
@@ -47,10 +60,10 @@ public class RequestStatsServiceInMemory implements RequestStatsService {
 	public Map<String, Double> getIataFrequencyStats() {
 		Map<String, Double> freq = new HashMap<>();
 
-		int reqFreqSize = Data.INSTANCE.iataRequestFrequency.size();
+		int reqFreqSize = reqStats.iataRequestFrequency.size();
 		for (AirportData data : airportService.getAirportData()) {
 			// fraction of queries
-			double frac = (double) Data.INSTANCE.iataRequestFrequency.getOrDefault(data.getIata(), 0)
+			double frac = (double) reqStats.iataRequestFrequency.getOrDefault(data.getIata(), 0)
 					/ (reqFreqSize == 0 ? 1 : reqFreqSize);
 			freq.put(data.getIata(), frac);
 		}
@@ -59,10 +72,10 @@ public class RequestStatsServiceInMemory implements RequestStatsService {
 
 	@Override
 	public int[] getRadiusFrequencyStats() {
-		int m = Data.INSTANCE.radiusFreq.keySet().stream().max(Double::compare).orElse(1000.0).intValue() + 1;
+		int m = reqStats.radiusFreq.keySet().stream().max(Double::compare).orElse(1000.0).intValue() + 1;
 
 		int[] hist = new int[m];
-		for (Map.Entry<Double, Integer> e : Data.INSTANCE.radiusFreq.entrySet()) {
+		for (Map.Entry<Double, Integer> e : reqStats.radiusFreq.entrySet()) {
 			int i = e.getKey().intValue() % 10;
 			hist[i] += e.getValue();
 		}
@@ -71,13 +84,12 @@ public class RequestStatsServiceInMemory implements RequestStatsService {
 
 	@Override
 	public void updateRequestFrequency(String iata, Double radius) {
-		Data.INSTANCE.iataRequestFrequency.put(iata, Data.INSTANCE.iataRequestFrequency.getOrDefault(iata, 0) + 1);
-		Data.INSTANCE.radiusFreq.put(radius, Data.INSTANCE.radiusFreq.getOrDefault(radius, 0));
+		reqStats.incrementIataRequestFrequency(iata);
+		reqStats.incrementRadiusFrequency(radius);
 	}
 
 	@Override
 	public void clear() {
-		Data.INSTANCE.iataRequestFrequency.clear();
-		Data.INSTANCE.radiusFreq.clear();
+		reqStats.clear();
 	}
 }

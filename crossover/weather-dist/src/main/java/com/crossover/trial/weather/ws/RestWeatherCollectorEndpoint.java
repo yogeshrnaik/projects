@@ -70,7 +70,8 @@ public class RestWeatherCollectorEndpoint implements WeatherCollector {
 			DataPoint fromJson = gson.fromJson(datapointJson, DataPoint.class);
 			airportService.addDataPoint(iataCode, pointType, fromJson);
 		} catch (WeatherException e) {
-			String error = String.format("Error adding new data point: [%s] for type: [%s]", datapointJson, pointType);
+			String error = String.format("Error adding new Data Point: [%s] for Data Point Type: [%s]", datapointJson,
+					pointType);
 			LOGGER.log(Level.WARNING, error, e);
 			return Response.status(Response.Status.BAD_REQUEST).entity(error).build();
 		}
@@ -108,8 +109,12 @@ public class RestWeatherCollectorEndpoint implements WeatherCollector {
 	@Override
 	public Response addAirport(@PathParam("iata") String iata, @PathParam("lat") String latString,
 			@PathParam("long") String longString) {
-		airportService.addAirport(iata, Double.valueOf(latString), Double.valueOf(longString));
-		return Response.status(Response.Status.CREATED).build();
+		try {
+			airportService.addAirport(iata, Double.valueOf(latString), Double.valueOf(longString));
+			return Response.status(Response.Status.CREATED).build();
+		} catch (NumberFormatException e) {
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
 	}
 
 	@DELETE

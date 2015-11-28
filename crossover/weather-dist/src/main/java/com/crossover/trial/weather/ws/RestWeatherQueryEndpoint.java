@@ -94,9 +94,16 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
 		List<AtmosphericInformation> retval = new ArrayList<>();
 		if (radius == 0) {
 			AirportData airportData = airportService.findAirportData(iata);
+			if (airportData == null) {
+				return Response.status(Response.Status.NOT_FOUND).build();
+			}
 			retval.add(airportData.getAtmosphericInfo());
 		} else {
-			retval.addAll(airportService.getAtmosphericInfoForNearByAirports(iata, radius));
+			List<AtmosphericInformation> atmosphericInfo = airportService.getAtmosphericInfoForNearByAirports(iata, radius);
+			if (atmosphericInfo == null || atmosphericInfo.size() == 0) {
+				return Response.status(Response.Status.NOT_FOUND).build();
+			}
+			retval.addAll(atmosphericInfo);
 		}
 		return Response.status(Response.Status.OK).entity(retval).build();
 	}

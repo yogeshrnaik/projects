@@ -11,9 +11,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import javax.annotation.ManagedBean;
-import javax.inject.Singleton;
-
 import org.jvnet.hk2.annotations.Service;
 
 import com.crossover.trial.weather.exception.WeatherException;
@@ -36,6 +33,8 @@ public class AirportServiceInMemory implements AirportService {
 
 	public AirportServiceInMemory() {
 	}
+
+	private static final Data data = Data.INSTANCE;
 
 	private static enum Data {
 		INSTANCE;
@@ -77,9 +76,9 @@ public class AirportServiceInMemory implements AirportService {
 		}
 
 	}
-	
+
 	public void init() {
-		Data.INSTANCE.init();
+		data.init();
 	}
 
 	@Override
@@ -89,21 +88,25 @@ public class AirportServiceInMemory implements AirportService {
 
 	@Override
 	public AirportData findAirportData(String iataCode) {
-		return Data.INSTANCE.airportData.get(iataCode);
+		return data.airportData.get(iataCode);
 	}
 
 	@Override
 	public List<AtmosphericInformation> getAtmosphericInfoForNearByAirports(String iata, double radius) {
 		AirportData source = findAirportData(iata);
 
-		return Data.INSTANCE.airportData.values().stream()
-				.filter(a -> GeoLocationUtils.isWithinRadius(source.getLocation(), a.getLocation(), radius))
-				.map(a -> a.getAtmosphericInfo()).filter(ai -> ai.hasReading()).collect(Collectors.toList());
+		if (source != null) {
+			return data.airportData.values().stream()
+					.filter(a -> GeoLocationUtils.isWithinRadius(source.getLocation(), a.getLocation(), radius))
+					.map(a -> a.getAtmosphericInfo()).filter(ai -> ai.hasReading()).collect(Collectors.toList());
+		} else {
+			return null;
+		}
 	}
 
 	@Override
 	public List<AtmosphericInformation> getAtmosphericInformation() {
-		return Data.INSTANCE.airportData.values().stream().map(a -> a.getAtmosphericInfo()).collect(Collectors.toList());
+		return data.airportData.values().stream().map(a -> a.getAtmosphericInfo()).collect(Collectors.toList());
 	}
 
 	@Override
@@ -113,31 +116,36 @@ public class AirportServiceInMemory implements AirportService {
 
 	@Override
 	public List<AirportData> getAirportData() {
-		return Collections.unmodifiableList(Arrays.asList(Data.INSTANCE.airportData.values().toArray(new AirportData[0])));
+		return Collections.unmodifiableList(Arrays.asList(data.airportData.values().toArray(new AirportData[0])));
 	}
 
 	@Override
 	public AirportData addAirport(String iataCode, double latitude, double longitude) {
-		return Data.INSTANCE.addAirport(iataCode, latitude, longitude);
+		return data.addAirport(iataCode, latitude, longitude);
 	}
 
 	@Override
 	public void addDataPoint(String iataCode, String pointType, DataPoint dp) throws WeatherException {
 		AirportData ad = findAirportData(iataCode);
+		if (ad == null) {
+			throw new WeatherException(String.format("Airport not found: %s", iataCode));
+		}
 		updateAtmosphericInformation(ad.getAtmosphericInfo(), pointType, dp);
 	}
 
 	private void updateAtmosphericInformation(AtmosphericInformation ai, String pointType, DataPoint dp)
 			throws WeatherException {
-		final DataPointType dptype = DataPointType.valueOf(pointType.toUpperCase());
-		if (dptype == null) {
-			throw new WeatherException("couldn't update atmospheric data");
-		} else {
+		try {
+			final DataPointType dptype = DataPointType.valueOf(pointType.toUpperCase());
 			boolean updated = ai.updateDataPoint(dptype, dp);
 			if (!updated) {
-				throw new WeatherException("couldn't update atmospheric data as the data is out of valid range");
+				throw new WeatherException(String.format("Atmospheric data is out of valid range: %d (inclusive) to %d (exclusive)",
+						dptype.getMinMeanInclusive(), dptype.getMaxMeanExclusive()));
 			}
+		} catch (IllegalArgumentException e) {
+			throw new WeatherException(String.format("%s is not a valid DataPointType", pointType));
 		}
+
 	}
 
 	@Override

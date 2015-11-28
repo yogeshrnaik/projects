@@ -2,7 +2,9 @@ package com.crossover.trial.weather;
 
 import com.crossover.trial.weather.model.AtmosphericInformation;
 import com.crossover.trial.weather.model.DataPoint;
-import com.crossover.trial.weather.service.WeatherService;
+import com.crossover.trial.weather.service.AirportService;
+import com.crossover.trial.weather.service.AirportServiceInMemory;
+import com.crossover.trial.weather.service.RequestStatsServiceInMemory;
 import com.crossover.trial.weather.ws.RestWeatherCollectorEndpoint;
 import com.crossover.trial.weather.ws.RestWeatherQueryEndpoint;
 import com.crossover.trial.weather.ws.WeatherCollector;
@@ -20,9 +22,10 @@ import static org.junit.Assert.assertEquals;
 
 public class WeatherEndpointTest {
 
-	private WeatherService weatherService = new WeatherService();
-	private WeatherQueryEndpoint _query = new RestWeatherQueryEndpoint(weatherService);
-	private WeatherCollector _update = new RestWeatherCollectorEndpoint(weatherService);
+	private AirportService airportService = new AirportServiceInMemory();
+	private RequestStatsServiceInMemory reqStatsSrv = new RequestStatsServiceInMemory(airportService);
+	private WeatherQueryEndpoint _query = new RestWeatherQueryEndpoint(airportService, reqStatsSrv);
+	private WeatherCollector _update = new RestWeatherCollectorEndpoint(airportService);
 
 	private Gson _gson = new Gson();
 
@@ -30,7 +33,7 @@ public class WeatherEndpointTest {
 
 	@Before
 	public void setUp() throws Exception {
-		weatherService.init();
+		airportService.init();
 
 		_dp = new DataPoint.Builder().withCount(10).withFirst(10).withMedian(20).withLast(30).withMean(22).build();
 		_update.updateWeather("BOS", "wind", _gson.toJson(_dp));

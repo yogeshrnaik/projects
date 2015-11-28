@@ -17,7 +17,10 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import com.crossover.trial.weather.service.WeatherService;
+import com.crossover.trial.weather.service.AirportService;
+import com.crossover.trial.weather.service.AirportServiceInMemory;
+import com.crossover.trial.weather.service.RequestStatsService;
+import com.crossover.trial.weather.service.RequestStatsServiceInMemory;
 import com.crossover.trial.weather.ws.RestWeatherCollectorEndpoint;
 import com.crossover.trial.weather.ws.RestWeatherQueryEndpoint;
 
@@ -89,8 +92,8 @@ public class WeatherServer {
 	private ResourceConfig registerEndPoints() {
 		final ResourceConfig resourceConfig = new ResourceConfig();
 
-		resourceConfig.packages("com.crossover.trial.weather");
 		resourceConfig.register(new AppBinder());
+		resourceConfig.packages(true, "com.crossover.trial.weather");
 
 		resourceConfig.register(RestWeatherCollectorEndpoint.class);
 		resourceConfig.register(RestWeatherQueryEndpoint.class);
@@ -100,7 +103,8 @@ public class WeatherServer {
 	public static class AppBinder extends AbstractBinder {
 		@Override
 		protected void configure() {
-			bind(WeatherService.class).to(WeatherService.class);
+			bind(AirportServiceInMemory.class).to(AirportService.class);
+			bind(RequestStatsServiceInMemory.class).to(RequestStatsService.class);
 		}
 	}
 }

@@ -11,7 +11,8 @@ import javax.ws.rs.core.Response;
 import com.crossover.trial.weather.model.Airport;
 import com.crossover.trial.weather.model.DataPoint;
 import com.crossover.trial.weather.model.DataPointType;
-import com.crossover.trial.weather.service.WeatherService;
+import com.crossover.trial.weather.service.AirportService;
+import com.crossover.trial.weather.service.AirportServiceInMemory;
 
 /**
  * A reference implementation for the weather client. Consumers of the REST API can look at WeatherClient to understand API
@@ -21,7 +22,7 @@ import com.crossover.trial.weather.service.WeatherService;
  */
 public class WeatherClient {
 
-	private WeatherService weatherService = new WeatherService();
+	private AirportService airportService = new AirportServiceInMemory();
 
 	/** end point for read queries */
 	private WebTarget query;
@@ -71,7 +72,7 @@ public class WeatherClient {
 	}
 
 	private void queryDataPoints() {
-		for (Airport a : weatherService.getAirports()) {
+		for (Airport a : airportService.getAirports()) {
 			query(a.getIata(), 0);
 		}
 	}
@@ -81,7 +82,7 @@ public class WeatherClient {
 	 */
 	private void populdateDataPoints() {
 		int counter = 0;
-		for (Airport a : weatherService.getAirports()) {
+		for (Airport a : airportService.getAirports()) {
 			for (DataPointType dpt : DataPointType.values()) {
 				// calculate a base value of a particular DataPointType so that the calculated value is within the range
 				// for WIND, special calculation is required as the maxMean value = Integer.MAX_INT

@@ -16,7 +16,8 @@ import javax.ws.rs.core.Response;
 
 import com.crossover.trial.weather.model.AirportData;
 import com.crossover.trial.weather.model.AtmosphericInformation;
-import com.crossover.trial.weather.service.WeatherService;
+import com.crossover.trial.weather.service.AirportService;
+import com.crossover.trial.weather.service.RequestStatsService;
 import com.google.gson.Gson;
 
 /**
@@ -31,7 +32,10 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
 	public final static Logger LOGGER = Logger.getLogger("WeatherQuery");
 
 	@Inject
-	private WeatherService weatherService;
+	private AirportService airportService;
+
+	@Inject
+	private RequestStatsService reqStatsService;
 
 	/**
 	 * Default constructor required by framework.
@@ -42,10 +46,11 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
 	/**
 	 * This constructor is used in the Test class.
 	 * 
-	 * @param weatherSrv
+	 * @param airportSrv
 	 */
-	public RestWeatherQueryEndpoint(WeatherService weatherSrv) {
-		this.weatherService = weatherSrv;
+	public RestWeatherQueryEndpoint(AirportService airportSrv, RequestStatsService reqStatsService) {
+		this.airportService = airportSrv;
+		this.reqStatsService = reqStatsService;
 	}
 
 	/** shared gson json to object factory */
@@ -61,9 +66,9 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
 	public String ping() {
 		Map<String, Object> retval = new HashMap<>();
 
-		retval.put("datasize", weatherService.getAtmosphericInfoCountUpdatedInLastDay());
-		retval.put("iata_freq", weatherService.getFrequencyStats());
-		retval.put("radius_freq", weatherService.getRadiusFrequencyStats());
+		retval.put("datasize", airportService.getCountOfAtmosphericInfoUpdatedInLastDay());
+		retval.put("iata_freq", reqStatsService.getIataFrequencyStats());
+		retval.put("radius_freq", reqStatsService.getRadiusFrequencyStats());
 
 		return gson.toJson(retval);
 	}
@@ -84,14 +89,21 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response get(@PathParam("iata") String iata, @PathParam("radius") String radiusString) {
 		double radius = radiusString == null || radiusString.trim().isEmpty() ? 0 : Double.valueOf(radiusString);
-		weatherService.updateRequestFrequency(iata, radius);
+		reqStatsService.updateRequestFrequency(iata, radius);
 
 		List<AtmosphericInformation> retval = new ArrayList<>();
 		if (radius == 0) {
-			AirportData airportData = weatherService.findAirportData(iata);
+			AirportData airportData = airportService.findAirportData(iata);
+			if (airportData == null) {
+				return Response.status(Response.Status.NOT_FOUND).build();
+			}
 			retval.add(airportData.getAtmosphericInfo());
 		} else {
-			retval.addAll(weatherService.getAtmosphericInfoForNearByAirports(iata, radius));
+			List<AtmosphericInformation> atmosphericInfo = airportService.getAtmosphericInfoForNearByAirports(iata, radius);
+			if (atmosphericInfo == null || atmosphericInfo.size() == 0) {
+				return Response.status(Response.Status.NOT_FOUND).build();
+			}
+			retval.addAll(atmosphericInfo);
 		}
 		return Response.status(Response.Status.OK).entity(retval).build();
 	}

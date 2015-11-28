@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
 import com.crossover.trial.weather.exception.WeatherException;
 import com.crossover.trial.weather.model.AirportData;
 import com.crossover.trial.weather.model.DataPoint;
-import com.crossover.trial.weather.service.WeatherService;
+import com.crossover.trial.weather.service.AirportService;
 import com.google.gson.Gson;
 
 /**
@@ -34,7 +34,7 @@ public class RestWeatherCollectorEndpoint implements WeatherCollector {
 	public final static Logger LOGGER = Logger.getLogger(RestWeatherCollectorEndpoint.class.getName());
 
 	@Inject
-	private WeatherService weatherService;
+	private AirportService airportService;
 
 	/**
 	 * Default constructor required by framework.
@@ -45,10 +45,10 @@ public class RestWeatherCollectorEndpoint implements WeatherCollector {
 	/**
 	 * This constructor is used in the Test class.
 	 * 
-	 * @param weatherSrv
+	 * @param airportSrv
 	 */
-	public RestWeatherCollectorEndpoint(WeatherService weatherSrv) {
-		this.weatherService = weatherSrv;
+	public RestWeatherCollectorEndpoint(AirportService airportSrv) {
+		this.airportService = airportSrv;
 	}
 
 	/** shared gson json to object factory */
@@ -68,9 +68,10 @@ public class RestWeatherCollectorEndpoint implements WeatherCollector {
 			String datapointJson) {
 		try {
 			DataPoint fromJson = gson.fromJson(datapointJson, DataPoint.class);
-			weatherService.addDataPoint(iataCode, pointType, fromJson);
+			airportService.addDataPoint(iataCode, pointType, fromJson);
 		} catch (WeatherException e) {
-			String error = String.format("Error adding new data point: [%s] for type: [%s]", datapointJson, pointType);
+			String error = String.format("Error adding new Data Point: [%s] for Data Point Type: [%s]", datapointJson,
+					pointType);
 			LOGGER.log(Level.WARNING, error, e);
 			return Response.status(Response.Status.BAD_REQUEST).entity(error).build();
 		}
@@ -82,7 +83,7 @@ public class RestWeatherCollectorEndpoint implements WeatherCollector {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Override
 	public Response getAirports() {
-		Set<String> retval = weatherService.getAirports().stream().map(a -> a.getIata()).collect(Collectors.toSet());
+		Set<String> retval = airportService.getAirports().stream().map(a -> a.getIata()).collect(Collectors.toSet());
 		return Response.status(Response.Status.OK).entity(retval).build();
 	}
 
@@ -91,14 +92,16 @@ public class RestWeatherCollectorEndpoint implements WeatherCollector {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Override
 	public Response getAirport(@PathParam("iata") String iata) {
-		AirportData ad = weatherService.findAirportData(iata);
+		AirportData ad = airportService.findAirportData(iata);
+		if (ad != null) {
+			Map<String, Object> retval = new TreeMap<>();
+			retval.put("iata", ad.getAirport().getIata());
+			retval.put("latitude", ad.getLatitude());
+			retval.put("longitude", ad.getLongitude());
 
-		Map<String, Object> retval = new TreeMap<>();
-		retval.put("iata", ad.getAirport().getIata());
-		retval.put("latitude", ad.getLatitude());
-		retval.put("longitude", ad.getLongitude());
-
-		return Response.status(Response.Status.OK).entity(retval).build();
+			return Response.status(Response.Status.OK).entity(retval).build();
+		}
+		return Response.status(Response.Status.NOT_FOUND).build();
 	}
 
 	@POST
@@ -106,8 +109,12 @@ public class RestWeatherCollectorEndpoint implements WeatherCollector {
 	@Override
 	public Response addAirport(@PathParam("iata") String iata, @PathParam("lat") String latString,
 			@PathParam("long") String longString) {
-		weatherService.addAirport(iata, Double.valueOf(latString), Double.valueOf(longString));
-		return Response.status(Response.Status.OK).build();
+		try {
+			airportService.addAirport(iata, Double.valueOf(latString), Double.valueOf(longString));
+			return Response.status(Response.Status.CREATED).build();
+		} catch (NumberFormatException e) {
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
 	}
 
 	@DELETE

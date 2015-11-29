@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import com.crossover.trial.weather.model.AtmosphericInformation;
 import com.crossover.trial.weather.model.DataPoint;
+import com.crossover.trial.weather.model.DataPointType;
 import com.crossover.trial.weather.service.AirportService;
 import com.crossover.trial.weather.service.AirportServiceInMemory;
 import com.crossover.trial.weather.service.RequestStatsServiceInMemory;
@@ -59,6 +60,14 @@ public class WeatherEndpointTest {
 	}
 
 	@Test
+	public void testGetForUnknownAirport() throws Exception {
+		Response response = _query.get("MUM", "0");
+		List<AtmosphericInformation> ais = (List<AtmosphericInformation>) response.getEntity();
+		assertEquals(null, ais);
+		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+	}
+
+	@Test
 	public void testGetNearby() throws Exception {
 		// check datasize response
 		_update.updateWeather("JFK", "wind", _gson.toJson(_dp));
@@ -69,6 +78,24 @@ public class WeatherEndpointTest {
 
 		List<AtmosphericInformation> ais = (List<AtmosphericInformation>) _query.get("JFK", "200").getEntity();
 		assertEquals(3, ais.size());
+	}
+
+	@Test
+	public void testUpdateWeatherWithIncorrectValues() {
+		int valueLessThanAllowed = DataPointType.HUMIDITY.getMinMeanInclusive() - 10;
+		DataPoint dp = new DataPoint.Builder().withCount(10).withFirst(10).withMedian(valueLessThanAllowed).withLast(30)
+				.withMean(20).build();
+		Response post = _update.updateWeather("BOS", "humidity", _gson.toJson(dp));
+		assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), post.getStatus());
+
+		int valueGreaterThanAllowed = DataPointType.HUMIDITY.getMaxMeanExclusive() + 10;
+		dp = new DataPoint.Builder().withCount(10).withFirst(10).withMedian(valueGreaterThanAllowed).withLast(30)
+				.withMean(20).build();
+		post = _update.updateWeather("BOS", "humidity", _gson.toJson(dp));
+		assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), post.getStatus());
+		
+		post = _update.updateWeather("BOS", "xyz", _gson.toJson(dp));
+		assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), post.getStatus());
 	}
 
 	@Test

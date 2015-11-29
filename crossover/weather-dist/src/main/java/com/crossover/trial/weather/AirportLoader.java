@@ -34,6 +34,34 @@ public class AirportLoader {
 		collect = client.target(Constants.BASE_URL + "/collect");
 	}
 
+	public static void main(String args[]) throws IOException {
+		validate(args);
+		upload(args[0]);
+		System.exit(0);
+	}
+
+	private static void upload(String airportDataFile) throws IOException, FileNotFoundException {
+		AirportLoader al = new AirportLoader();
+		if (al.isServiceUp()) {
+			try (FileInputStream ip = new FileInputStream(airportDataFile)) {
+				al.upload(ip);
+			}
+		}
+	}
+
+	private static void validate(String[] args) {
+		if (args == null || args.length != 1) {
+			System.out.println("Usage: java com.crossover.trial.weather.util.AirportLoader <Path of airport file>");
+			System.exit(1);
+		}
+
+		File airportDataFile = new File(args[0]);
+		if (!airportDataFile.exists() || airportDataFile.length() == 0) {
+			System.err.println(airportDataFile + " is not a valid input");
+			System.exit(1);
+		}
+	}
+
 	public void upload(InputStream airportDataStream) throws IOException {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(airportDataStream))) {
 			String line = null;
@@ -73,36 +101,8 @@ public class AirportLoader {
 		}
 	}
 
-	public static void main(String args[]) throws IOException {
-		validate(args);
-		upload(args[0]);
-		System.exit(0);
-	}
-
-	private static void upload(String airportDataFile) throws IOException, FileNotFoundException {
-		AirportLoader al = new AirportLoader();
-		if (al.isServiceUp()) {
-			try (FileInputStream ip = new FileInputStream(airportDataFile)) {
-				al.upload(ip);
-			}
-		}
-	}
-
 	private boolean isServiceUp() {
 		Response response = collect.path("/ping").request().get();
 		return response.readEntity(String.class).equals("ready");
-	}
-
-	private static void validate(String[] args) {
-		if (args == null || args.length != 1) {
-			System.out.println("Usage: java com.crossover.trial.weather.util.AirportLoader <Path of airport file>");
-			System.exit(1);
-		}
-
-		File airportDataFile = new File(args[0]);
-		if (!airportDataFile.exists() || airportDataFile.length() == 0) {
-			System.err.println(airportDataFile + " is not a valid input");
-			System.exit(1);
-		}
 	}
 }

@@ -70,8 +70,8 @@ public class AirportServiceInMemory implements AirportService {
 				while ((line = br.readLine()) != null) {
 					String[] split = line.split(",");
 					AirportData ad = addAirport(split[0], Double.valueOf(split[1]), Double.valueOf(split[2]));
-					System.out.println(String.format("Airport [%s] added in memory from file [%s].", ad.getAirport(),
-							airportsDataFile));
+					LOGGER.log(Level.INFO,
+							String.format("Airport [%s] loaded in memory from file [%s].", ad.getAirport(), airportsDataFile));
 				}
 			} catch (IOException e) {
 				LOGGER.log(Level.WARNING,

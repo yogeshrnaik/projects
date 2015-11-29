@@ -32,12 +32,9 @@ public class ConverterChainBasedOnKey implements PropertyConverter<Object> {
 			return null;
 
 		String metadataKey = (String) metadata.get(key);
-		PropertyConverter<?> converter = metadataKey == null ? PropertyConverter.STRING_TO_STRING : converters
-				.get(metadataKey);
+		PropertyConverter<?> converter = metadataKey != null ? converters.get(metadataKey)
+				: PropertyConverter.STRING_TO_STRING;
 
-		if (converter != null) {
-			return converter.convert(key, value);
-		}
-		return value;
+		return converter.convert(key, value);
 	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConverterChain implements PropertyConverter<Object> {
+
 	private static List<PropertyConverter<?>> converters = new ArrayList<>();
 
 	public ConverterChain() {

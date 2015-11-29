@@ -121,6 +121,10 @@ public class RestWeatherCollectorEndpoint implements WeatherCollector {
 	@Path("/airport/{iata}")
 	@Override
 	public Response deleteAirport(@PathParam("iata") String iata) {
-		return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+		AirportData ad = airportService.deleteAirport(iata);
+		if (ad == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		return Response.status(Response.Status.OK).build();
 	}
 }

@@ -139,7 +139,8 @@ public class AirportServiceInMemory implements AirportService {
 			final DataPointType dptype = DataPointType.valueOf(pointType.toUpperCase());
 			boolean updated = ai.updateDataPoint(dptype, dp);
 			if (!updated) {
-				throw new WeatherException(String.format("Atmospheric data is out of valid range: %d (inclusive) to %d (exclusive)",
+				throw new WeatherException(String.format(
+						"Atmospheric data is out of valid range: %d (inclusive) to %d (exclusive)",
 						dptype.getMinMeanInclusive(), dptype.getMaxMeanExclusive()));
 			}
 		} catch (IllegalArgumentException e) {
@@ -151,5 +152,10 @@ public class AirportServiceInMemory implements AirportService {
 	@Override
 	public boolean isUpdatedInLastDay(AtmosphericInformation ai) {
 		return ai.getLastUpdateTime() > System.currentTimeMillis() - Constants.SECONDS_IN_A_DAY;
+	}
+
+	@Override
+	public AirportData deleteAirport(String iata) {
+		return data.airportData.remove(iata);
 	}
 }

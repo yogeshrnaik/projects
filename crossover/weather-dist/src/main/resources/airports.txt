@@ -1,3 +1,4 @@
+id,description,city,country,iata,icao,longitude,latitude,altitude,timezone,dst
 1,"General Edward Lawrence Logan Intl","Boston","United States","BOS","KBOS",42.364347,-71.005181,19,-5,"A"
 2,"Newark Liberty Intl","Newark","United States","EWR","KEWR",40.6925,-74.168667,18,-5,"A"
 3,"John F Kennedy Intl","New York","United States","JFK","KJFK",40.639751,-73.778925,13,-5,"A"

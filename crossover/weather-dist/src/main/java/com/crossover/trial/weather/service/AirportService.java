@@ -22,20 +22,22 @@ public interface AirportService {
 
 	public List<Airport> getAirports();
 
-	public abstract AirportData findAirportData(String iataCode);
+	public AirportData findAirportData(String iataCode);
 
-	public abstract List<AtmosphericInformation> getAtmosphericInfoForNearByAirports(String iata, double radius);
+	public List<AtmosphericInformation> getAtmosphericInfoForNearByAirports(String iata, double radius);
 
-	public abstract List<AtmosphericInformation> getAtmosphericInformation();
+	public List<AtmosphericInformation> getAtmosphericInformation();
 
-	public abstract long getCountOfAtmosphericInfoUpdatedInLastDay();
+	public long getCountOfAtmosphericInfoUpdatedInLastDay();
 
-	public abstract List<AirportData> getAirportData();
+	public List<AirportData> getAirportData();
 
-	public abstract AirportData addAirport(String iataCode, double latitude, double longitude);
+	public AirportData addAirport(String iataCode, double latitude, double longitude);
 
-	public abstract void addDataPoint(String iataCode, String pointType, DataPoint dp) throws WeatherException;
+	public void addDataPoint(String iataCode, String pointType, DataPoint dp) throws WeatherException;
 
-	public abstract boolean isUpdatedInLastDay(AtmosphericInformation ai);
+	public boolean isUpdatedInLastDay(AtmosphericInformation ai);
 
+	public AirportData deleteAirport(String iata);
+	
 }

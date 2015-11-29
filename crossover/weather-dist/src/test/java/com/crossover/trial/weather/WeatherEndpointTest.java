@@ -1,5 +1,16 @@
 package com.crossover.trial.weather;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.ws.rs.core.Response;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.crossover.trial.weather.model.AtmosphericInformation;
 import com.crossover.trial.weather.model.DataPoint;
 import com.crossover.trial.weather.service.AirportService;
@@ -12,13 +23,6 @@ import com.crossover.trial.weather.ws.WeatherQueryEndpoint;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 
 public class WeatherEndpointTest {
 
@@ -88,4 +92,64 @@ public class WeatherEndpointTest {
 		assertEquals(ais.get(0).getCloudCover(), cloudCoverDp);
 	}
 
+	@Test
+	public void testWeatherCollectorPing() throws Exception {
+		Response ping = _update.ping();
+		assertEquals(Response.Status.OK.getStatusCode(), ping.getStatus());
+	}
+
+	@Test
+	public void testGetAirports() throws Exception {
+		Set<String> airports = (Set<String>) _update.getAirports().getEntity();
+		assertEquals(5, airports.size());
+	}
+
+	@Test
+	public void testGetAirport() throws Exception {
+		testGetAirport("EWR", 40.6925, -74.168667);
+	}
+
+	@Test
+	public void testGetAirportNotFound() throws Exception {
+		testGetAirportNotFound("MUM");
+	}
+
+	private void testGetAirportNotFound(String iata) {
+		Response post = _update.getAirport(iata);
+		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), post.getStatus());
+	}
+
+	@Test
+	public void testAddAirport() throws Exception {
+		Response post = _update.addAirport("MUM", "19.0886", "72.8681");
+		assertEquals(Response.Status.CREATED.getStatusCode(), post.getStatus());
+		testGetAirport("MUM", 19.0886, 72.8681);
+	}
+
+	@Test
+	public void testDeleteAirport() throws Exception {
+		Response post = _update.deleteAirport("EWR");
+		assertEquals(Response.Status.OK.getStatusCode(), post.getStatus());
+		testGetAirportNotFound("EWR");
+	}
+
+	@Test
+	public void testDeleteAirportNotFound() throws Exception {
+		Response post = _update.deleteAirport("XYZ");
+		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), post.getStatus());
+	}
+
+	@Test
+	public void testAddAirportWithIncorrectLatitudeOrLongitudeValues() throws Exception {
+		Response post = _update.addAirport("MUM", "XXX", "YYY");
+		assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), post.getStatus());
+	}
+
+	private void testGetAirport(String iata, double latitude, double longitude) {
+		Map<String, Object> airport = (Map<String, Object>) _update.getAirport(iata).getEntity();
+		assertEquals(3, airport.size());
+		assertEquals(iata, airport.get("iata"));
+		assertEquals(latitude, airport.get("latitude"));
+		assertEquals(longitude, airport.get("longitude"));
+	}
 }

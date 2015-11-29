@@ -7,9 +7,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -51,6 +53,9 @@ public class AirportLoader {
 				String latitude = Double.valueOf(data[7]).toString();
 
 				addAirport(iata, longitude, latitude);
+			} catch (ProcessingException e) {
+				LOGGER.log(Level.SEVERE, "Stopping the loader due to severe error:", e);
+				System.exit(-1);
 			} catch (Throwable e) {
 				LOGGER.log(Level.WARNING, String.format("The line [%s] is not processed due to error: ", line), e);
 			}
@@ -77,9 +82,16 @@ public class AirportLoader {
 
 	private static void upload(String airportDataFile) throws IOException, FileNotFoundException {
 		AirportLoader al = new AirportLoader();
-		try (FileInputStream ip = new FileInputStream(airportDataFile)) {
-			al.upload(ip);
+		if (al.isServiceUp()) {
+			try (FileInputStream ip = new FileInputStream(airportDataFile)) {
+				al.upload(ip);
+			}
 		}
+	}
+
+	private boolean isServiceUp() {
+		Response response = collect.path("/ping").request().get();
+		return response.readEntity(String.class).equals("ready");
 	}
 
 	private static void validate(String[] args) {

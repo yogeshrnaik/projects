@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.crossover.trial.properties.converter.ConverterChain;
+import com.crossover.trial.properties.converter.PropertyConverter;
 import com.crossover.trial.properties.parser.JsonPropertiesParser;
 import com.crossover.trial.properties.parser.PropertiesParser;
 import com.crossover.trial.properties.reader.ClasspathResourceReader;
-import com.crossover.trial.properties.reader.LocalFileReader;
 import com.crossover.trial.properties.reader.HttpBasedReader;
+import com.crossover.trial.properties.reader.LocalFileReader;
 import com.crossover.trial.properties.reader.ProtocolBasedReader;
 
 /**
@@ -25,7 +26,7 @@ public class TrialAppPropertiesManager implements AppPropertiesManager {
 
 	public static final Map<String, ProtocolBasedReader> readers = new HashMap<>();
 	public static final Map<String, PropertiesParser> parsers = new HashMap<>();
-	private static final ConverterChain CONVERTER_CHAIN = new ConverterChain();
+	private static final PropertyConverter<?> CONVERTER_CHAIN = new ConverterChain();
 
 	static {
 		readers.put("classpath", new ClasspathResourceReader());
@@ -34,6 +35,9 @@ public class TrialAppPropertiesManager implements AppPropertiesManager {
 
 		parsers.put("properties", new PropertiesParser(CONVERTER_CHAIN));
 		parsers.put("json", new JsonPropertiesParser(CONVERTER_CHAIN));
+	}
+
+	public TrialAppPropertiesManager() {
 	}
 
 	@Override

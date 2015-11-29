@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import com.crossover.trial.properties.exception.ExceptionUtils;
+import com.crossover.trial.properties.exception.PropertyException;
 import com.crossover.trial.properties.model.Key;
 import com.crossover.trial.properties.model.Property;
 import com.crossover.trial.properties.parser.PropertiesParser;
@@ -36,24 +38,47 @@ public class TrialAppProperties implements AppProperties {
 	}
 
 	private void loadProperties(String propUri) {
+		try {
+			String contents = readFromUri(propUri);
+			Map<Key, Property> props = parseContents(propUri, contents);
+			addProperties(props);
+		} catch (PropertyException e) {
+			System.err.println(e.getMessage());
+		} catch (Throwable t) {
+			// safety net: catch & ignore any unexpected error and continue with next properties file loading
+			System.err.println(String.format("Unexpected error while loading from: [%s]", propUri));
+			System.err.println(ExceptionUtils.getStackTrace(t));
+		}
+	}
 
+	private String readFromUri(String propUri) {
 		// get reader based on prefix and read the contents
 		String prefix = propUri.substring(0, propUri.indexOf(":")).toLowerCase();
 		ProtocolBasedReader reader = readers.get(prefix);
+		if (reader == null) {
+			throw new PropertyException(String.format("No reader configured for [%s] to read from uri: [%s]", prefix,
+					propUri));
+		}
 		String contents = reader.read(propUri);
+		return contents;
+	}
 
+	private Map<Key, Property> parseContents(String propUri, String contents) {
 		// pass the contents to the parser based on suffix to get properties map
 		String suffix = propUri.substring(propUri.lastIndexOf(".") + 1).toLowerCase();
-		Map<Key, Property> props = parsers.get(suffix).parse(contents);
+		PropertiesParser propertiesParser = parsers.get(suffix);
+		if (propertiesParser == null) {
+			throw new PropertyException(String.format("No parser configured for [%s] to parse contents from uri: [%s]",
+					suffix, propUri));
+		}
 
-		// add properties
-		addProperties(props);
+		Map<Key, Property> props = propertiesParser.parse(contents);
+		return props;
 	}
 
 	private void addProperties(Map<Key, Property> propsToAdd) {
 		filterValidProperties(propsToAdd);
 		filterMissingProperties(propsToAdd);
-
 	}
 
 	private void filterValidProperties(Map<Key, Property> propsToFilter) {
@@ -93,7 +118,7 @@ public class TrialAppProperties implements AppProperties {
 
 	@Override
 	public Object get(String key) {
-		return props.get(key).getValue();
+		return props.get(new Key(key)).getValue();
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package com.crossover.trial.properties.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConverterChain {
+public class ConverterChain implements PropertyConverter<Object> {
 	private static List<PropertyConverter<?>> converters = new ArrayList<>();
 
 	public ConverterChain() {
@@ -13,12 +13,13 @@ public class ConverterChain {
 		converters.add(new StringToAwsRegionConverter());
 	}
 
-	public Object convertToActualType(String key, Object value) {
+	@Override
+	public Object convert(String key, String value) {
 		if (value == null)
 			return null;
 
 		for (PropertyConverter<?> converter : converters) {
-			Object result = converter.convert(key, value.toString());
+			Object result = converter.convert(key, value);
 			if (result != null) {
 				return result;
 			}

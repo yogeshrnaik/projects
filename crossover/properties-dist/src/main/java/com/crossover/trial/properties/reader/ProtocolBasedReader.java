@@ -3,6 +3,8 @@ package com.crossover.trial.properties.reader;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+import com.crossover.trial.properties.exception.PropertyException;
+
 public abstract class ProtocolBasedReader {
 
 	public abstract BufferedReader getBufferedReader(String uri) throws IOException;
@@ -11,12 +13,11 @@ public abstract class ProtocolBasedReader {
 		try (BufferedReader in = getBufferedReader(uri)) {
 			return read(in);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new PropertyException(String.format("Error [%s] while reading from [%s]", e.getMessage(), uri), e);
 		}
-		return null;
 	}
 
-	protected String read(BufferedReader in) throws IOException {
+	private String read(BufferedReader in) throws IOException {
 		StringBuilder result = new StringBuilder();
 		String inputLine = null;
 		while ((inputLine = in.readLine()) != null)

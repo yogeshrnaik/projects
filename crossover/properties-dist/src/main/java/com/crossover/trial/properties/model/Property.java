@@ -26,7 +26,7 @@ public class Property {
 	}
 
 	public boolean isValid() {
-		return value != null && value.toString().trim().length() > 0;
+		return typeSafeValue != null && typeSafeValue.toString().trim().length() > 0;
 	}
 
 }

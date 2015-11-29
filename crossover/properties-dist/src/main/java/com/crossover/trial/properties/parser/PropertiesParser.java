@@ -6,17 +6,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import com.crossover.trial.properties.converter.ConverterChain;
+import com.crossover.trial.properties.converter.PropertyConverter;
+import com.crossover.trial.properties.exception.PropertyException;
 import com.crossover.trial.properties.model.Key;
 import com.crossover.trial.properties.model.OrderedProperties;
 import com.crossover.trial.properties.model.Property;
 
 public class PropertiesParser {
 
-	private final ConverterChain converterChain;
+	private final PropertyConverter<?> converter;
 
-	public PropertiesParser(ConverterChain converterChain) {
-		this.converterChain = converterChain;
+	public PropertiesParser(PropertyConverter<?> converter) {
+		this.converter = converter;
 	}
 
 	public Map<Key, Property> parse(String propertiesString) {
@@ -24,7 +25,8 @@ public class PropertiesParser {
 		try {
 			properties.load(new StringReader(propertiesString));
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new PropertyException(String.format("Error [%s] while parsing contents: [%s]", e.getMessage(),
+					propertiesString), e);
 		}
 		return convertToMap(properties);
 	}
@@ -33,7 +35,7 @@ public class PropertiesParser {
 		Map<Key, Property> result = new HashMap<>();
 		for (String key : props.stringPropertyNames()) {
 			String value = props.get(key).toString();
-			result.put(new Key(key), new Property(key, value, converterChain.convertToActualType(key, value)));
+			result.put(new Key(key), new Property(key, value, converter.convert(key, value)));
 		}
 		return result;
 	}

@@ -1,7 +1,9 @@
 {
-"auth.endpoint.uri": "https://authserver/v1/auth"
-"job.timeout": 3600,
-"sns.broadcast.topic_name": "broadcast",
-"score.factor": 2.4,
-"jpa.showSql": false
+   "auth.endpoint.uri": "https://authserver/v1/auth",
+   "job.timeout": 3600,
+   "job.maxretry": 4,
+   "sns.broadcast.topic_name": "broadcast",
+   "sns.broadcast.visibility_timeout": 30,
+   "score.factor": 2.4,
+   "jpa.showSql": false
 }

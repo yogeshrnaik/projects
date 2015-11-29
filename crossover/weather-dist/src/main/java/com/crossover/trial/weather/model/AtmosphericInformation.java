@@ -36,7 +36,7 @@ public class AtmosphericInformation {
 	public boolean updateDataPoint(DataPointType dataPointType, DataPoint dataPoint) {
 		if (dataPointType.isValid(dataPoint.getMean())) {
 			dataPoints.put(dataPointType, dataPoint);
-			this.lastUpdateTime = System.currentTimeMillis();
+			lastUpdateTime = System.currentTimeMillis();
 			return true;
 		}
 		return false;
@@ -91,7 +91,7 @@ public class AtmosphericInformation {
 	}
 
 	public long getLastUpdateTime() {
-		return this.lastUpdateTime;
+		return lastUpdateTime;
 	}
 
 	public void setLastUpdateTime(long lastUpdateTime) {

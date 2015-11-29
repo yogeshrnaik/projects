@@ -14,7 +14,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.crossover.trial.weather.model.AirportData;
 import com.crossover.trial.weather.model.AtmosphericInformation;
 import com.crossover.trial.weather.service.AirportService;
 import com.crossover.trial.weather.service.RequestStatsService;
@@ -91,21 +90,11 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
 		double radius = radiusString == null || radiusString.trim().isEmpty() ? 0 : Double.valueOf(radiusString);
 		reqStatsService.updateRequestFrequency(iata, radius);
 
-		List<AtmosphericInformation> retval = new ArrayList<>();
-		if (radius == 0) {
-			AirportData airportData = airportService.findAirportData(iata);
-			if (airportData == null) {
-				return Response.status(Response.Status.NOT_FOUND).build();
-			}
-			retval.add(airportData.getAtmosphericInfo());
-		} else {
-			List<AtmosphericInformation> atmosphericInfo = airportService.getAtmosphericInfoForNearByAirports(iata, radius);
-			if (atmosphericInfo == null || atmosphericInfo.size() == 0) {
-				return Response.status(Response.Status.NOT_FOUND).build();
-			}
-			retval.addAll(atmosphericInfo);
+		List<AtmosphericInformation> retval = airportService.getAtmosphericInformation(iata, radius);
+		if (retval == null || retval.size() == 0) {
+			return Response.status(Response.Status.NOT_FOUND).build();
 		}
+
 		return Response.status(Response.Status.OK).entity(retval).build();
 	}
-
 }

@@ -49,10 +49,10 @@ public class AirportLoader {
 			try {
 				String[] data = line.split(",");
 				String iata = data[4].replaceAll("\"", "");
-				String longitude = Double.valueOf(data[6]).toString();
-				String latitude = Double.valueOf(data[7]).toString();
+				String latitude = Double.valueOf(data[6]).toString();
+				String longitude = Double.valueOf(data[7]).toString();
 
-				addAirport(iata, longitude, latitude);
+				addAirport(iata, latitude, longitude);
 			} catch (ProcessingException e) {
 				LOGGER.log(Level.SEVERE, "Stopping the loader due to severe error:", e);
 				System.exit(-1);
@@ -62,13 +62,13 @@ public class AirportLoader {
 		}
 	}
 
-	private void addAirport(String iata, String longitude, String latitude) {
-		String url = String.format("/airport/%s/%s/%s", iata, longitude, latitude);
+	private void addAirport(String iata, String latitude, String longitude) {
+		String url = String.format("/airport/%s/%s/%s", iata, latitude, longitude);
 		WebTarget path = collect.path(url);
 		Response post = path.request().post(null);
 
 		if (Response.Status.CREATED.getStatusCode() == post.getStatus()) {
-			LOGGER.log(Level.INFO, String.format("Airport [%s, %s, %s] created successfully.", iata, longitude, latitude));
+			LOGGER.log(Level.INFO, String.format("Airport [%s, %s, %s] created successfully.", iata, latitude, longitude));
 		} else {
 			LOGGER.log(Level.WARNING, String.format("Service returned status code [%d] for [%s]", post.getStatus(), url));
 		}

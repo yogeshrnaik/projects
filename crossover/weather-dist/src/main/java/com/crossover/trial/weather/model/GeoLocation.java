@@ -34,5 +34,4 @@ public class GeoLocation {
 	public String toString() {
 		return "GeoLocation [latitude=" + latitude + ", longitude=" + longitude + "]";
 	}
-
 }

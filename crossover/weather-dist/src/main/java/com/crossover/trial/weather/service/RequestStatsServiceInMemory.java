@@ -11,11 +11,9 @@ import org.jvnet.hk2.annotations.Service;
 import com.crossover.trial.weather.model.AirportData;
 
 /**
- * Service that manages the request frequency by: - Airport IATA - Radius Enum is used to create a singleton object of this
- * service.
+ * Service that manages the request frequency by: Airport IATA and Radius
  * 
  * @author Yogesh Naik
- *
  */
 
 @Service
@@ -30,6 +28,9 @@ public class RequestStatsServiceInMemory implements RequestStatsService {
 
 	private static final RequestStats reqStats = RequestStats.INSTANCE;
 
+	/**
+	 * Enum is used to create a singleton in memory data place holder object.
+	 */
 	private static enum RequestStats {
 		INSTANCE;
 

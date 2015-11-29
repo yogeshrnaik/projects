@@ -2,7 +2,7 @@ package com.crossover.trial.weather.model;
 
 /**
  * The various types of data points we can collect.
- * The data point type also contains the min (inclusive) and max mean (exclusive) value of that type
+ * The data point type also contains the valid min (inclusive) and max mean (exclusive) values of that type
  *
  * @author code test administrator
  */

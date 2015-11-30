@@ -25,6 +25,10 @@ public class Property {
 		return value;
 	}
 
+	public Object getTypeSafeValue() {
+		return typeSafeValue;
+	}
+
 	public boolean isValid() {
 		return typeSafeValue != null && typeSafeValue.toString().trim().length() > 0;
 	}

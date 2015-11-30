@@ -118,7 +118,7 @@ public class TrialAppProperties implements AppProperties {
 
 	@Override
 	public Object get(String key) {
-		return props.get(new Key(key)).getValue();
+		return props.get(new Key(key)).getTypeSafeValue();
 	}
 
 	@Override

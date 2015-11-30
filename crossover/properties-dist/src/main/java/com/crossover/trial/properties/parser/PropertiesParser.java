@@ -2,6 +2,7 @@ package com.crossover.trial.properties.parser;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -21,6 +22,10 @@ public class PropertiesParser {
 	}
 
 	public Map<Key, Property> parse(String propertiesString) {
+		if (propertiesString == null) {
+			return Collections.emptyMap();
+		}
+
 		Properties properties = new OrderedProperties();
 		try {
 			properties.load(new StringReader(propertiesString));
@@ -31,7 +36,7 @@ public class PropertiesParser {
 		return convertToMap(properties);
 	}
 
-	protected Map<Key, Property> convertToMap(Properties props) {
+	public Map<Key, Property> convertToMap(Properties props) {
 		Map<Key, Property> result = new HashMap<>();
 		for (String key : props.stringPropertyNames()) {
 			String value = props.get(key).toString();

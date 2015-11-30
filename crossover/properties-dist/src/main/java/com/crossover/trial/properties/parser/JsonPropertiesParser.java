@@ -1,5 +1,6 @@
 package com.crossover.trial.properties.parser;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
@@ -20,6 +21,10 @@ public class JsonPropertiesParser extends PropertiesParser {
 
 	@Override
 	public Map<Key, Property> parse(String jsonStr) {
+		if (jsonStr == null || jsonStr.trim().length() == 0) {
+			return Collections.emptyMap();
+		}
+
 		Properties props = new OrderedProperties();
 		try {
 			JSONObject json = new JSONObject(jsonStr);

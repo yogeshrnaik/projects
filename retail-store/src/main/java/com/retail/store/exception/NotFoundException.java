@@ -1,10 +1,10 @@
 package com.retail.store.exception;
 
-public class RetailStoreException extends RuntimeException {
+public class NotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = 634867904246662427L;
 
-    public RetailStoreException(String messageKey, Throwable t) {
+    public NotFoundException(String messageKey, Throwable t) {
         super(messageKey, t);
     }
 }

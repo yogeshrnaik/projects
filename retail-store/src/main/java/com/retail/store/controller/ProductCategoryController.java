@@ -3,6 +3,7 @@ package com.retail.store.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.retail.store.controller.response.ResponseBuilder;
 import com.retail.store.dto.ResponseDto;
-import com.retail.store.exception.RetailStoreException;
 import com.retail.store.model.ProductCategory;
 import com.retail.store.service.ProductCategoryService;
 
@@ -26,29 +26,24 @@ public class ProductCategoryController {
     private ProductCategoryService service;
 
     @RequestMapping(value = "/categories", method = RequestMethod.GET)
-    public List<ProductCategory> listCategories() {
-        return service.findAll();
+    public ResponseEntity<List<ProductCategory>> listCategories() {
+        return response.ok(service.findAll());
     }
 
     @RequestMapping(value = "/categories/{id}", method = RequestMethod.GET)
-    public ProductCategory get(@PathVariable Long id) {
-        ProductCategory cat = service.findOne(id);
-        if (cat == null) {
-            throw new RetailStoreException("NotFound.productcategory", null);
-        }
-        return cat;
+    public ResponseEntity<ProductCategory> get(@PathVariable Long id) {
+        return response.ok(service.getProductCategory(id));
     }
 
     @RequestMapping(value = "/categories", method = RequestMethod.POST)
-    public ResponseDto add(@RequestBody @Validated ProductCategory category) {
+    public ResponseEntity<ResponseDto> add(@RequestBody @Validated ProductCategory category) {
         service.save(category);
-        return response.info("Success.productcategory.added");
+        return response.created("Success.productcategory.added", category.getId());
     }
 
-    @RequestMapping(value = "/categories", method = RequestMethod.PUT)
-    public ResponseDto update(@RequestBody @Validated ProductCategory category) {
-        service.save(category);
-        return response.info("Success.productcategory.updated");
+    @RequestMapping(value = "/categories/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<ResponseDto> update(@PathVariable Long id, @RequestBody @Validated ProductCategory category) {
+        service.save(id, category);
+        return response.ok("Success.productcategory.updated", id);
     }
-
 }

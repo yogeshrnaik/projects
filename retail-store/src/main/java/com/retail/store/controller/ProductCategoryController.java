@@ -44,6 +44,6 @@ public class ProductCategoryController {
     @RequestMapping(value = "/categories/{id}", method = RequestMethod.PUT)
     public ResponseEntity<ResponseDto> update(@PathVariable Long id, @RequestBody @Validated ProductCategory category) {
         service.save(id, category);
-        return response.ok("Success.productcategory.updated", id);
+        return response.ok("Success.productcategory.updated");
     }
 }

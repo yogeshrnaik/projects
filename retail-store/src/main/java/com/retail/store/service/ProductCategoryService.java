@@ -30,10 +30,9 @@ public class ProductCategoryService {
 
     public void save(Long id, ProductCategory category) {
         ProductCategory existingCategory = getProductCategory(id);
-
-        BeanUtils.copyProperties(category, existingCategory);
-        category.setId(id);
-        repository.save(category);
+        existingCategory.setCategory(category.getCategory());
+        existingCategory.setSalesTaxPercentage(category.getSalesTaxPercentage());
+        repository.save(existingCategory);
     }
 
     public ProductCategory getProductCategory(Long id) {

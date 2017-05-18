@@ -1,62 +1,43 @@
 package com.retail.store.controller;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.retail.store.RetailStoreApplication;
+import com.retail.store.dto.ResponseType;
 import com.retail.store.model.ProductCategory;
-import com.retail.store.repository.ProductCategoryRepository;
-import com.retail.store.repository.ProductRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RetailStoreApplication.class)
 @WebAppConfiguration
-public class ProductCategoryControllerTest {
-
-    @Autowired
-    private ProductCategoryRepository categoryRepo;
-    @Autowired
-    private ProductRepository productRepo;
-
-    @Autowired
-    private WebApplicationContext ctx;
-
-    private MockMvc mockMvc;
-
-    private MediaType contentType = new MediaType(APPLICATION_JSON.getType(), APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
+public class ProductCategoryControllerTest extends RetailStoreControllerTest {
 
     private List<ProductCategory> categories = new ArrayList<>();
 
+    @Override
     @Before
     public void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build();
+        super.setUp();
 
-        productRepo.deleteAllInBatch();
-        categoryRepo.deleteAllInBatch();
-
-        categories.add(categoryRepo.save(new ProductCategory(1l, "A", 0.0)));
-        categories.add(categoryRepo.save(new ProductCategory(2l, "B", 10.0)));
-        categories.add(categoryRepo.save(new ProductCategory(3l, "C", 20.0)));
+        categories.add(categoryRepo.saveAndFlush(new ProductCategory(1l, "A", 0.0)));
+        categories.add(categoryRepo.saveAndFlush(new ProductCategory(2l, "B", 10.0)));
+        categories.add(categoryRepo.saveAndFlush(new ProductCategory(3l, "C", 20.0)));
     }
 
     @Test
@@ -75,7 +56,45 @@ public class ProductCategoryControllerTest {
                 .andExpect(content().contentType(contentType))
                 .andExpect(jsonPath("$.id", is(cat.getId().intValue())))
                 .andExpect(jsonPath("$.category", is(cat.getCategory())))
-                .andExpect(jsonPath("$.salesTaxPercentage", is(cat.getSalesTaxPercentage())));
+                .andExpect(jsonPath("$.salesTaxPercentage", is(cat.getSalesTaxPercentage())))
+                .andExpect(header().string("Location", containsString("/categories/" + cat.getId())));
         }
     }
+
+    @Test
+    public void productCategoryNotFound() throws Exception {
+        mockMvc.perform(get("/categories/0"))
+            .andExpect(status().isNotFound())
+            .andExpect(content().contentType(contentType))
+            .andExpect(jsonPath("$.type", is(ResponseType.ERROR.toString())))
+            .andExpect(jsonPath("$.message", is(response.getMessage("NotFound.productcategory"))));
+    }
+
+    @Test
+    public void createProductCategory() throws Exception {
+        String categoryJson = json(new ProductCategory(null, "D", 15.0));
+
+        mockMvc.perform(post("/categories")
+            .contentType(contentType)
+            .content(categoryJson))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.type", is(ResponseType.INFO.toString())))
+            .andExpect(jsonPath("$.message", is(response.getMessage("Success.productcategory.added"))))
+            .andExpect(header().string("Location", containsString("/categories/")));
+    }
+
+    @Test
+    public void updateProductCategory() throws Exception {
+        ProductCategory cat = categories.get(0);
+        String categoryJson = json(new ProductCategory(cat.getId(), cat.getCategory(), 15.0));
+
+        mockMvc.perform(put("/categories/" + cat.getId())
+            .contentType(contentType)
+            .content(categoryJson))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.type", is(ResponseType.INFO.toString())))
+            .andExpect(jsonPath("$.message", is(response.getMessage("Success.productcategory.updated"))))
+            .andExpect(header().string("Location", containsString("/categories/" + cat.getId())));
+    }
+
 }

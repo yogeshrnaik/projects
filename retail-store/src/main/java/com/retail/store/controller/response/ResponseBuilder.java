@@ -26,7 +26,7 @@ public class ResponseBuilder {
         return new ResponseDto(ResponseType.ERROR, getMessage(messageKey));
     }
 
-    private String getMessage(String messageKey) {
+    public String getMessage(String messageKey) {
         return msgSource.getMessage(messageKey, null, LocaleContextHolder.getLocale());
     }
 
@@ -36,6 +36,10 @@ public class ResponseBuilder {
 
     public ResponseEntity<ResponseDto> ok(String msgKey, Long resourceId) {
         return new ResponseEntity<>(info(msgKey), getHeadersWithLocation(resourceId), HttpStatus.OK);
+    }
+
+    public ResponseEntity<ResponseDto> ok(String msgKey) {
+        return new ResponseEntity<>(info(msgKey), getHeadersWithLocation(), HttpStatus.OK);
     }
 
     public <T> ResponseEntity<T> ok(T result) {

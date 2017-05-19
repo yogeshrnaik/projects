@@ -11,8 +11,10 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 
 import com.retail.store.model.Product;
 import com.retail.store.model.ProductCategory;
+import com.retail.store.model.User;
 import com.retail.store.repository.ProductCategoryRepository;
 import com.retail.store.repository.ProductRepository;
+import com.retail.store.repository.UserRepository;
 
 @SpringBootApplication
 public class RetailStoreApplication implements CommandLineRunner {
@@ -22,6 +24,9 @@ public class RetailStoreApplication implements CommandLineRunner {
 
     @Autowired
     private ProductRepository productRepo;
+
+    @Autowired
+    private UserRepository userRepo;
 
     public static void main(String[] args) {
         SpringApplication.run(RetailStoreApplication.class, args);
@@ -41,6 +46,9 @@ public class RetailStoreApplication implements CommandLineRunner {
         productRepo.save(new Product(1l, "Product 1A", 10.0, cat1));
         productRepo.save(new Product(2l, "Product 2B", 10.0, cat2));
         productRepo.save(new Product(3l, "Product 3C", 10.0, cat3));
+
+        userRepo.save(new User(null, "Yogesh", null));
+        userRepo.save(new User(null, "John", null));
     }
 
     @Bean(name = "messageSource")

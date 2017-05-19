@@ -110,4 +110,12 @@ public class CartItem {
         this.price = price;
     }
 
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
 }

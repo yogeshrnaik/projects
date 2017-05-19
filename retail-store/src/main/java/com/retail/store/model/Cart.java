@@ -26,7 +26,7 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -97,6 +97,7 @@ public class Cart {
             CartItem item = itr.next();
             if (item.getProduct().getId().equals(cartItem.getProduct().getId())) {
                 itr.remove();
+                item.setCart(null);
 
                 totalSalesTax -= item.getSalesTax();
                 totalPrice -= item.getPrice();

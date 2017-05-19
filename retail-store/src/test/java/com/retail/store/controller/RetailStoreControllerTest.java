@@ -21,8 +21,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.retail.store.controller.response.ResponseBuilder;
 import com.retail.store.model.ProductCategory;
+import com.retail.store.repository.CartItemRepository;
+import com.retail.store.repository.CartRepository;
 import com.retail.store.repository.ProductCategoryRepository;
 import com.retail.store.repository.ProductRepository;
+import com.retail.store.repository.UserRepository;
 
 public class RetailStoreControllerTest {
 
@@ -34,6 +37,15 @@ public class RetailStoreControllerTest {
 
     @Autowired
     protected ProductRepository productRepo;
+
+    @Autowired
+    protected UserRepository userRepo;
+
+    @Autowired
+    protected CartRepository cartRepo;
+
+    @Autowired
+    protected CartItemRepository cartItemRepo;
 
     @Autowired
     protected WebApplicationContext ctx;
@@ -58,6 +70,7 @@ public class RetailStoreControllerTest {
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build();
 
+        userRepo.deleteAllInBatch();
         productRepo.deleteAllInBatch();
         categoryRepo.deleteAllInBatch();
     }

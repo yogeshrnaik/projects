@@ -1,5 +1,7 @@
 package com.retail.store.model;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -10,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -23,32 +26,27 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CartItem> cartItems;
 
-    private Double total;
+    private Double totalPrice;
 
     private Double totalSalesTax;
+
+    private Double grandTotal;
 
     public Cart() {
     }
 
-    public Cart(Long id, User user, Set<CartItem> cartItems) {
-        super();
-        this.id = id;
+    public Cart(User user, Set<CartItem> cartItems) {
         this.user = user;
         this.cartItems = cartItems;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        totalPrice = 0.0;
+        totalSalesTax = 0.0;
+        grandTotal = 0.0;
     }
 
     public User getUser() {
@@ -68,11 +66,11 @@ public class Cart {
     }
 
     public Double getTotal() {
-        return total;
+        return totalPrice;
     }
 
     public void setTotal(Double total) {
-        this.total = total;
+        totalPrice = total;
     }
 
     public Double getTotalSalesTax() {
@@ -81,6 +79,31 @@ public class Cart {
 
     public void setTotalSalesTax(Double totalSalesTax) {
         this.totalSalesTax = totalSalesTax;
+    }
+
+    public void addItem(CartItem cartItem) {
+        removeExistingItemIfPresent(cartItem);
+
+        getCartItems().add(cartItem);
+
+        totalSalesTax += cartItem.getSalesTax();
+        totalPrice += cartItem.getPrice();
+        grandTotal += cartItem.getTotalPrice();
+    }
+
+    private void removeExistingItemIfPresent(CartItem cartItem) {
+        Iterator<CartItem> itr = getCartItems().iterator();
+        while (itr.hasNext()) {
+            CartItem item = itr.next();
+            if (item.getProduct().getId().equals(cartItem.getProduct().getId())) {
+                itr.remove();
+
+                totalSalesTax -= item.getSalesTax();
+                totalPrice -= item.getPrice();
+                grandTotal -= item.getTotalPrice();
+                break;
+            }
+        }
     }
 
 }

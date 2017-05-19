@@ -1,5 +1,6 @@
 package com.retail.store.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "cart_items")
@@ -26,22 +29,29 @@ public class CartItem {
     @NotNull
     private int quantity;
 
-    @NotNull
-    private Double salesTax;
+    private double salesTax;
 
-    @NotNull
-    private Double price;
+    private double price;
+
+    private double totalPrice;
+
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JsonIgnore
+    private Cart cart;
 
     public CartItem() {
     }
 
-    public CartItem(Long id, Product product, int quantity, Double salesTax, Double price) {
-        super();
+    public CartItem(Long id, Product product, int quantity, Cart cart) {
         this.id = id;
         this.product = product;
         this.quantity = quantity;
-        this.salesTax = salesTax;
-        this.price = price;
+
+        price = product.calculatePrice(quantity);
+        salesTax = product.calculateSalesTax(quantity);
+        totalPrice = price + salesTax;
+
+        this.cart = cart;
     }
 
     public Long getId() {
@@ -81,6 +91,22 @@ public class CartItem {
     }
 
     public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public void setSalesTax(double salesTax) {
+        this.salesTax = salesTax;
+    }
+
+    public void setPrice(double price) {
         this.price = price;
     }
 

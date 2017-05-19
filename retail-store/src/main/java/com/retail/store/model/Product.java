@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "product")
@@ -17,6 +19,8 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "NotNull.product.name")
+    @Size(min = 2, max = 100, message = "Size.product.name")
     private String name;
 
     private Double unitPrice;
@@ -64,6 +68,14 @@ public class Product {
 
     public void setCategory(ProductCategory category) {
         this.category = category;
+    }
+
+    public double calculateSalesTax(int quantity) {
+        return calculatePrice(quantity) * getCategory().getSalesTaxPercentage() / 100;
+    }
+
+    public double calculatePrice(int quantity) {
+        return getUnitPrice() * quantity;
     }
 
 }

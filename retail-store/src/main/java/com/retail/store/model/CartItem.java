@@ -26,6 +26,9 @@ public class CartItem {
     @ManyToOne
     private Product product;
 
+    @ManyToOne
+    private Cart cart;
+
     @NotNull
     private int quantity;
 
@@ -38,18 +41,17 @@ public class CartItem {
     public CartItem() {
     }
 
-    public CartItem(Product product, int quantity) {
-        this(null, product, quantity);
+    public CartItem(Product product, int quantity, Cart cart) {
+        this(null, product, quantity, cart);
     }
 
-    public CartItem(Long id, Product product, int quantity) {
+    public CartItem(Long id, Product product, int quantity, Cart cart) {
         this.id = id;
         this.product = product;
         this.quantity = quantity;
+        this.cart = cart;
 
-        price = product.calculatePrice(quantity);
-        salesTax = product.calculateSalesTax(quantity);
-        totalPrice = price + salesTax;
+        updateQuantity(quantity);
     }
 
     public Long getId() {
@@ -106,5 +108,12 @@ public class CartItem {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public void updateQuantity(int quantity) {
+        setQuantity(quantity);
+        price = product.calculatePrice(quantity);
+        salesTax = product.calculateSalesTax(quantity);
+        totalPrice = price + salesTax;
     }
 }

@@ -71,8 +71,8 @@ public class RetailStoreControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build();
 
         userRepo.deleteAllInBatch();
-        cartRepo.deleteAllInBatch();
         cartItemRepo.deleteAllInBatch();
+        cartRepo.deleteAllInBatch();
         productRepo.deleteAllInBatch();
         categoryRepo.deleteAllInBatch();
     }

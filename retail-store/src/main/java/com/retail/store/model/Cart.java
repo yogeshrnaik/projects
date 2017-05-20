@@ -29,7 +29,7 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CartItem> cartItems;
 
     private Double totalPrice;
@@ -78,28 +78,39 @@ public class Cart {
     }
 
     public void addItem(CartItem cartItem) {
-        removeExistingItemIfPresent(cartItem);
+        boolean alreadyExists = updateExistingItemIfPresent(cartItem);
 
-        getCartItems().add(cartItem);
+        if (!alreadyExists) {
+            getCartItems().add(cartItem);
 
+            incrementTotals(cartItem);
+        }
+    }
+
+    private boolean updateExistingItemIfPresent(CartItem newItem) {
+        Iterator<CartItem> itr = getCartItems().iterator();
+        while (itr.hasNext()) {
+            CartItem existingItem = itr.next();
+            if (existingItem.getProduct().getId().equals(newItem.getProduct().getId())) {
+                decrementTotals(existingItem);
+                existingItem.updateQuantity(newItem.getQuantity());
+                incrementTotals(existingItem);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void decrementTotals(CartItem cartItem) {
+        totalSalesTax -= cartItem.getSalesTax();
+        totalPrice -= cartItem.getPrice();
+        grandTotal -= cartItem.getTotalPrice();
+    }
+
+    private void incrementTotals(CartItem cartItem) {
         totalSalesTax += cartItem.getSalesTax();
         totalPrice += cartItem.getPrice();
         grandTotal += cartItem.getTotalPrice();
-    }
-
-    private void removeExistingItemIfPresent(CartItem cartItem) {
-        Iterator<CartItem> itr = getCartItems().iterator();
-        while (itr.hasNext()) {
-            CartItem item = itr.next();
-            if (item.getProduct().getId().equals(cartItem.getProduct().getId())) {
-                itr.remove();
-
-                totalSalesTax -= item.getSalesTax();
-                totalPrice -= item.getPrice();
-                grandTotal -= item.getTotalPrice();
-                break;
-            }
-        }
     }
 
 }

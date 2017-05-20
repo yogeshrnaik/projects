@@ -1,32 +1,20 @@
-package com.retail.store.model;
+package com.retail.store.dto;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.retail.store.model.Product;
 
-@Entity
-@Table(name = "cart_items")
-public class CartItem {
+public class CartItemDto {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
     private Product product;
 
-    @NotNull
     private int quantity;
 
     private double salesTax;
@@ -35,20 +23,12 @@ public class CartItem {
 
     private double totalPrice;
 
-    public CartItem() {
-    }
-
-    public CartItem(Product product, int quantity) {
-        this(null, product, quantity);
-    }
-
-    public CartItem(Long id, Product product, int quantity) {
+    public CartItemDto(Long id, Product product, int quantity, double salesTax, double price) {
         this.id = id;
         this.product = product;
         this.quantity = quantity;
-
-        price = product.calculatePrice(quantity);
-        salesTax = product.calculateSalesTax(quantity);
+        this.salesTax = salesTax;
+        this.price = price;
         totalPrice = price + salesTax;
     }
 
@@ -76,19 +56,19 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    public Double getSalesTax() {
+    public double getSalesTax() {
         return salesTax;
     }
 
-    public void setSalesTax(Double salesTax) {
+    public void setSalesTax(double salesTax) {
         this.salesTax = salesTax;
     }
 
-    public Double getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -100,11 +80,4 @@ public class CartItem {
         this.totalPrice = totalPrice;
     }
 
-    public void setSalesTax(double salesTax) {
-        this.salesTax = salesTax;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
 }

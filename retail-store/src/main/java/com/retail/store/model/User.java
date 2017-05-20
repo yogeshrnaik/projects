@@ -35,6 +35,10 @@ public class User {
     public User() {
     }
 
+    public User(String name) {
+        this(null, name, null);
+    }
+
     public User(Long id, String name, Cart cart) {
         this.id = id;
         this.name = name;

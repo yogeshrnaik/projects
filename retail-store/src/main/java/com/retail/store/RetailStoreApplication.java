@@ -12,6 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 import com.retail.store.model.Cart;
@@ -47,6 +48,10 @@ public class RetailStoreApplication implements CommandLineRunner {
     @Transactional
     @Override
     public void run(String... args) throws Exception {
+        loadSampleData();
+    }
+
+    private void loadSampleData() {
         ProductCategory cat1 = new ProductCategory(1l, "A", 20.0);
         ProductCategory cat2 = new ProductCategory(2l, "B", 10.0);
         ProductCategory cat3 = new ProductCategory(3l, "C", 0.0);
@@ -61,8 +66,8 @@ public class RetailStoreApplication implements CommandLineRunner {
         productRepo.save(product2);
         productRepo.save(new Product(3l, "Product 3C", 10.0, cat3));
 
-        User user1 = new User(null, "Yogesh", null);
-        User user2 = new User(null, "John", null);
+        User user1 = new User("Yogesh");
+        User user2 = new User("John");
         userRepo.save(user1);
         userRepo.save(user2);
 

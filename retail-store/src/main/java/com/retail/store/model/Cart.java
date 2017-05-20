@@ -1,5 +1,6 @@
 package com.retail.store.model;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -17,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "cart")
 public class Cart {
@@ -26,10 +29,7 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    private User user;
-
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CartItem> cartItems;
 
     private Double totalPrice;
@@ -39,22 +39,10 @@ public class Cart {
     private Double grandTotal;
 
     public Cart() {
-    }
-
-    public Cart(User user, Set<CartItem> cartItems) {
-        this.user = user;
-        this.cartItems = cartItems;
+        cartItems = new HashSet<>();
         totalPrice = 0.0;
         totalSalesTax = 0.0;
         grandTotal = 0.0;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Set<CartItem> getCartItems() {
@@ -65,20 +53,28 @@ public class Cart {
         this.cartItems = cartItems;
     }
 
-    public Double getTotal() {
-        return totalPrice;
-    }
-
-    public void setTotal(Double total) {
-        totalPrice = total;
-    }
-
     public Double getTotalSalesTax() {
         return totalSalesTax;
     }
 
     public void setTotalSalesTax(Double totalSalesTax) {
         this.totalSalesTax = totalSalesTax;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Double getGrandTotal() {
+        return grandTotal;
+    }
+
+    public void setGrandTotal(Double grandTotal) {
+        this.grandTotal = grandTotal;
     }
 
     public void addItem(CartItem cartItem) {
@@ -97,7 +93,6 @@ public class Cart {
             CartItem item = itr.next();
             if (item.getProduct().getId().equals(cartItem.getProduct().getId())) {
                 itr.remove();
-                item.setCart(null);
 
                 totalSalesTax -= item.getSalesTax();
                 totalPrice -= item.getPrice();

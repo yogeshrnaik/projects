@@ -34,7 +34,7 @@ public class CartItem {
 
     private double salesTax;
 
-    private double price;
+    private double priceBeforeTax;
 
     private double totalPrice;
 
@@ -86,12 +86,12 @@ public class CartItem {
         this.salesTax = salesTax;
     }
 
-    public Double getPrice() {
-        return price;
+    public Double getPriceBeforeTax() {
+        return priceBeforeTax;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setPriceBeforeTax(Double price) {
+        priceBeforeTax = price;
     }
 
     public double getTotalPrice() {
@@ -106,14 +106,10 @@ public class CartItem {
         this.salesTax = salesTax;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public void updateQuantity(int quantity) {
         setQuantity(quantity);
-        price = product.calculatePrice(quantity);
+        priceBeforeTax = product.calculatePrice(quantity);
         salesTax = product.calculateSalesTax(quantity);
-        totalPrice = price + salesTax;
+        totalPrice = priceBeforeTax + salesTax;
     }
 }

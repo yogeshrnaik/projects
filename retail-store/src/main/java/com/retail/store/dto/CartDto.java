@@ -14,7 +14,7 @@ public class CartDto {
 
     private Set<CartItemDto> cartItems;
 
-    private Double totalPrice;
+    private Double totalPriceBeforeTax;
 
     private Double totalSalesTax;
 
@@ -24,12 +24,12 @@ public class CartDto {
         this(userId, new HashSet<CartItemDto>(), 0.0, 0.0);
     }
 
-    public CartDto(Long userId, Set<CartItemDto> cartItems, Double totalPrice, Double totalSalesTax) {
+    public CartDto(Long userId, Set<CartItemDto> cartItems, Double totalPriceBeforeTax, Double totalSalesTax) {
         this.userId = userId;
         this.cartItems = cartItems;
-        this.totalPrice = totalPrice;
+        this.totalPriceBeforeTax = totalPriceBeforeTax;
         this.totalSalesTax = totalSalesTax;
-        grandTotal = totalPrice + totalSalesTax;
+        grandTotal = totalPriceBeforeTax + totalSalesTax;
     }
 
     public Long getUserId() {
@@ -48,12 +48,12 @@ public class CartDto {
         this.cartItems = cartItems;
     }
 
-    public Double getTotalPrice() {
-        return totalPrice;
+    public Double getTotalPriceBeforeTax() {
+        return totalPriceBeforeTax;
     }
 
-    public void setTotalPrice(Double totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setTotalPriceBeforeTax(Double totalPrice) {
+        this.totalPriceBeforeTax = totalPrice;
     }
 
     public Double getTotalSalesTax() {

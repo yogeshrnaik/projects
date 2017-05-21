@@ -10,13 +10,13 @@ public class CartDtoBuilder {
 
     public CartDto buildCartDto(long userId, Cart cart) {
         CartDto cartDto = new CartDto(userId);
-        cartDto.setTotalPrice(cart.getTotalPrice());
+        cartDto.setTotalPriceBeforeTax(cart.getTotalPriceBeforeTax());
         cartDto.setTotalSalesTax(cart.getTotalSalesTax());
         cartDto.setGrandTotal(cart.getGrandTotal());
 
         for (CartItem item : cart.getCartItems()) {
             cartDto.getCartItems().add(
-                new CartItemDto(item.getId(), item.getProduct(), item.getQuantity(), item.getSalesTax(), item.getPrice()));
+                new CartItemDto(item.getId(), item.getProduct(), item.getQuantity(), item.getSalesTax(), item.getPriceBeforeTax()));
         }
         return cartDto;
     }

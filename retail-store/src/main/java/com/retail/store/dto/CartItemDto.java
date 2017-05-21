@@ -19,7 +19,7 @@ public class CartItemDto {
 
     private double salesTax;
 
-    private double price;
+    private double priceBeforeTax;
 
     private double totalPrice;
 
@@ -28,7 +28,7 @@ public class CartItemDto {
         this.product = product;
         this.quantity = quantity;
         this.salesTax = salesTax;
-        this.price = price;
+        this.priceBeforeTax = price;
         totalPrice = price + salesTax;
     }
 
@@ -64,12 +64,12 @@ public class CartItemDto {
         this.salesTax = salesTax;
     }
 
-    public double getPrice() {
-        return price;
+    public double getPriceBeforeTax() {
+        return priceBeforeTax;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setPriceBeforeTax(double price) {
+        this.priceBeforeTax = price;
     }
 
     public double getTotalPrice() {

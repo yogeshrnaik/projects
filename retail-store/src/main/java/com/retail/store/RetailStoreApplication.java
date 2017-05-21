@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
+import com.retail.store.dto.CartUpdateDto;
 import com.retail.store.model.Cart;
 import com.retail.store.model.CartItem;
 import com.retail.store.model.Product;
@@ -60,19 +61,20 @@ public class RetailStoreApplication implements CommandLineRunner {
         categoryRepo.save(cat2);
         categoryRepo.save(cat3);
 
-        Product product1 = new Product(1l, "Product 1A", 10.0, cat1);
+        Product product1 = new Product(1l, "Product 1A", 20.0, cat1);
         Product product2 = new Product(2l, "Product 2B", 10.0, cat2);
         productRepo.save(product1);
         productRepo.save(product2);
-        productRepo.save(new Product(3l, "Product 3C", 10.0, cat3));
+        productRepo.save(new Product(3l, "Product 3C", 5.0, cat3));
 
         User user1 = new User("Yogesh");
         User user2 = new User("John");
         userRepo.save(user1);
         userRepo.save(user2);
 
-        cartService.addProduct(user1.getId(), 1, 1);
-        cartService.addProduct(user1.getId(), 1, 2);
+        cartService.updateCart(new CartUpdateDto(user1.getId(), 1l, 1));
+        cartService.updateCart(new CartUpdateDto(user1.getId(), 1l, 2));
+        cartService.updateCart(new CartUpdateDto(user1.getId(), 2l, 4));
     }
 
     @Bean(name = "messageSource")

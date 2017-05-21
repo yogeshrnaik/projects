@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import com.retail.store.dto.CartDto;
 import com.retail.store.dto.CartDtoBuilder;
 import com.retail.store.dto.CartItemDto;
+import com.retail.store.dto.CartUpdateDto;
 import com.retail.store.model.Cart;
 import com.retail.store.model.CartItem;
 import com.retail.store.model.Product;
@@ -18,28 +19,28 @@ import com.retail.store.repository.UserRepository;
 public class CartService {
 
     @Autowired
-    private UserRepository userRepo;
+    private UserService userService;
 
     @Autowired
     private CartRepository cartRepo;
 
     @Autowired
-    private ProductRepository productRepo;
+    private ProductService productService;
 
     @Autowired
     private CartDtoBuilder cartDtoBuilder;
 
-    public void addProduct(long userId, long productId, int quantity) {
-        Cart cart = getCart(userId);
+    public void updateCart(CartUpdateDto cartUpdateDto) {
+        Product product = productService.getProduct(cartUpdateDto.getProductId());
 
-        CartItem cartItem = createCartItem(productId, quantity, cart);
-        cart.addItem(cartItem);
+        Cart cart = getCart(cartUpdateDto.getUserId());
+        cart.addItem(product, cartUpdateDto.getQuantity());
 
         cartRepo.save(cart);
     }
 
     public Cart getCart(Long userId) {
-        User user = userRepo.getOne(userId);
+        User user = userService.getUser(userId);
         return getCart(user);
     }
 
@@ -52,13 +53,8 @@ public class CartService {
         return cart;
     }
 
-    private CartItem createCartItem(long productId, int quantity, Cart cart) {
-        Product product = productRepo.getOne(productId);
-        return new CartItem(product, quantity, cart);
-    }
-
     public CartDto getCartByUserId(Long userId) {
-        User user = userRepo.getOne(userId);
+        User user = userService.getUser(userId);
         Cart cart = user.getCart();
         if (cart == null) {
             return new CartDto(userId);

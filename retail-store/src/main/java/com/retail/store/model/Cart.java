@@ -1,8 +1,8 @@
 package com.retail.store.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -26,6 +27,7 @@ public class Cart implements Serializable {
     private Long id;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy(value = "product")
     private Set<CartItem> cartItems;
 
     private Double totalPriceBeforeTax;
@@ -35,7 +37,11 @@ public class Cart implements Serializable {
     private Double grandTotal;
 
     public Cart() {
-        cartItems = new HashSet<>();
+        cartItems = new LinkedHashSet<>();
+        setTotalsToZero();
+    }
+
+    private void setTotalsToZero() {
         totalPriceBeforeTax = 0.0;
         totalSalesTax = 0.0;
         grandTotal = 0.0;
@@ -119,6 +125,11 @@ public class Cart implements Serializable {
         totalSalesTax += cartItem.getSalesTax();
         totalPriceBeforeTax += cartItem.getPriceBeforeTax();
         grandTotal += cartItem.getTotalPrice();
+    }
+
+    public void clear() {
+        setTotalsToZero();
+        getCartItems().clear();
     }
 
 }

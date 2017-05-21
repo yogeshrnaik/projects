@@ -5,10 +5,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,7 +19,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.retail.store.controller.response.ResponseBuilder;
-import com.retail.store.model.ProductCategory;
 import com.retail.store.repository.CartItemRepository;
 import com.retail.store.repository.CartRepository;
 import com.retail.store.repository.ProductCategoryRepository;
@@ -69,7 +67,10 @@ public class RetailStoreControllerTest {
     @Before
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build();
+    }
 
+    @After
+    public void cleanup() {
         userRepo.deleteAllInBatch();
         cartItemRepo.deleteAllInBatch();
         cartRepo.deleteAllInBatch();

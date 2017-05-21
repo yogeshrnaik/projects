@@ -82,4 +82,7 @@ public class Product implements Serializable {
         return getUnitPrice() * quantity;
     }
 
+    public double calculateTotalPrice(int quantity) {
+        return calculatePrice(quantity) + calculateSalesTax(quantity);
+    }
 }

@@ -44,19 +44,19 @@ public class RetailStoreApplication implements CommandLineRunner {
     }
 
     private void loadSampleData() {
-        ProductCategory cat1 = new ProductCategory(1l, "A", 20.0);
-        ProductCategory cat2 = new ProductCategory(2l, "B", 10.0);
+        ProductCategory cat1 = new ProductCategory(1l, "A", 10.0);
+        ProductCategory cat2 = new ProductCategory(2l, "B", 20.0);
         ProductCategory cat3 = new ProductCategory(3l, "C", 0.0);
 
         categoryRepo.save(cat1);
         categoryRepo.save(cat2);
         categoryRepo.save(cat3);
 
-        Product product1 = new Product(1l, "Product 1A", 20.0, cat1);
-        Product product2 = new Product(2l, "Product 2B", 10.0, cat2);
+        Product product1 = new Product(1l, "Product 1A", 10.0, cat1);
+        Product product2 = new Product(2l, "Product 2B", 20.0, cat2);
         productRepo.save(product1);
         productRepo.save(product2);
-        productRepo.save(new Product(3l, "Product 3C", 5.0, cat3));
+        productRepo.save(new Product(3l, "Product 3C", 30.0, cat3));
 
         User user1 = new User("Yogesh");
         User user2 = new User("John");

@@ -1,12 +1,7 @@
 package com.retail.store.dto;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.OneToMany;
-
-import com.retail.store.model.CartItem;
 
 public class CartDto {
 
@@ -21,7 +16,7 @@ public class CartDto {
     private Double grandTotal;
 
     public CartDto(Long userId) {
-        this(userId, new HashSet<CartItemDto>(), 0.0, 0.0);
+        this(userId, new LinkedHashSet<>(), 0.0, 0.0);
     }
 
     public CartDto(Long userId, Set<CartItemDto> cartItems, Double totalPriceBeforeTax, Double totalSalesTax) {
@@ -53,7 +48,7 @@ public class CartDto {
     }
 
     public void setTotalPriceBeforeTax(Double totalPrice) {
-        this.totalPriceBeforeTax = totalPrice;
+        totalPriceBeforeTax = totalPrice;
     }
 
     public Double getTotalSalesTax() {

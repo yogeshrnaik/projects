@@ -8,6 +8,13 @@ import com.retail.store.model.CartItem;
 @Component
 public class CartDtoBuilder {
 
+    /**
+     * Builds a CartDto object using information from a Cart entity.
+     * 
+     * @param userId
+     * @param cart
+     * @return cartDto
+     */
     public CartDto buildCartDto(long userId, Cart cart) {
         CartDto cartDto = new CartDto(userId);
         cartDto.setTotalPriceBeforeTax(cart.getTotalPriceBeforeTax());

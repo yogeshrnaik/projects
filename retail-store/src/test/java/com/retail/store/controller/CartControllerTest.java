@@ -131,8 +131,8 @@ public class CartControllerTest extends RetailStoreControllerTest {
                 is(product1.calculateTotalPrice(PRODUCT_1_QUANTITY) + product2.calculateTotalPrice(PRODUCT_2_QUANTITY))))
             .andExpect(jsonPath("$.cartItems", hasSize(2)));
 
-        verify(result, product1, PRODUCT_1_QUANTITY, 0);
-        verify(result, product2, PRODUCT_2_QUANTITY, 1);
+        verifyCartItem(result, product1, PRODUCT_1_QUANTITY, 0);
+        verifyCartItem(result, product2, PRODUCT_2_QUANTITY, 1);
     }
 
     private void addProductToCart(User user, Product product, Integer quantity) throws IOException, Exception {
@@ -148,7 +148,7 @@ public class CartControllerTest extends RetailStoreControllerTest {
             .andExpect(jsonPath("$.message", is(response.getMessage("Success.cart.updated"))));
     }
 
-    private void verify(ResultActions result, Product product, int quantity, int cartItemIndex) throws Exception {
+    private void verifyCartItem(ResultActions result, Product product, int quantity, int cartItemIndex) throws Exception {
         result.andExpect(jsonPath(String.format("$.cartItems[%d].quantity", cartItemIndex), is(quantity)))
             .andExpect(jsonPath(String.format("$.cartItems[%d].salesTax", cartItemIndex), is(product.calculateSalesTax(quantity))))
             .andExpect(jsonPath(String.format("$.cartItems[%d].priceBeforeTax", cartItemIndex), is(product.calculatePrice(quantity))))
@@ -175,7 +175,7 @@ public class CartControllerTest extends RetailStoreControllerTest {
     }
 
     @Test
-    public void test_deleteFromCart() throws Exception {
+    public void test_deleteSpecificProductFromCart() throws Exception {
         final int PRODUCT_1_QUANTITY = 5;
         final int PRODUCT_2_QUANTITY = 10;
 
@@ -191,15 +191,42 @@ public class CartControllerTest extends RetailStoreControllerTest {
             .andExpect(jsonPath("$.message", is(response.getMessage("Success.cart.product.removed"))));
 
         // verify that after removing product 1, only product 2 remains in the cart
+        verifyCartHasOneProduct(product2, PRODUCT_2_QUANTITY);
+    }
+
+    private void verifyCartHasOneProduct(Product product, int quantity) throws Exception {
         ResultActions result = mockMvc
             .perform(get(String.format(CART_URL, user.getId())))
             .andExpect(status().isOk())
             .andExpect(content().contentType(contentType))
             .andExpect(jsonPath("$.userId", is(user.getId().intValue())))
-            .andExpect(jsonPath("$.totalPriceBeforeTax", is(product2.calculatePrice(PRODUCT_2_QUANTITY))))
-            .andExpect(jsonPath("$.totalSalesTax", is(product2.calculateSalesTax(PRODUCT_2_QUANTITY))))
-            .andExpect(jsonPath("$.grandTotal", is(product2.calculateTotalPrice(PRODUCT_2_QUANTITY))))
+            .andExpect(jsonPath("$.totalPriceBeforeTax", is(product.calculatePrice(quantity))))
+            .andExpect(jsonPath("$.totalSalesTax", is(product.calculateSalesTax(quantity))))
+            .andExpect(jsonPath("$.grandTotal", is(product.calculateTotalPrice(quantity))))
             .andExpect(jsonPath("$.cartItems", hasSize(1)));
-        verify(result, product2, PRODUCT_2_QUANTITY, 0);
+        verifyCartItem(result, product, quantity, 0);
     }
+
+    @Test
+    public void addToCart_WithZeroQuantityRemovesProduct() throws Exception {
+        final int PRODUCT_1_QUANTITY = 5;
+        final int PRODUCT_2_QUANTITY = 10;
+
+        addProductToCart(user, product1, PRODUCT_1_QUANTITY);
+        addProductToCart(user, product2, PRODUCT_2_QUANTITY);
+
+        // update quantity of product2 to zero
+        String cartUpdateJson = json(new CartUpdateDto(user.getId(), product2.getId(), 0));
+        String cartUrl = String.format(CART_URL, user.getId());
+        mockMvc.perform(post(cartUrl)
+            .contentType(contentType)
+            .content(cartUpdateJson))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.type", is(ResponseType.INFO.toString())))
+            .andExpect(jsonPath("$.message", is(response.getMessage("Success.cart.updated"))));
+
+        // verify that after setting quantity to zero for product 2, only product 1 remains in the cart
+        verifyCartHasOneProduct(product1, PRODUCT_1_QUANTITY);
+    }
+
 }

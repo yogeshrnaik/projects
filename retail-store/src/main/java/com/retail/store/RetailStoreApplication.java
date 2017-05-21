@@ -1,10 +1,5 @@
 package com.retail.store;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +7,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 import com.retail.store.dto.CartUpdateDto;
-import com.retail.store.model.Cart;
-import com.retail.store.model.CartItem;
 import com.retail.store.model.Product;
 import com.retail.store.model.ProductCategory;
 import com.retail.store.model.User;
-import com.retail.store.repository.CartRepository;
 import com.retail.store.repository.ProductCategoryRepository;
 import com.retail.store.repository.ProductRepository;
 import com.retail.store.repository.UserRepository;
@@ -73,8 +64,12 @@ public class RetailStoreApplication implements CommandLineRunner {
         userRepo.save(user2);
 
         cartService.updateCart(new CartUpdateDto(user1.getId(), 1l, 1));
-        cartService.updateCart(new CartUpdateDto(user1.getId(), 1l, 2));
-        cartService.updateCart(new CartUpdateDto(user1.getId(), 2l, 4));
+        cartService.updateCart(new CartUpdateDto(user1.getId(), 2l, 2));
+        cartService.updateCart(new CartUpdateDto(user1.getId(), 3l, 3));
+
+        cartService.updateCart(new CartUpdateDto(user2.getId(), 1l, 3));
+        cartService.updateCart(new CartUpdateDto(user2.getId(), 2l, 2));
+        cartService.updateCart(new CartUpdateDto(user2.getId(), 3l, 1));
     }
 
     @Bean(name = "messageSource")

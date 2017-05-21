@@ -1,5 +1,7 @@
 package com.retail.store.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +15,9 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "product_category")
-public class ProductCategory {
+public class ProductCategory implements Serializable {
+
+    private static final long serialVersionUID = -1349138690239364333L;
 
     @Id
     @Column(name = "id")

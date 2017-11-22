@@ -10,7 +10,6 @@ public class XmlIdMessage {
     private MessageId messageId;
 
     public XmlIdMessage() {
-
     }
 
     public MessageId getMessageId() {

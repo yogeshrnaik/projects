@@ -10,10 +10,6 @@ public class MessageId {
     public MessageId() {
     }
 
-    public MessageId(String value) {
-        this.value = value;
-    }
-
     public String getValue() {
         return value;
     }

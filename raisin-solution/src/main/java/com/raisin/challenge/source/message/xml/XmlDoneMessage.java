@@ -13,10 +13,6 @@ public class XmlDoneMessage {
 
     }
 
-    public String getDone() {
-        return done;
-    }
-
     public void setDone(String done) {
         this.done = done == null ? "" : done;
     }

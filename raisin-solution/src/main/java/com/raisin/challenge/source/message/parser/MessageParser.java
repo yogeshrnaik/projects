@@ -3,8 +3,9 @@ package com.raisin.challenge.source.message.parser;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.raisin.challenge.source.message.MessageDto;
 
-public class MessageParser {
+public abstract class MessageParser {
 
     private final ObjectMapper objectMapper;
 
@@ -12,11 +13,13 @@ public class MessageParser {
         this.objectMapper = objectMapper;
     }
 
-    public <T> T parse(String data, Class<T> clazz) {
+    protected <T> T parse(String data, Class<T> clazz) {
         try {
             return objectMapper.readValue(data, clazz);
         } catch (IOException e) {
             return null;
         }
     }
+
+    public abstract MessageDto parse(String source, String message);
 }

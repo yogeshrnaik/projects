@@ -27,32 +27,32 @@ public class RaisinSolution {
         LOGGER.info("Application started.");
         ExecutorService execService = Executors.newFixedThreadPool(3);
         MessageQueue msgQueue = new MessageQueue(getPropertyIntgerValue("queue.size"));
+        SinkData sinkData = new SinkData(SOURCE_A, SOURCE_B);
 
         String sourceUrlA = getPropertyValue(String.format("source.%s.url", SOURCE_A.toLowerCase()));
         SourceReader readerA = new SourceReader(SOURCE_A, sourceUrlA, new JsonMessageParser());
-        startSourceProcessor(SOURCE_A, readerA, msgQueue, execService);
+        startSourceProcessor(SOURCE_A, readerA, msgQueue, sinkData, execService);
 
         String sourceUrlB = getPropertyValue(String.format("source.%s.url", SOURCE_B.toLowerCase()));
         SourceReader readerB = new SourceReader(SOURCE_B, sourceUrlB, new XmlMessageParser());
-        startSourceProcessor(SOURCE_B, readerB, msgQueue, execService);
+        startSourceProcessor(SOURCE_B, readerB, msgQueue, sinkData, execService);
 
-        SinkData sinkData = new SinkData(SOURCE_A, SOURCE_B);
-        startSinkProcessor(1, msgQueue, sinkData, execService, readerA, readerB);
+        startSinkProcessor(1, msgQueue, sinkData, execService);
 
         ThreadUtil.awaitTermination(execService);
         LOGGER.info("Application finished.");
     }
 
-    private static void startSourceProcessor(String source, SourceReader reader, MessageQueue msgQueue, ExecutorService execService) {
+    private static void startSourceProcessor(String source, SourceReader reader, MessageQueue msgQueue, SinkData sinkData,
+        ExecutorService execService) {
         String sourceUrl = getPropertyValue(String.format("source.%s.url", source.toLowerCase()));
-        SourceProcessor processor = new SourceProcessor(source, sourceUrl, msgQueue, reader);
+        SourceProcessor processor = new SourceProcessor(source, sourceUrl, msgQueue, reader, sinkData);
         execService.submit(processor);
     }
 
-    private static void startSinkProcessor(int sinkId, MessageQueue msgQueue, SinkData sinkData, ExecutorService execService,
-        SourceReader... readers) {
+    private static void startSinkProcessor(int sinkId, MessageQueue msgQueue, SinkData sinkData, ExecutorService execService) {
         String sinkUrl = getPropertyValue("sink.url");
-        SinkProcessor sinkProcessor = new SinkProcessor(sinkId, sinkUrl, msgQueue, sinkData, readers);
+        SinkProcessor sinkProcessor = new SinkProcessor(sinkId, sinkUrl, msgQueue, sinkData);
         execService.submit(sinkProcessor);
     }
 }

@@ -3,6 +3,7 @@ package com.raisin.challenge.source;
 import org.apache.log4j.Logger;
 
 import com.raisin.challenge.source.message.MessageQueue;
+import com.raisin.challenge.source.sink.SinkData;
 import com.raisin.challenge.util.ThreadUtil;
 
 public class SourceProcessor implements Runnable {
@@ -14,13 +15,15 @@ public class SourceProcessor implements Runnable {
     private boolean isDone;
     private final MessageQueue msgQueue;
     private final SourceReader sourceReader;
+    private final SinkData sinkData;
 
-    public SourceProcessor(String source, String sourceUrl, MessageQueue msgQueue, SourceReader sourceReader) {
+    public SourceProcessor(String source, String sourceUrl, MessageQueue msgQueue, SourceReader sourceReader, SinkData sinkData) {
         this.source = source;
         this.sourceUrl = sourceUrl;
         isDone = false;
         this.msgQueue = msgQueue;
         this.sourceReader = sourceReader;
+        this.sinkData = sinkData;
     }
 
     public void run() {
@@ -30,12 +33,14 @@ public class SourceProcessor implements Runnable {
     }
 
     private void processUntilNotDone() {
-        while (!isDone) {
+        while (!sinkData.allDataProcessed()) {
             try {
                 processMessage();
             } catch (Throwable t) {
                 LOGGER.warn(String.format("Error occurred while processing from Source URL: [%s]", sourceUrl), t);
-                ThreadUtil.sleep(5000);
+                if (isConnectionClosed(t))
+                    return;
+                ThreadUtil.sleep(1000);
             }
         }
     }
@@ -53,5 +58,10 @@ public class SourceProcessor implements Runnable {
         } else {
             LOGGER.warn(String.format("Ignoring defective message: [%s]", response.getRawResponse()));
         }
+    }
+
+    private boolean isConnectionClosed(Throwable t) {
+        return (t != null && t.toString().contains("Connection refused"))
+            || isConnectionClosed(t.getCause());
     }
 }

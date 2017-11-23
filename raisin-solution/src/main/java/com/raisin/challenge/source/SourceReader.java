@@ -1,6 +1,6 @@
 package com.raisin.challenge.source;
 
-import org.springframework.http.HttpStatus;
+import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -8,6 +8,8 @@ import com.raisin.challenge.source.message.MessageDto;
 import com.raisin.challenge.source.message.parser.MessageParser;
 
 public class SourceReader {
+
+    private static final Logger LOGGER = Logger.getLogger(SourceReader.class);
 
     private final String source;
     private final String sourceUrl;
@@ -22,16 +24,20 @@ public class SourceReader {
     }
 
     public SourceResponse read() {
-        ResponseEntity<String> response = restTemplate.getForEntity(sourceUrl, String.class);
+        try {
+            ResponseEntity<String> response = restTemplate.getForEntity(sourceUrl, String.class);
 
-        String messageBody = response.getBody();
-        int statusCode = response.getStatusCode().value();
+            String messageBody = response.getBody();
+            int statusCode = response.getStatusCode().value();
 
-        if (statusCode == HttpStatus.NOT_ACCEPTABLE.value()) {
-            return new SourceResponse(statusCode, messageBody);
+            MessageDto msg = msgParser.parse(source, messageBody);
+            return new SourceResponse(statusCode, messageBody, msg);
+        } catch (Throwable t) {
+            if (t.toString().contains("406")) {
+                LOGGER.warn(String.format("Error while reading from source: [%s], URL: [%s]", source, sourceUrl), t);
+                return new SourceResponse(406, "");
+            }
+            throw new RuntimeException(String.format("Error while reading from source: [%s], URL: [%s]", source, sourceUrl), t);
         }
-
-        MessageDto msg = msgParser.parse(source, messageBody);
-        return new SourceResponse(statusCode, messageBody, msg);
     }
 }

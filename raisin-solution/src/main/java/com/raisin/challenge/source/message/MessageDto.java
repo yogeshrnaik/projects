@@ -29,4 +29,9 @@ public class MessageDto {
     public boolean isDone() {
         return done;
     }
+
+    @Override
+    public String toString() {
+        return "MessageDto [source=" + source + ", id=" + id + ", done=" + done + "]";
+    }
 }

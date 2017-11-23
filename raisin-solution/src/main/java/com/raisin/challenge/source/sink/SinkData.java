@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.collect.Lists;
@@ -36,12 +38,21 @@ public class SinkData {
             .collect(toMap(e -> e[0].toString(), e -> parseBoolean(e[1].toString()))));
     }
 
+    public boolean allDataProcessed() {
+        return !notAllSourcesDone() && sourceData.values().stream().allMatch(e -> e.size() == 0);
+    }
+
     public boolean notAllSourcesDone() {
         return sourceDoneFlags.values().stream().anyMatch(it -> it == false);
     }
 
     public boolean isAnySourceDone() {
         return sourceDoneFlags.values().stream().anyMatch(it -> it == true);
+    }
+
+    public String getDoneSource() {
+        Optional<Entry<String, Boolean>> doneSource = sourceDoneFlags.entrySet().stream().filter(e -> e.getValue()).findFirst();
+        return doneSource.isPresent() ? doneSource.get().getKey() : null;
     }
 
     public void setSourceDone(String source) {

@@ -8,7 +8,7 @@ public class MessageQueue {
     final private BlockingQueue<MessageDto> queue;
 
     public MessageQueue(int queueSize) {
-        queue = new ArrayBlockingQueue<MessageDto>(queueSize);
+        queue = new ArrayBlockingQueue<MessageDto>(queueSize, true);
     }
 
     public void add(MessageDto object) {

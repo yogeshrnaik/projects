@@ -1,12 +1,7 @@
 package com.raisin.challenge.source.sink;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 
-import com.raisin.challenge.source.SourceReader;
-import com.raisin.challenge.source.SourceResponse;
 import com.raisin.challenge.source.message.MessageDto;
 import com.raisin.challenge.source.message.MessageQueue;
 
@@ -16,83 +11,42 @@ public class SinkProcessor implements Runnable {
 
     private final int sinkId;
     private final SinkWriter sinkWriter;
-
     private SinkData sinkData;
-
     private final MessageQueue msgQueue;
 
-    private final List<SourceReader> sourceReaders;
-
-    public SinkProcessor(int sinkId, String sinkUrl, MessageQueue msgQueue, SinkData sinkData, SourceReader... srcReaders) {
+    public SinkProcessor(int sinkId, String sinkUrl, MessageQueue msgQueue, SinkData sinkData) {
         this.sinkId = sinkId;
         this.sinkWriter = new SinkWriter(sinkUrl);
         this.msgQueue = msgQueue;
         this.sinkData = sinkData;
-        this.sourceReaders = Arrays.asList(srcReaders);
     }
 
     @Override
     public void run() {
         Thread.currentThread().setName("SinkProcessor_" + sinkId);
         processUntilNotAllSourcesDone();
-        processRemainingOrphanRecords();
+        // processRemainingOrphanRecords();
         LOGGER.info("Sink processing finished.");
     }
 
     private void processUntilNotAllSourcesDone() {
-        while (sinkData.notAllSourcesDone()) {
+        while (!sinkData.allDataProcessed()) {
             MessageDto msg = msgQueue.next();
-            processMessage(msg);
-        }
-    }
-
-    private void processRemainingOrphanRecords() {
-        LOGGER.info("Processing remaining orphan records...");
-        int index = 0;
-
-        for (List<String> data : sinkData.getSourceData()) {
-            for (String id : data) {
-                while (!write(id, "orphaned")) {
-                    // read from source
-                    index = readFromSource(index);
-                }
+            try {
+                processMessage(msg);
+            } catch (Throwable t) {
+                LOGGER.warn(String.format("Error occurred while processing message: [%s]", msg), t);
+                if (isConnectionClosed(t))
+                    return;
             }
         }
-        sinkData.clearSourceData();
-    }
-
-    private boolean write(String id, String type) {
-        try {
-            sinkWriter.write(id, type);
-            return true;
-        } catch (Throwable t) {
-            LOGGER.warn("Error while writing to sink: " + id + " : " + type);
-            return !t.toString().contains("406 you gotta read somewhere else first");
-        }
-    }
-
-    private int readFromSource(int index) {
-        // send read request before sending any write request
-        if (index == sourceReaders.size()) {
-            index = 0;
-        }
-        try {
-            SourceResponse msg = sourceReaders.get(index++).read();
-            LOGGER.info(String.format("Read from source: [%s]", msg.getRawResponse()));
-        } catch (Exception e) {
-            LOGGER.warn("Ignoring error occurred while reading from source", e);
-        }
-        return index;
     }
 
     private void processMessage(MessageDto msg) {
         if (msg.isDone()) {
             // update flag
             sinkData.setSourceDone(msg.getSource());
-            // process an orphan record
-            MessageDto orphan = sinkData.getOrphanRecord(msg.getSource());
-            sinkWriter.write(orphan.getId(), "orphaned");
-            sinkData.removeFromSourceData(orphan);
+            processOrphanRecords(msg);
             return;
         }
 
@@ -104,9 +58,29 @@ public class SinkProcessor implements Runnable {
         } else if (sinkData.isAnySourceDone()) {
             // when any of the source is already done, then all new records are to be marked as orphan
             sinkWriter.write(msg.getId(), "orphaned");
+            String doneSource = sinkData.getDoneSource();
+            if (doneSource != null) {
+                processOrphanRecords(new MessageDto(doneSource, true));
+            }
         } else {
-            // no match found, so add to source data and wait
+            // no match found, so add to source data
             sinkData.addToSourceData(msg);
         }
+    }
+
+    private void processOrphanRecords(MessageDto msg) {
+        // process few orphan records
+        while (true) {
+            MessageDto orphan = sinkData.getOrphanRecord(msg.getSource());
+            if (orphan == null)
+                return;
+
+            sinkWriter.write(orphan.getId(), "orphaned");
+            sinkData.removeFromSourceData(orphan);
+        }
+    }
+
+    private boolean isConnectionClosed(Throwable t) {
+        return (t != null && t.toString().contains("Connection refused"));
     }
 }

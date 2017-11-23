@@ -3,7 +3,6 @@ package com.raisin.challenge.source;
 import org.apache.log4j.Logger;
 
 import com.raisin.challenge.source.message.MessageQueue;
-import com.raisin.challenge.source.message.parser.MessageParser;
 import com.raisin.challenge.util.ThreadUtil;
 
 public class SourceProcessor implements Runnable {
@@ -16,12 +15,12 @@ public class SourceProcessor implements Runnable {
     private final MessageQueue msgQueue;
     private final SourceReader sourceReader;
 
-    public SourceProcessor(String source, String sourceUrl, MessageQueue msgQueue, MessageParser msgParser) {
+    public SourceProcessor(String source, String sourceUrl, MessageQueue msgQueue, SourceReader sourceReader) {
         this.source = source;
         this.sourceUrl = sourceUrl;
         isDone = false;
         this.msgQueue = msgQueue;
-        sourceReader = new SourceReader(source, sourceUrl, msgParser);
+        this.sourceReader = sourceReader;
     }
 
     public void run() {

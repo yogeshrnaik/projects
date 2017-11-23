@@ -25,13 +25,9 @@ public class SinkWriter {
     }
 
     private void post(String body) {
-        try {
-            HttpEntity<String> request = new HttpEntity<>(body);
-            restTemplate.postForLocation(sinkUrl, request);
-            LOGGER.info(String.format("Sucessfully posted [%s] to url [%s].", body, sinkUrl));
-        } catch (Exception e) {
-            LOGGER.warn(String.format("Error while posting [%s] to url [%s].", body, sinkUrl), e);
-        }
+        HttpEntity<String> request = new HttpEntity<>(body);
+        String response = restTemplate.postForObject(sinkUrl, request, String.class);
+        LOGGER.info(String.format("Sucessfully posted [%s] to url [%s]. Response: [%s]", body, sinkUrl, response));
     }
 
 }

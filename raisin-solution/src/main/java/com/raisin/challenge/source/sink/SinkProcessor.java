@@ -41,7 +41,7 @@ public class SinkProcessor implements Runnable {
             } catch (Throwable t) {
                 LOGGER.warn(String.format("Error occurred while processing message: [%s]", msg), t);
                 if (Util.is406Error(t)) {
-                    notifyOthersAndWait();
+                    notifyOthers(); // but dont wait as we will wait on the queue anyways
                 }
                 if (isConnectionClosed(t))
                     return;
@@ -61,10 +61,12 @@ public class SinkProcessor implements Runnable {
         if (sinkData.isJoined(msg)) {
             // send "joined" and remove all records from source data for this id
             sinkWriter.write(msg.getId(), "joined");
+            // TODO: handle error occurred while posting joined record
             sinkData.removeFromSourceData(msg);
         } else if (sinkData.isAnySourceDone()) {
             // when any of the source is already done, then all new records are to be marked as orphan
-            sinkWriter.write(msg.getId(), "orphaned");
+            sinkData.addToSourceData(msg);
+            // sinkWriter.write(msg.getId(), "orphaned");
             String doneSource = sinkData.getDoneSource();
             if (doneSource != null) {
                 processOrphanRecords(new MessageDto(doneSource, true));
@@ -79,9 +81,12 @@ public class SinkProcessor implements Runnable {
         // process few orphan records
         while (true) {
             MessageDto orphan = sinkData.getOrphanRecord(msg.getSource());
-            if (orphan == null)
+            if (orphan == null) {
+                LOGGER.info("There are no orphans.");
                 return;
+            }
 
+            LOGGER.info("Processing orphan: " + orphan);
             sinkWriter.write(orphan.getId(), "orphaned");
             sinkData.removeFromSourceData(orphan);
         }

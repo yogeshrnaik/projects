@@ -63,9 +63,9 @@ public class SourceProcessor implements Runnable {
         if (response.isValid()) {
             LOGGER.info(String.format("Message received: [%s]", response.getRawResponse()));
             isDone = response.isDone();
-            if (isDone) {
-                notifyOthers();
-            }
+            // if (isDone) {
+            // notifyOthers();
+            // }
             msgQueue.add(response.getMessageDto());
             if (isDone) {
                 waitTillNotified();

@@ -3,6 +3,8 @@ package com.raisin.challenge;
 import static com.raisin.challenge.util.PropertyFileReader.getPropertyIntgerValue;
 import static com.raisin.challenge.util.PropertyFileReader.getPropertyValue;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,6 +20,12 @@ import com.raisin.challenge.source.sink.SinkProcessor;
 import com.raisin.challenge.util.ThreadUtil;
 
 public class RaisinSolution {
+
+    static {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss");
+        System.setProperty("current.date.time", dateFormat.format(new Date()));
+    }
 
     private static final String SOURCE_B = "B";
     private static final String SOURCE_A = "A";

@@ -1,5 +1,7 @@
 package com.raisin.challenge.source;
 
+import static com.raisin.challenge.util.Util.is406Error;
+
 import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -33,7 +35,7 @@ public class SourceReader {
             MessageDto msg = msgParser.parse(source, messageBody);
             return new SourceResponse(statusCode, messageBody, msg);
         } catch (Throwable t) {
-            if (t.toString().contains("406")) {
+            if (is406Error(t)) {
                 LOGGER.warn(String.format("Error while reading from source: [%s], URL: [%s]", source, sourceUrl), t);
                 return new SourceResponse(406, "");
             }

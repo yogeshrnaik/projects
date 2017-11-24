@@ -1,5 +1,7 @@
 package com.raisin.challenge.source;
 
+import static com.raisin.challenge.util.Util.isConnectionClosed;
+
 import org.apache.log4j.Logger;
 
 import com.raisin.challenge.source.message.MessageQueue;
@@ -40,6 +42,7 @@ public class SourceProcessor implements Runnable {
                 LOGGER.warn(String.format("Error occurred while processing from Source URL: [%s]", sourceUrl), t);
                 if (isConnectionClosed(t))
                     return;
+
                 ThreadUtil.sleep(1000);
             }
         }
@@ -48,20 +51,42 @@ public class SourceProcessor implements Runnable {
     private void processMessage() {
         SourceResponse response = sourceReader.read();
         if (response.isNotAcceptable()) {
-            throw new RuntimeException(String.format("Response from source [%s] is not acceptable.", source));
+            // notify and wait
+            notifyOthers();
+            waitTillNotified();
+            // throw new RuntimeException(String.format("Response from source [%s] is not acceptable.", source));
         }
 
         if (response.isValid()) {
             LOGGER.info(String.format("Message received: [%s]", response.getRawResponse()));
             isDone = response.isDone();
+            if (isDone) {
+                notifyOthers();
+            }
             msgQueue.add(response.getMessageDto());
+            if (isDone) {
+                waitTillNotified();
+            }
         } else {
             LOGGER.warn(String.format("Ignoring defective message: [%s]", response.getRawResponse()));
         }
     }
 
-    private boolean isConnectionClosed(Throwable t) {
-        return (t != null && t.toString().contains("Connection refused"))
-            || isConnectionClosed(t.getCause());
+    private void waitTillNotified() {
+        try {
+            synchronized (sinkData) {
+                LOGGER.info("Waiting...");
+                sinkData.wait();
+            }
+        } catch (InterruptedException e) {
+            LOGGER.warn("Interrupted when waiting...");
+        }
+    }
+
+    private void notifyOthers() {
+        synchronized (sinkData) {
+            LOGGER.info("Notifying others...");
+            sinkData.notifyAll();
+        }
     }
 }

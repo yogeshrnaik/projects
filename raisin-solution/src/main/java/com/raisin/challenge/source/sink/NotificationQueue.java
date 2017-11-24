@@ -1,28 +1,29 @@
-package com.raisin.challenge.source.message;
+package com.raisin.challenge.source.sink;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class MessageQueue {
+public class NotificationQueue {
 
-    final private BlockingQueue<MessageDto> queue;
+    final private BlockingQueue<String> queue;
 
-    public MessageQueue(int queueSize) {
-        queue = new ArrayBlockingQueue<MessageDto>(queueSize);
+    public NotificationQueue() {
+        queue = new ArrayBlockingQueue<String>(1);
     }
 
-    public void add(MessageDto object) {
+    public void add(String object) {
         try {
             queue.put(object);
         } catch (InterruptedException e) {
         }
     }
 
-    public MessageDto next() {
+    public String next() {
         try {
             return queue.take();
         } catch (InterruptedException e) {
         }
         return null;
     }
+
 }

@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import com.raisin.challenge.source.message.MessageDto;
 import com.raisin.challenge.source.message.MessageQueue;
+import com.raisin.challenge.util.Util;
 
 public class SinkProcessor implements Runnable {
 
@@ -11,7 +12,7 @@ public class SinkProcessor implements Runnable {
 
     private final int sinkId;
     private final SinkWriter sinkWriter;
-    private SinkData sinkData;
+    private final SinkData sinkData;
     private final MessageQueue msgQueue;
 
     public SinkProcessor(int sinkId, String sinkUrl, MessageQueue msgQueue, SinkData sinkData) {
@@ -25,7 +26,7 @@ public class SinkProcessor implements Runnable {
     public void run() {
         Thread.currentThread().setName("SinkProcessor_" + sinkId);
         processUntilNotAllSourcesDone();
-        // processRemainingOrphanRecords();
+        notifyOthers();
         LOGGER.info("Sink processing finished.");
     }
 
@@ -36,6 +37,9 @@ public class SinkProcessor implements Runnable {
                 processMessage(msg);
             } catch (Throwable t) {
                 LOGGER.warn(String.format("Error occurred while processing message: [%s]", msg), t);
+                if (Util.is406Error(t)) {
+                    notifyOthersAndWait();
+                }
                 if (isConnectionClosed(t))
                     return;
             }
@@ -82,5 +86,26 @@ public class SinkProcessor implements Runnable {
 
     private boolean isConnectionClosed(Throwable t) {
         return (t != null && t.toString().contains("Connection refused"));
+    }
+
+    private void notifyOthersAndWait() {
+        try {
+            LOGGER.info("Notifying others and waiting...");
+            synchronized (sinkData) {
+                LOGGER.info("Notifying others...");
+                sinkData.notifyAll();
+                LOGGER.info("Waiting...");
+                sinkData.wait();
+            }
+        } catch (InterruptedException e) {
+            LOGGER.warn("Interrupted when waiting...");
+        }
+    }
+
+    private void notifyOthers() {
+        LOGGER.info("Notifying others...");
+        synchronized (sinkData) {
+            sinkData.notifyAll();
+        }
     }
 }

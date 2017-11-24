@@ -61,7 +61,6 @@ public class SinkProcessor implements Runnable {
         if (sinkData.isJoined(msg)) {
             // send "joined" and remove all records from source data for this id
             sinkWriter.write(msg.getId(), "joined");
-            // TODO: handle error occurred while posting joined record
             sinkData.removeFromSourceData(msg);
         } else if (sinkData.isAnySourceDone()) {
             // when any of the source is already done, then all new records are to be marked as orphan
@@ -94,20 +93,6 @@ public class SinkProcessor implements Runnable {
 
     private boolean isConnectionClosed(Throwable t) {
         return (t != null && t.toString().contains("Connection refused"));
-    }
-
-    private void notifyOthersAndWait() {
-        try {
-            LOGGER.info("Notifying others and waiting...");
-            synchronized (lock) {
-                LOGGER.info("Notifying others...");
-                lock.notifyAll();
-                LOGGER.info("Waiting...");
-                lock.wait();
-            }
-        } catch (InterruptedException e) {
-            LOGGER.warn("Interrupted when waiting...");
-        }
     }
 
     private void notifyOthers() {

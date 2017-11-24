@@ -57,7 +57,8 @@ public class SinkProcessor implements Runnable {
         // see if there is any match available, if yes, send "joined" else add to source data
         if (sinkData.isJoined(msg)) {
             // send "joined" and remove all records from source data for this id
-            sinkData(msg, "joined");
+            sinkWriter.write(msg.getId(), "joined");
+            sinkData.removeFromSourceData(msg);
         } else if (sinkData.isAnySourceDone()) {
             // when any of the source is already done, then all new records are to be marked as orphan
             sinkWriter.write(msg.getId(), "orphaned");
@@ -72,17 +73,15 @@ public class SinkProcessor implements Runnable {
     }
 
     private void processOrphanRecords(MessageDto msg) {
+        // process few orphan records
         while (true) {
             MessageDto orphan = sinkData.getOrphanRecord(msg.getSource());
             if (orphan == null)
                 return;
-            sinkData(orphan, "orphaned");
-        }
-    }
 
-    private void sinkData(MessageDto msg, String type) {
-        sinkWriter.write(msg.getId(), type);
-        sinkData.removeFromSourceData(msg);
+            sinkWriter.write(orphan.getId(), "orphaned");
+            sinkData.removeFromSourceData(orphan);
+        }
     }
 
     private boolean isConnectionClosed(Throwable t) {
@@ -90,14 +89,11 @@ public class SinkProcessor implements Runnable {
     }
 
     private void notifyOthersAndWait() {
-        LOGGER.info("Notifying others and waiting...");
-        notifyOthers();
-        waitTillNotified();
-    }
-
-    private void waitTillNotified() {
         try {
+            LOGGER.info("Notifying others and waiting...");
             synchronized (sinkData) {
+                LOGGER.info("Notifying others...");
+                sinkData.notifyAll();
                 LOGGER.info("Waiting...");
                 sinkData.wait();
             }
@@ -107,8 +103,8 @@ public class SinkProcessor implements Runnable {
     }
 
     private void notifyOthers() {
+        LOGGER.info("Notifying others...");
         synchronized (sinkData) {
-            LOGGER.info("Notifying others...");
             sinkData.notifyAll();
         }
     }

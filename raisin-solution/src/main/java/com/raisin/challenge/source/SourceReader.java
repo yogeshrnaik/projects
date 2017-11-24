@@ -4,6 +4,7 @@ import static com.raisin.challenge.util.Util.is406Error;
 
 import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import com.raisin.challenge.source.message.MessageDto;
@@ -22,7 +23,7 @@ public class SourceReader {
         this.source = source;
         this.sourceUrl = sourceUrl;
         this.msgParser = msgParser;
-        restTemplate = new RestTemplate();
+        restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
     }
 
     public SourceResponse read() {

@@ -2,6 +2,7 @@ package com.raisin.challenge.source.sink;
 
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import com.raisin.challenge.RaisinSolution;
@@ -16,7 +17,7 @@ public class SinkWriter {
     public SinkWriter(String sinkUrl) {
         super();
         this.sinkUrl = sinkUrl;
-        restTemplate = new RestTemplate();
+        restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
     }
 
     public void write(String id, String recordType) {

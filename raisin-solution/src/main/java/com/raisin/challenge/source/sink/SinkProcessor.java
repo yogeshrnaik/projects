@@ -33,6 +33,7 @@ public class SinkProcessor implements Runnable {
     private void processUntilNotAllSourcesDone() {
         while (!sinkData.allDataProcessed()) {
             MessageDto msg = msgQueue.next();
+            LOGGER.info("Message taken from queue: " + msg);
             try {
                 processMessage(msg);
             } catch (Throwable t) {
@@ -103,8 +104,8 @@ public class SinkProcessor implements Runnable {
     }
 
     private void notifyOthers() {
-        LOGGER.info("Notifying others...");
         synchronized (sinkData) {
+            LOGGER.info("Notifying others...");
             sinkData.notifyAll();
         }
     }

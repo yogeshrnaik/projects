@@ -18,14 +18,17 @@ public class SourceProcessor implements Runnable {
     private final MessageQueue msgQueue;
     private final SourceReader sourceReader;
     private final SinkData sinkData;
+    private final Object lock;
 
-    public SourceProcessor(String source, String sourceUrl, MessageQueue msgQueue, SourceReader sourceReader, SinkData sinkData) {
+    public SourceProcessor(String source, String sourceUrl, MessageQueue msgQueue, SourceReader sourceReader, SinkData sinkData,
+        Object lock) {
         this.source = source;
         this.sourceUrl = sourceUrl;
         isDone = false;
         this.msgQueue = msgQueue;
         this.sourceReader = sourceReader;
         this.sinkData = sinkData;
+        this.lock = lock;
     }
 
     public void run() {
@@ -74,9 +77,9 @@ public class SourceProcessor implements Runnable {
 
     private void waitTillNotified() {
         try {
-            synchronized (sinkData) {
+            synchronized (lock) {
                 LOGGER.info("Waiting...");
-                sinkData.wait();
+                lock.wait();
             }
         } catch (InterruptedException e) {
             LOGGER.warn("Interrupted when waiting...");
@@ -84,9 +87,9 @@ public class SourceProcessor implements Runnable {
     }
 
     private void notifyOthers() {
-        synchronized (sinkData) {
+        synchronized (lock) {
             LOGGER.info("Notifying others...");
-            sinkData.notifyAll();
+            lock.notifyAll();
         }
     }
 }

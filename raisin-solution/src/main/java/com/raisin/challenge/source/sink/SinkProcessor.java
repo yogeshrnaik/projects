@@ -14,12 +14,14 @@ public class SinkProcessor implements Runnable {
     private final SinkWriter sinkWriter;
     private final SinkData sinkData;
     private final MessageQueue msgQueue;
+    private final Object lock;
 
-    public SinkProcessor(int sinkId, String sinkUrl, MessageQueue msgQueue, SinkData sinkData) {
+    public SinkProcessor(int sinkId, String sinkUrl, MessageQueue msgQueue, SinkData sinkData, Object lock) {
         this.sinkId = sinkId;
         this.sinkWriter = new SinkWriter(sinkUrl);
         this.msgQueue = msgQueue;
         this.sinkData = sinkData;
+        this.lock = lock;
     }
 
     @Override
@@ -92,11 +94,11 @@ public class SinkProcessor implements Runnable {
     private void notifyOthersAndWait() {
         try {
             LOGGER.info("Notifying others and waiting...");
-            synchronized (sinkData) {
+            synchronized (lock) {
                 LOGGER.info("Notifying others...");
-                sinkData.notifyAll();
+                lock.notifyAll();
                 LOGGER.info("Waiting...");
-                sinkData.wait();
+                lock.wait();
             }
         } catch (InterruptedException e) {
             LOGGER.warn("Interrupted when waiting...");
@@ -104,9 +106,9 @@ public class SinkProcessor implements Runnable {
     }
 
     private void notifyOthers() {
-        synchronized (sinkData) {
+        synchronized (lock) {
             LOGGER.info("Notifying others...");
-            sinkData.notifyAll();
+            lock.notifyAll();
         }
     }
 }

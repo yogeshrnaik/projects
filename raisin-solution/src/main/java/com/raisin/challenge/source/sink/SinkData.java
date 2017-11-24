@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.raisin.challenge.source.message.MessageDto;
@@ -86,5 +87,15 @@ public class SinkData {
                 return new MessageDto(otherSource, id);
         }
         return null;
+    }
+
+    public List<MessageDto> getOrphanRecords(String source) {
+        // get records belonging to another source for which there is no record in this source
+        String otherSource = sourceData.keySet().stream().filter(e -> !e.equals(source)).findFirst().get();
+
+        return sourceData.get(otherSource).stream()
+            .filter(id -> !sourceData.get(source).contains(id))
+            .map(id -> new MessageDto(otherSource, id))
+            .collect(Collectors.toList());
     }
 }

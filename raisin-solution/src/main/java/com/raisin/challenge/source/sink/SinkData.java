@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.raisin.challenge.source.message.MessageDto;
@@ -88,6 +89,19 @@ public class SinkData {
         for (String id : sourceData.get(otherSource)) {
             if (!sourceData.get(source).contains(id))
                 return new MessageDto(otherSource, id);
+        }
+        return null;
+    }
+
+    public MessageDto getJoinedRecord(String source) {
+        // get joined record from all sources
+        List<String> otherSources = sourceData.keySet().stream().filter(e -> !e.equals(source)).collect(Collectors.toList());
+
+        // get joined record for this source for which there are records in other sources as well
+        for (String id : sourceData.get(source)) {
+            if (otherSources.stream().map(s -> sourceData.get(s)).allMatch(ids -> ids.contains(id))) {
+                return new MessageDto(source, id);
+            }
         }
         return null;
     }

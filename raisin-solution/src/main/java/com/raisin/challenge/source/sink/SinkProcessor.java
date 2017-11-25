@@ -1,10 +1,10 @@
 package com.raisin.challenge.source.sink;
 
 import static com.raisin.challenge.util.ThreadUtil.notifyOthers;
-import static com.raisin.challenge.util.Util.is406Error;
 
 import org.apache.log4j.Logger;
 
+import com.raisin.challenge.exception.NotAcceptableException;
 import com.raisin.challenge.source.message.MessageDto;
 import com.raisin.challenge.source.message.MessageQueue;
 
@@ -36,18 +36,24 @@ public class SinkProcessor implements Runnable {
 
     private void processUntilNotAllSourcesDone() {
         while (sinkData.notAllDataProcessed()) {
-            MessageDto msg = takeFromQueue();
-            try {
-                process(msg);
-            } catch (Throwable t) {
-                LOGGER.warn(String.format("Error occurred while processing message: [%s]", msg), t);
-                if (is406Error(t)) {
-                    notifyOthers(lock); // but don't wait as we will wait on the queue anyways
-                }
-                if (isConnectionClosed(t))
-                    return;
+            if (!processMessage(takeFromQueue())) {
+                return;
             }
         }
+    }
+
+    private boolean processMessage(MessageDto msg) {
+        try {
+            process(msg);
+        } catch (NotAcceptableException e) {
+            LOGGER.warn(String.format("Error occurred while processing message: [%s]. Error: [%s]", msg, e));
+            notifyOthers(lock); // but don't wait as we will wait on the queue anyways
+        } catch (Throwable t) {
+            LOGGER.error(String.format("Error occurred while processing message: [%s]", msg), t);
+            if (isConnectionClosed(t))
+                return false;
+        }
+        return true;
     }
 
     private MessageDto takeFromQueue() {
@@ -58,11 +64,15 @@ public class SinkProcessor implements Runnable {
 
     private void process(MessageDto msg) {
         if (msg.isDone()) {
-            sinkData.markSourceDone(msg.getSource());
-            processOrphanRecords(msg);
+            processDoneMessage(msg);
         } else {
             processIdMessage(msg);
         }
+    }
+
+    private void processDoneMessage(MessageDto msg) {
+        sinkData.markSourceDone(msg.getSource());
+        processRecordsForDoneSource(msg.getSource());
     }
 
     private void processIdMessage(MessageDto msg) {
@@ -83,32 +93,51 @@ public class SinkProcessor implements Runnable {
 
         String doneSource = sinkData.getDoneSource();
         if (doneSource != null) {
-            processOrphanRecords(new MessageDto(doneSource, true));
+            processRecordsForDoneSource(doneSource);
         }
     }
 
     private void processJoined(MessageDto msg) {
-        // send "joined" and remove all records from source data for this id
+        // send "joined" and remove all records from sink data for this id
+        sinkData.addToSourceData(msg);
         sinkWriter.write(msg.getId(), "joined");
         sinkData.removeFromSourceData(msg);
     }
 
-    private void processOrphanRecords(MessageDto msg) {
-        // process orphan records till we get error
+    private void processRecordsForDoneSource(String doneSource) {
+        // process existing joined records and orphan records
+        processJoinedRecords(doneSource);
+        processOrphanRecords(doneSource);
+    }
+
+    private void processOrphanRecords(String doneSource) {
+        // process existing orphan records till we get error
         while (true) {
-            MessageDto orphan = sinkData.getOrphanRecord(msg.getSource());
+            MessageDto orphan = sinkData.getOrphanRecord(doneSource);
             if (orphan == null) {
-                LOGGER.info("There are no orphans.");
-                return;
+                LOGGER.info("There are no orphan records");
+                break;
             }
-            processOrphan(orphan);
+            processRecord(orphan, "orphaned");
         }
     }
 
-    private void processOrphan(MessageDto orphan) {
-        LOGGER.info("Processing orphan: " + orphan);
-        sinkWriter.write(orphan.getId(), "orphaned");
-        sinkData.removeFromSourceData(orphan);
+    private void processJoinedRecords(String doneSource) {
+        // process existing joined records till we get error
+        while (true) {
+            MessageDto joined = sinkData.getJoinedRecord(doneSource);
+            if (joined == null) {
+                LOGGER.info("There are no joined records.");
+                break;
+            }
+            processRecord(joined, "joined");
+        }
+    }
+
+    private void processRecord(MessageDto record, String type) {
+        LOGGER.info(String.format("Processing [%s] record [%s]...", type, record));
+        sinkWriter.write(record.getId(), type);
+        sinkData.removeFromSourceData(record);
     }
 
     private boolean isConnectionClosed(Throwable t) {

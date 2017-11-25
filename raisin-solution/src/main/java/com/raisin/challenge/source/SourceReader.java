@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import com.raisin.challenge.exception.NotAcceptableException;
 import com.raisin.challenge.source.message.MessageDto;
 import com.raisin.challenge.source.message.parser.MessageParser;
 
@@ -37,8 +38,8 @@ public class SourceReader {
             return new SourceResponse(statusCode, messageBody, msg);
         } catch (Throwable t) {
             if (is406Error(t)) {
-                LOGGER.warn(String.format("Error while reading from source: [%s], URL: [%s]. Error: [%s].", source, sourceUrl, t));
-                return new SourceResponse(406, "");
+                throw new NotAcceptableException(
+                    String.format("Error while reading from source: [%s], URL: [%s]. Error: [%s].", source, sourceUrl, t));
             }
             throw t;
         }

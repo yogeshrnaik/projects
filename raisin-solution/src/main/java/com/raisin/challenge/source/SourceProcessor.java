@@ -6,6 +6,7 @@ import static com.raisin.challenge.util.Util.isConnectionClosed;
 
 import org.apache.log4j.Logger;
 
+import com.raisin.challenge.exception.NotAcceptableException;
 import com.raisin.challenge.source.message.MessageDto;
 import com.raisin.challenge.source.message.MessageQueue;
 import com.raisin.challenge.source.sink.SinkData;
@@ -41,8 +42,10 @@ public class SourceProcessor implements Runnable {
     private void processUntilNotDone() {
         while (sinkData.notAllDataProcessed()) {
             try {
-                SourceResponse response = sourceReader.read();
-                processMessage(response);
+                processMessage(sourceReader.read());
+            } catch (NotAcceptableException e) {
+                notifyOthers(lock);
+                waitTillNotified(lock);
             } catch (Throwable t) {
                 LOGGER.warn(String.format("Error occurred while processing from Source URL: [%s]", sourceUrl), t);
                 if (isConnectionClosed(t))
@@ -53,12 +56,6 @@ public class SourceProcessor implements Runnable {
     }
 
     private void processMessage(SourceResponse response) {
-        if (response.isNotAcceptable()) {
-            // notify and wait
-            notifyOthers(lock);
-            waitTillNotified(lock);
-            return;
-        }
         if (response.isValid()) {
             processValidMessage(response);
         } else {

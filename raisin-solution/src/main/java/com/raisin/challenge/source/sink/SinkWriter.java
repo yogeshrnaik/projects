@@ -1,4 +1,4 @@
-package com.raisin.challenge.sink;
+package com.raisin.challenge.source.sink;
 
 import static com.raisin.challenge.util.Util.is406Error;
 

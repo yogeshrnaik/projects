@@ -1,18 +1,18 @@
 package com.raisin.challenge.source.message;
 
-public class SourceMessage {
+public class MessageDto {
 
     private final String source;
     private final String id;
     private final boolean done;
 
-    public SourceMessage(String source, String id) {
+    public MessageDto(String source, String id) {
         this.source = source;
         this.id = id;
         this.done = false;
     }
 
-    public SourceMessage(String source, boolean done) {
+    public MessageDto(String source, boolean done) {
         this.source = source;
         this.id = null;
         this.done = done;
@@ -32,7 +32,7 @@ public class SourceMessage {
 
     @Override
     public String toString() {
-        return done ? String.format("SourceMessage [source=%s, done=%s]", source, done)
-            : String.format("SourceMessage [source=%s, id=%s]", source, id);
+        return done ? String.format("MessageDto [source=%s, done=%s]", source, done)
+            : String.format("MessageDto [source=%s, id=%s]", source, id);
     }
 }

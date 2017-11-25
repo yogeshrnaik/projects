@@ -2,15 +2,18 @@ package com.raisin.challenge.source;
 
 import static com.raisin.challenge.util.Util.is406Error;
 
+import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import com.raisin.challenge.exception.NotAcceptableException;
-import com.raisin.challenge.source.message.SourceMessage;
+import com.raisin.challenge.source.message.MessageDto;
 import com.raisin.challenge.source.message.parser.MessageParser;
 
 public class SourceReader {
+
+    private static final Logger LOGGER = Logger.getLogger(SourceReader.class);
 
     private final String source;
     private final String sourceUrl;
@@ -31,7 +34,7 @@ public class SourceReader {
             String messageBody = response.getBody();
             int statusCode = response.getStatusCode().value();
 
-            SourceMessage msg = msgParser.parse(source, messageBody);
+            MessageDto msg = msgParser.parse(source, messageBody);
             return new SourceResponse(statusCode, messageBody, msg);
         } catch (Throwable t) {
             if (is406Error(t)) {

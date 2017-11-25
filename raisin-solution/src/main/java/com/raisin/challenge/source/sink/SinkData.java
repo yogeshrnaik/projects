@@ -1,4 +1,4 @@
-package com.raisin.challenge.sink;
+package com.raisin.challenge.source.sink;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.util.stream.Collectors.toMap;
@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.collect.Lists;
-import com.raisin.challenge.source.message.SourceMessage;
+import com.raisin.challenge.source.message.MessageDto;
 
 public class SinkData {
 
@@ -56,7 +56,7 @@ public class SinkData {
         sourceDoneFlags.put(source, true);
     }
 
-    public void addToSourceData(SourceMessage msg) {
+    public void addToSourceData(MessageDto msg) {
         List<String> sources = idWiseMap.get(msg.getId());
         if (sources == null) {
             sources = Lists.newArrayList();
@@ -65,11 +65,11 @@ public class SinkData {
         idWiseMap.put(msg.getId(), sources);
     }
 
-    public void removeFromSourceData(SourceMessage msg) {
+    public void removeFromSourceData(MessageDto msg) {
         idWiseMap.remove(msg.getId());
     }
 
-    public boolean isJoined(SourceMessage msg) {
+    public boolean isJoined(MessageDto msg) {
         List<String> sources = idWiseMap.get(msg.getId());
         return (sources != null && sources.size() == sourcesCount);
     }
@@ -78,18 +78,18 @@ public class SinkData {
         idWiseMap.clear();
     }
 
-    public SourceMessage getOrphanRecord(String doneSource) {
-        Optional<SourceMessage> orphan = idWiseMap.entrySet().stream()
+    public MessageDto getOrphanRecord(String doneSource) {
+        Optional<MessageDto> orphan = idWiseMap.entrySet().stream()
             .filter(e -> !e.getValue().contains(doneSource))
-            .map(e -> new SourceMessage(e.getValue().get(0), e.getKey()))
+            .map(e -> new MessageDto(e.getValue().get(0), e.getKey()))
             .findFirst();
         return orphan.isPresent() ? orphan.get() : null;
     }
 
-    public SourceMessage getJoinedRecord(String source) {
-        Optional<SourceMessage> joined = idWiseMap.entrySet().stream()
+    public MessageDto getJoinedRecord(String source) {
+        Optional<MessageDto> joined = idWiseMap.entrySet().stream()
             .filter(e -> e.getValue().size() == sourcesCount)
-            .map(e -> new SourceMessage(source, e.getKey())).findFirst();
+            .map(e -> new MessageDto(source, e.getKey())).findFirst();
 
         return joined.isPresent() ? joined.get() : null;
     }

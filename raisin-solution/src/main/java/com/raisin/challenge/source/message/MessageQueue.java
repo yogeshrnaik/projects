@@ -3,22 +3,22 @@ package com.raisin.challenge.source.message;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class SourceMessageQueue {
+public class MessageQueue {
 
-    final private BlockingQueue<SourceMessage> queue;
+    final private BlockingQueue<MessageDto> queue;
 
-    public SourceMessageQueue(int queueSize) {
-        queue = new ArrayBlockingQueue<SourceMessage>(queueSize);
+    public MessageQueue(int queueSize) {
+        queue = new ArrayBlockingQueue<MessageDto>(queueSize);
     }
 
-    public void add(SourceMessage object) {
+    public void add(MessageDto object) {
         try {
             queue.put(object);
         } catch (InterruptedException e) {
         }
     }
 
-    public SourceMessage next() {
+    public MessageDto next() {
         try {
             return queue.take();
         } catch (InterruptedException e) {

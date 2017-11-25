@@ -7,9 +7,9 @@ import static com.raisin.challenge.util.Util.isConnectionClosed;
 import org.apache.log4j.Logger;
 
 import com.raisin.challenge.exception.NotAcceptableException;
-import com.raisin.challenge.source.message.MessageDto;
-import com.raisin.challenge.source.message.MessageQueue;
-import com.raisin.challenge.source.sink.SinkData;
+import com.raisin.challenge.sink.SinkData;
+import com.raisin.challenge.source.message.SourceMessage;
+import com.raisin.challenge.source.message.SourceMessageQueue;
 import com.raisin.challenge.util.ThreadUtil;
 
 public class SourceProcessor implements Runnable {
@@ -18,12 +18,12 @@ public class SourceProcessor implements Runnable {
 
     private final String source;
     private final String sourceUrl;
-    private final MessageQueue msgQueue;
+    private final SourceMessageQueue msgQueue;
     private final SourceReader sourceReader;
     private final SinkData sinkData;
     private final Object lock;
 
-    public SourceProcessor(String source, String sourceUrl, MessageQueue msgQueue, SourceReader sourceReader, SinkData sinkData,
+    public SourceProcessor(String source, String sourceUrl, SourceMessageQueue msgQueue, SourceReader sourceReader, SinkData sinkData,
         Object lock) {
         this.source = source;
         this.sourceUrl = sourceUrl;
@@ -66,13 +66,13 @@ public class SourceProcessor implements Runnable {
     private void processValidMessage(SourceResponse response) {
         LOGGER.info(String.format("Message received: [%s]", response.getRawResponse()));
         boolean isDone = response.isDone();
-        addToQueue(response.getMessageDto());
+        addToQueue(response.getSourceMessage());
         if (isDone) {
             waitTillNotified(lock);
         }
     }
 
-    private void addToQueue(MessageDto msg) {
+    private void addToQueue(SourceMessage msg) {
         msgQueue.add(msg);
     }
 

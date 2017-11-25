@@ -46,4 +46,19 @@ public class ThreadUtil {
             lock.notifyAll();
         }
     }
+
+    public static void notifyOthersAndWaitTillNotified(Object lock) {
+        try {
+            LOGGER.info("Notifying others and waiting...");
+            synchronized (lock) {
+                LOGGER.info("Notifying others...");
+                lock.notifyAll();
+
+                LOGGER.info("Waiting...");
+                lock.wait();
+            }
+        } catch (InterruptedException e) {
+            LOGGER.warn("Interrupted when waiting...");
+        }
+    }
 }

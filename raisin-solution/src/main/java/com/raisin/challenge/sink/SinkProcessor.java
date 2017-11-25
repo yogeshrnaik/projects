@@ -1,12 +1,12 @@
-package com.raisin.challenge.source.sink;
+package com.raisin.challenge.sink;
 
 import static com.raisin.challenge.util.ThreadUtil.notifyOthers;
 
 import org.apache.log4j.Logger;
 
 import com.raisin.challenge.exception.NotAcceptableException;
-import com.raisin.challenge.source.message.MessageDto;
-import com.raisin.challenge.source.message.MessageQueue;
+import com.raisin.challenge.source.message.SourceMessage;
+import com.raisin.challenge.source.message.SourceMessageQueue;
 
 public class SinkProcessor implements Runnable {
 
@@ -15,10 +15,10 @@ public class SinkProcessor implements Runnable {
     private final int sinkId;
     private final SinkWriter sinkWriter;
     private final SinkData sinkData;
-    private final MessageQueue msgQueue;
+    private final SourceMessageQueue msgQueue;
     private final Object lock;
 
-    public SinkProcessor(int sinkId, String sinkUrl, MessageQueue msgQueue, SinkData sinkData, Object lock) {
+    public SinkProcessor(int sinkId, String sinkUrl, SourceMessageQueue msgQueue, SinkData sinkData, Object lock) {
         this.sinkId = sinkId;
         this.sinkWriter = new SinkWriter(sinkUrl);
         this.msgQueue = msgQueue;
@@ -42,7 +42,7 @@ public class SinkProcessor implements Runnable {
         }
     }
 
-    private boolean processMessage(MessageDto msg) {
+    private boolean processMessage(SourceMessage msg) {
         try {
             process(msg);
         } catch (NotAcceptableException e) {
@@ -56,13 +56,13 @@ public class SinkProcessor implements Runnable {
         return true;
     }
 
-    private MessageDto takeFromQueue() {
-        MessageDto msg = msgQueue.next();
+    private SourceMessage takeFromQueue() {
+        SourceMessage msg = msgQueue.next();
         LOGGER.info("Message taken from queue: " + msg);
         return msg;
     }
 
-    private void process(MessageDto msg) {
+    private void process(SourceMessage msg) {
         if (msg.isDone()) {
             processDoneMessage(msg);
         } else {
@@ -70,12 +70,12 @@ public class SinkProcessor implements Runnable {
         }
     }
 
-    private void processDoneMessage(MessageDto msg) {
+    private void processDoneMessage(SourceMessage msg) {
         sinkData.markSourceDone(msg.getSource());
         processRecordsForDoneSource(msg.getSource());
     }
 
-    private void processIdMessage(MessageDto msg) {
+    private void processIdMessage(SourceMessage msg) {
         sinkData.addToSourceData(msg);
 
         // see if there is any match available, if yes, send "joined" else add to source data
@@ -86,7 +86,7 @@ public class SinkProcessor implements Runnable {
         }
     }
 
-    private void processAnySourceDone(MessageDto msg) {
+    private void processAnySourceDone(SourceMessage msg) {
         // when any of the source is already done, then all incoming records are orphans
         String doneSource = sinkData.getDoneSource();
         if (doneSource != null) {
@@ -94,7 +94,7 @@ public class SinkProcessor implements Runnable {
         }
     }
 
-    private void processJoined(MessageDto msg) {
+    private void processJoined(SourceMessage msg) {
         // send "joined" and remove all records from sink data for this id
         sinkWriter.write(msg.getId(), "joined");
         sinkData.removeFromSourceData(msg);
@@ -109,7 +109,7 @@ public class SinkProcessor implements Runnable {
     private void processOrphanRecords(String doneSource) {
         // process existing orphan records till we get error
         while (true) {
-            MessageDto orphan = sinkData.getOrphanRecord(doneSource);
+            SourceMessage orphan = sinkData.getOrphanRecord(doneSource);
             if (orphan == null) {
                 LOGGER.info("There are no orphan records");
                 break;
@@ -121,7 +121,7 @@ public class SinkProcessor implements Runnable {
     private void processJoinedRecords(String doneSource) {
         // process existing joined records till we get error
         while (true) {
-            MessageDto joined = sinkData.getJoinedRecord(doneSource);
+            SourceMessage joined = sinkData.getJoinedRecord(doneSource);
             if (joined == null) {
                 LOGGER.info("There are no joined records.");
                 break;
@@ -130,7 +130,7 @@ public class SinkProcessor implements Runnable {
         }
     }
 
-    private void processRecord(MessageDto record, String type) {
+    private void processRecord(SourceMessage record, String type) {
         LOGGER.info(String.format("Processing [%s] record [%s]...", type, record));
         sinkWriter.write(record.getId(), type);
         sinkData.removeFromSourceData(record);

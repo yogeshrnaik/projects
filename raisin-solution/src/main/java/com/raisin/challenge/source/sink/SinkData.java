@@ -4,34 +4,26 @@ import static java.lang.Boolean.parseBoolean;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.raisin.challenge.source.message.MessageDto;
 
 public class SinkData {
 
+    private final int sourcesCount;
     private final Map<String, Boolean> sourceDoneFlags;
-    private final Map<String, List<String>> sourceData;
+
+    private final Map<String, List<String>> idWiseMap;
 
     public SinkData(String... sources) {
+        this.sourcesCount = sources.length;
         this.sourceDoneFlags = getSourceFlagsMap(sources);
-        this.sourceData = initSourceDataMap(sources);
-    }
-
-    public Collection<List<String>> getSourceData() {
-        return sourceData.values();
-    }
-
-    private Map<String, List<String>> initSourceDataMap(String[] sources) {
-        return new ConcurrentHashMap<>(Arrays.asList(sources).stream().map(it -> new Object[] {it, it})
-            .collect(toMap(e -> e[0].toString(), e -> Lists.<String>newArrayList())));
+        this.idWiseMap = new ConcurrentHashMap<>();
     }
 
     private Map<String, Boolean> getSourceFlagsMap(String... sources) {
@@ -44,7 +36,7 @@ public class SinkData {
     }
 
     public boolean allDataProcessed() {
-        return !notAllSourcesDone() && sourceData.values().stream().allMatch(e -> e.size() == 0);
+        return !notAllSourcesDone() && idWiseMap.isEmpty();
     }
 
     public boolean notAllSourcesDone() {
@@ -65,44 +57,40 @@ public class SinkData {
     }
 
     public void addToSourceData(MessageDto msg) {
-        sourceData.get(msg.getSource()).add(msg.getId());
+        List<String> sources = idWiseMap.get(msg.getId());
+        if (sources == null) {
+            sources = Lists.newArrayList();
+        }
+        sources.add(msg.getSource());
+        idWiseMap.put(msg.getId(), sources);
     }
 
     public void removeFromSourceData(MessageDto msg) {
-        sourceData.entrySet().stream()
-            .forEach(it -> it.getValue().remove(msg.getId()));
+        idWiseMap.remove(msg.getId());
     }
 
     public boolean isJoined(MessageDto msg) {
-        return sourceData.entrySet().stream().filter(it -> !it.getKey().equals(msg.getSource()))
-            .allMatch(it -> it.getValue().contains(msg.getId()));
+        List<String> sources = idWiseMap.get(msg.getId());
+        return (sources != null && sources.size() == sourcesCount);
     }
 
     public void clearSourceData() {
-        sourceData.clear();
+        idWiseMap.clear();
     }
 
-    public MessageDto getOrphanRecord(String source) {
-        // get record belonging to another source for which there is no record in this source
-        String otherSource = sourceData.keySet().stream().filter(e -> !e.equals(source)).findFirst().get();
-
-        for (String id : sourceData.get(otherSource)) {
-            if (!sourceData.get(source).contains(id))
-                return new MessageDto(otherSource, id);
-        }
-        return null;
+    public MessageDto getOrphanRecord(String doneSource) {
+        Optional<MessageDto> orphan = idWiseMap.entrySet().stream()
+            .filter(e -> !e.getValue().contains(doneSource))
+            .map(e -> new MessageDto(e.getValue().get(0), e.getKey()))
+            .findFirst();
+        return orphan.isPresent() ? orphan.get() : null;
     }
 
     public MessageDto getJoinedRecord(String source) {
-        // get joined record from all sources
-        List<String> otherSources = sourceData.keySet().stream().filter(e -> !e.equals(source)).collect(Collectors.toList());
+        Optional<MessageDto> joined = idWiseMap.entrySet().stream()
+            .filter(e -> e.getValue().size() == sourcesCount)
+            .map(e -> new MessageDto(source, e.getKey())).findFirst();
 
-        // get joined record for this source for which there are records in other sources as well
-        for (String id : sourceData.get(source)) {
-            if (otherSources.stream().map(s -> sourceData.get(s)).allMatch(ids -> ids.contains(id))) {
-                return new MessageDto(source, id);
-            }
-        }
-        return null;
+        return joined.isPresent() ? joined.get() : null;
     }
 }

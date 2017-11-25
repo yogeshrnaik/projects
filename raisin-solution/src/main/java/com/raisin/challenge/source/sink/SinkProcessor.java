@@ -76,21 +76,18 @@ public class SinkProcessor implements Runnable {
     }
 
     private void processIdMessage(MessageDto msg) {
+        sinkData.addToSourceData(msg);
+
         // see if there is any match available, if yes, send "joined" else add to source data
         if (sinkData.isJoined(msg)) {
             processJoined(msg);
         } else if (sinkData.isAnySourceDone()) {
             processAnySourceDone(msg);
-        } else {
-            // no match found, so add to source data
-            sinkData.addToSourceData(msg);
         }
     }
 
     private void processAnySourceDone(MessageDto msg) {
         // when any of the source is already done, then all incoming records are orphans
-        sinkData.addToSourceData(msg);
-
         String doneSource = sinkData.getDoneSource();
         if (doneSource != null) {
             processRecordsForDoneSource(doneSource);
@@ -99,7 +96,6 @@ public class SinkProcessor implements Runnable {
 
     private void processJoined(MessageDto msg) {
         // send "joined" and remove all records from sink data for this id
-        sinkData.addToSourceData(msg);
         sinkWriter.write(msg.getId(), "joined");
         sinkData.removeFromSourceData(msg);
     }

@@ -28,4 +28,22 @@ public class ThreadUtil {
             }
         }
     }
+
+    public static void waitTillNotified(Object lock) {
+        try {
+            synchronized (lock) {
+                LOGGER.info("Waiting...");
+                lock.wait();
+            }
+        } catch (InterruptedException e) {
+            LOGGER.warn("Interrupted when waiting...");
+        }
+    }
+
+    public static void notifyOthers(Object lock) {
+        synchronized (lock) {
+            LOGGER.info("Notifying others...");
+            lock.notifyAll();
+        }
+    }
 }

@@ -37,10 +37,10 @@ public class SourceReader {
             return new SourceResponse(statusCode, messageBody, msg);
         } catch (Throwable t) {
             if (is406Error(t)) {
-                LOGGER.warn(String.format("Error while reading from source: [%s], URL: [%s]", source, sourceUrl), t);
+                LOGGER.warn(String.format("Error while reading from source: [%s], URL: [%s]. Error: [%s].", source, sourceUrl, t));
                 return new SourceResponse(406, "");
             }
-            throw new RuntimeException(String.format("Error while reading from source: [%s], URL: [%s]", source, sourceUrl), t);
+            throw t;
         }
     }
 }

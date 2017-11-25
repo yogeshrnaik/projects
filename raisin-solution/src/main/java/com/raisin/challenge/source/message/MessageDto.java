@@ -32,6 +32,7 @@ public class MessageDto {
 
     @Override
     public String toString() {
-        return "MessageDto [source=" + source + ", id=" + id + ", done=" + done + "]";
+        return done ? String.format("MessageDto [source=%s, done=%s]", source, done)
+            : String.format("MessageDto [source=%s, id=%s]", source, id);
     }
 }

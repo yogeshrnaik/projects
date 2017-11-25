@@ -1,9 +1,12 @@
 package com.raisin.challenge.source;
 
+import static com.raisin.challenge.util.ThreadUtil.notifyOthers;
+import static com.raisin.challenge.util.ThreadUtil.waitTillNotified;
 import static com.raisin.challenge.util.Util.isConnectionClosed;
 
 import org.apache.log4j.Logger;
 
+import com.raisin.challenge.source.message.MessageDto;
 import com.raisin.challenge.source.message.MessageQueue;
 import com.raisin.challenge.source.sink.SinkData;
 import com.raisin.challenge.util.ThreadUtil;
@@ -14,7 +17,6 @@ public class SourceProcessor implements Runnable {
 
     private final String source;
     private final String sourceUrl;
-    private boolean isDone;
     private final MessageQueue msgQueue;
     private final SourceReader sourceReader;
     private final SinkData sinkData;
@@ -24,7 +26,6 @@ public class SourceProcessor implements Runnable {
         Object lock) {
         this.source = source;
         this.sourceUrl = sourceUrl;
-        isDone = false;
         this.msgQueue = msgQueue;
         this.sourceReader = sourceReader;
         this.sinkData = sinkData;
@@ -38,58 +39,44 @@ public class SourceProcessor implements Runnable {
     }
 
     private void processUntilNotDone() {
-        while (!sinkData.allDataProcessed()) {
+        while (sinkData.notAllDataProcessed()) {
             try {
-                processMessage();
+                SourceResponse response = sourceReader.read();
+                processMessage(response);
             } catch (Throwable t) {
                 LOGGER.warn(String.format("Error occurred while processing from Source URL: [%s]", sourceUrl), t);
                 if (isConnectionClosed(t))
                     return;
-
                 ThreadUtil.sleep(1000);
             }
         }
     }
 
-    private void processMessage() {
-        SourceResponse response = sourceReader.read();
+    private void processMessage(SourceResponse response) {
         if (response.isNotAcceptable()) {
             // notify and wait
-            notifyOthers();
-            waitTillNotified();
-            // throw new RuntimeException(String.format("Response from source [%s] is not acceptable.", source));
+            notifyOthers(lock);
+            waitTillNotified(lock);
+            return;
         }
-
         if (response.isValid()) {
-            LOGGER.info(String.format("Message received: [%s]", response.getRawResponse()));
-            isDone = response.isDone();
-            // if (isDone) {
-            // notifyOthers();
-            // }
-            msgQueue.add(response.getMessageDto());
-            if (isDone) {
-                waitTillNotified();
-            }
+            processValidMessage(response);
         } else {
             LOGGER.warn(String.format("Ignoring defective message: [%s]", response.getRawResponse()));
         }
     }
 
-    private void waitTillNotified() {
-        try {
-            synchronized (lock) {
-                LOGGER.info("Waiting...");
-                lock.wait();
-            }
-        } catch (InterruptedException e) {
-            LOGGER.warn("Interrupted when waiting...");
+    private void processValidMessage(SourceResponse response) {
+        LOGGER.info(String.format("Message received: [%s]", response.getRawResponse()));
+        boolean isDone = response.isDone();
+        addToQueue(response.getMessageDto());
+        if (isDone) {
+            waitTillNotified(lock);
         }
     }
 
-    private void notifyOthers() {
-        synchronized (lock) {
-            LOGGER.info("Notifying others...");
-            lock.notifyAll();
-        }
+    private void addToQueue(MessageDto msg) {
+        msgQueue.add(msg);
     }
+
 }

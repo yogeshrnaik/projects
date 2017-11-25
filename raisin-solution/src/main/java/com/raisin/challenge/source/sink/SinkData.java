@@ -38,6 +38,10 @@ public class SinkData {
             .collect(toMap(e -> e[0].toString(), e -> parseBoolean(e[1].toString()))));
     }
 
+    public boolean notAllDataProcessed() {
+        return !allDataProcessed();
+    }
+
     public boolean allDataProcessed() {
         return !notAllSourcesDone() && sourceData.values().stream().allMatch(e -> e.size() == 0);
     }
@@ -55,7 +59,7 @@ public class SinkData {
         return doneSource.isPresent() ? doneSource.get().getKey() : null;
     }
 
-    public void setSourceDone(String source) {
+    public void markSourceDone(String source) {
         sourceDoneFlags.put(source, true);
     }
 

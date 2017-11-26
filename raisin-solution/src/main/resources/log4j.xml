@@ -10,7 +10,6 @@
 	</appender>
 	
 	<appender name="file" class="org.apache.log4j.FileAppender">
-		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
 		<param name="file" value="./raisin-solution.log" />
 		<param name="encoding" value="utf-8" />
 		<layout class="org.apache.log4j.PatternLayout">

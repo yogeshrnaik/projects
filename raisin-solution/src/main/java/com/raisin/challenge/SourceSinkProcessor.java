@@ -2,6 +2,7 @@ package com.raisin.challenge;
 
 import static com.raisin.challenge.util.PropertyFileReader.getPropertyIntgerValue;
 import static com.raisin.challenge.util.PropertyFileReader.getPropertyValue;
+import static com.raisin.challenge.util.Util.formatTimeInHoursMinutesAndSeconds;
 import static java.lang.System.currentTimeMillis;
 
 import java.util.concurrent.ExecutorService;
@@ -45,7 +46,7 @@ public class SourceSinkProcessor {
         long startTime = currentTimeMillis();
         LOGGER.info("Application started.");
         new SourceSinkProcessor().process();
-        LOGGER.info(String.format("Application finished in [%d] seconds.", (currentTimeMillis() - startTime) / 1000));
+        LOGGER.info(String.format("Application finished in [%s].", formatTimeInHoursMinutesAndSeconds(currentTimeMillis() - startTime)));
     }
 
     public void process() {

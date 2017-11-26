@@ -9,6 +9,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.google.common.collect.Lists;
 
+/**
+ * Reads application.properties file from jar/local-path if present. <br/>
+ * If application.properties file is present in local path from where the application is executed then that file gets precedence over file
+ * present in jar.
+ */
 public class PropertyFileReader {
 
     private static Properties properties = readApplicationProperties();

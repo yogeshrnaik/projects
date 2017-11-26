@@ -19,6 +19,11 @@ import com.raisin.challenge.source.sink.SinkData;
 import com.raisin.challenge.source.sink.SinkProcessor;
 import com.raisin.challenge.util.ThreadUtil;
 
+/**
+ * Main class that ties everything together. This class initialized all the shared resources. <br/>
+ * It triggers 3 threads (1 for source A, 1 for source B and 1 for sink) <br/>
+ * It then waits for all threads to be finished.
+ */
 public class SourceSinkProcessor {
 
     private static final Logger LOGGER = Logger.getLogger(SourceSinkProcessor.class);

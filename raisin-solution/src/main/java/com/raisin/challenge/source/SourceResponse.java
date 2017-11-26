@@ -2,22 +2,22 @@ package com.raisin.challenge.source;
 
 import org.springframework.http.HttpStatus;
 
-import com.raisin.challenge.source.message.MessageDto;
+import com.raisin.challenge.source.message.SourceMessage;
 
 public class SourceResponse {
 
     private final int statusCode;
     private final String rawResponse;
-    private final MessageDto messageDto;
+    private final SourceMessage sourceMessage;
 
     public SourceResponse(int statusCode, String rawResponse) {
         this(statusCode, rawResponse, null);
     }
 
-    public SourceResponse(int statusCode, String rawResponse, MessageDto messageDto) {
+    public SourceResponse(int statusCode, String rawResponse, SourceMessage sourceMessage) {
         this.statusCode = statusCode;
         this.rawResponse = rawResponse;
-        this.messageDto = messageDto;
+        this.sourceMessage = sourceMessage;
     }
 
     public int getStatusCode() {
@@ -28,8 +28,8 @@ public class SourceResponse {
         return rawResponse;
     }
 
-    public MessageDto getMessageDto() {
-        return messageDto;
+    public SourceMessage getSourceMessage() {
+        return sourceMessage;
     }
 
     public boolean isNotAcceptable() {
@@ -37,10 +37,10 @@ public class SourceResponse {
     }
 
     public boolean isValid() {
-        return messageDto != null;
+        return sourceMessage != null;
     }
 
     public boolean isDone() {
-        return isValid() && messageDto.isDone();
+        return isValid() && sourceMessage.isDone();
     }
 }

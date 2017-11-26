@@ -3,7 +3,7 @@ package com.raisin.challenge.source.message.parser;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.raisin.challenge.source.message.MessageDto;
+import com.raisin.challenge.source.message.SourceMessage;
 
 public abstract class MessageParser {
 
@@ -21,5 +21,5 @@ public abstract class MessageParser {
         }
     }
 
-    public abstract MessageDto parse(String source, String message);
+    public abstract SourceMessage parse(String source, String message);
 }

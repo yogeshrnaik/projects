@@ -68,7 +68,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.raisin.challenge.RaisinSolution</mainClass>
+							<mainClass>com.raisin.challenge.SourceSinkProcessor</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

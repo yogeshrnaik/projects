@@ -7,12 +7,15 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import com.raisin.challenge.RaisinSolution;
+import com.raisin.challenge.SourceSinkProcessor;
 import com.raisin.challenge.exception.NotAcceptableException;
 
+/**
+ * Class that writes to Sink URL.
+ */
 public class SinkWriter {
 
-    private static final Logger LOGGER = Logger.getLogger(RaisinSolution.class);
+    private static final Logger LOGGER = Logger.getLogger(SourceSinkProcessor.class);
 
     private final String sinkUrl;
     private final RestTemplate restTemplate;
@@ -20,9 +23,17 @@ public class SinkWriter {
     public SinkWriter(String sinkUrl) {
         super();
         this.sinkUrl = sinkUrl;
+        // HttpComponentsClientHttpRequestFactory uses HTTP connection pooling internally
         restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
     }
 
+    /**
+     * Posts data to Sink URL.
+     * 
+     * @param id
+     * @param recordType
+     * @throws in case of 406 error, {@link NotAcceptableException} else throws the original exception as is
+     */
     public void write(String id, String recordType) {
         String body = String.format("{\"kind\": \"%s\", \"id\": \"%s\"}", recordType, id);
         post(body);
@@ -40,5 +51,4 @@ public class SinkWriter {
             throw t;
         }
     }
-
 }

@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import com.tomtom.places.unicorn.domain.avro.archive.ArchiveFallout;
@@ -13,13 +14,14 @@ public class FallOutWriterService implements Closeable {
     private static final Logger LOGGER = Logger.getLogger(FallOutWriterService.class);
 
     private final String falloutPath;
-    private final FalloutWriterGroup suppressedViolationsWriters;
-    private final FalloutWriterGroup falloutWriters;
+    private final FalloutWriterGroup suppressedViolationsWritersGroup;
+    private final FalloutWriterGroup falloutWritersGroup;
 
-    public FallOutWriterService(String falloutPath, FalloutWriterGroup suppressedViolationsWriters, FalloutWriterGroup falloutWriters) {
+    public FallOutWriterService(String falloutPath, FalloutWriterGroup suppressedViolationsWritersGroup,
+        FalloutWriterGroup falloutWritersGroup) {
         this.falloutPath = falloutPath;
-        this.suppressedViolationsWriters = suppressedViolationsWriters;
-        this.falloutWriters = falloutWriters;
+        this.suppressedViolationsWritersGroup = suppressedViolationsWritersGroup;
+        this.falloutWritersGroup = falloutWritersGroup;
     }
 
     public static FallOutWriterService getFallOutWriterService(String falloutPath) {
@@ -32,26 +34,26 @@ public class FallOutWriterService implements Closeable {
 
     public void initializeWriters() throws IOException {
         LOGGER.debug("Initializing fallouts in path " + falloutPath);
-        suppressedViolationsWriters.initializeWriters();
-        falloutWriters.initializeWriters();
+        suppressedViolationsWritersGroup.initializeWriters();
+        falloutWritersGroup.initializeWriters();
     }
 
     public void writeAndClearFallouts() throws IOException {
-        suppressedViolationsWriters.writeFallouts();
-        falloutWriters.writeFallouts();
+        suppressedViolationsWritersGroup.writeFallouts();
+        falloutWritersGroup.writeFallouts();
     }
 
     public void addFallouts(List<ArchiveFallout> archiveFalloutList) {
-        falloutWriters.addFallouts(archiveFalloutList);
+        falloutWritersGroup.addFallouts(archiveFalloutList);
     }
 
     public void addSuppressedViolations(List<ArchiveFallout> archiveFalloutList) {
-        suppressedViolationsWriters.addFallouts(archiveFalloutList);
+        suppressedViolationsWritersGroup.addFallouts(archiveFalloutList);
     }
 
     @Override
     public void close() throws IOException {
-        falloutWriters.close();
-        suppressedViolationsWriters.close();
+        IOUtils.closeQuietly(falloutWritersGroup);
+        IOUtils.closeQuietly(suppressedViolationsWritersGroup);
     }
 }

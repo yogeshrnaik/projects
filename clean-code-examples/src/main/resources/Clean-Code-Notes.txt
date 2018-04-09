@@ -1,0 +1,39 @@
+=================================================================================================
+Wrong name - FetchExternalIdsFromMds.extractPoiFromMds()
+- Class name looks like a method name
+=================================================================================================
+EditApplier.java
+- Duplicate code
+=================================================================================================
+com.tomtom.places.optimus.matching.services.matchers.PlacesMatcherFactory
+- getMatchService() - local variable placesMatcher required? Can we use map?
+=================================================================================================
+When you want a method to return two things
+- https://www.javatuples.org/
+- http://www.baeldung.com/java-tuples
+=================================================================================================
+com.tomtom.places.optimus.matching.services.lucene.FuzzyQueryService
+=================================================================================================
+workflow-framework
+- com.tomtom.places.optimus.activiti.delegates.RestWsActivitiBehaviour
+=================================================================================================
+Source-Importer
+- com.tomtom.places.optimus.sourceimporter.App
+- com.tomtom.places.intake.Main
+- getClassLoader().getResourceAsStream (code duplication)
+=================================================================================================
+com.tomtom.places.a2mds.TransactionExecutor
+- List<String> featureIds = transactionLog.getFeatureIds();
+  transactionLog.setFeatureCount(featureIds.size());
+=================================================================================================
+GAPFM 
+- LocalityProcess
+- Main
+=================================================================================================
+JPPFGeocodeTask.java
+- Big classes/methods hide other classes
+=================================================================================================
+com.tomtom.places.unicorn.ttom.mapping.NameMapping
+=================================================================================================
+MatchScoreService
+=================================================================================================

@@ -2,7 +2,6 @@ package tdd.examples.shopping;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ShoppingCartTest {
@@ -72,7 +71,6 @@ public class ShoppingCartTest {
     }
 
     @Test
-    @Ignore("Not yet implemented")
     public void applyDiscountBasedOnTotalPriceOfCart() {
         ShoppingCart cart = new ShoppingCart();
         Product dove = new Product("Dove Soap", 30, new BuyXGetYFreeRule(2, 1));

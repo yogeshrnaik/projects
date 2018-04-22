@@ -41,7 +41,7 @@ While adding/editing an employee, user can select one or more skills of that emp
 This demonstrates ManyToMany relationship between Employee and Skills.
 
 ### yogesh-naik-ee
-Application developed using Java 8 + JUnit + Intellij Idea during interview processs of EqualExperts.
+Application developed using Java 8 + JUnit + Intellij Idea to learn about TDD
 
 This project contains different programs such as:
 * Shopping Cart

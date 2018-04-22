@@ -9,23 +9,23 @@ import org.apache.log4j.Logger;
 
 import com.tomtom.places.unicorn.domain.avro.archive.ArchiveFallout;
 
-public class FallOutWriterService implements Closeable {
+public class FalloutWriterService implements Closeable {
 
-    private static final Logger LOGGER = Logger.getLogger(FallOutWriterService.class);
+    private static final Logger LOGGER = Logger.getLogger(FalloutWriterService.class);
 
     private final String falloutPath;
     private final FalloutWriterGroup suppressedViolationsWritersGroup;
     private final FalloutWriterGroup falloutWritersGroup;
 
-    public FallOutWriterService(String falloutPath, FalloutWriterGroup suppressedViolationsWritersGroup,
+    public FalloutWriterService(String falloutPath, FalloutWriterGroup suppressedViolationsWritersGroup,
         FalloutWriterGroup falloutWritersGroup) {
         this.falloutPath = falloutPath;
         this.suppressedViolationsWritersGroup = suppressedViolationsWritersGroup;
         this.falloutWritersGroup = falloutWritersGroup;
     }
 
-    public static FallOutWriterService getFallOutWriterService(String falloutPath) {
-        return new FallOutWriterService(falloutPath,
+    public static FalloutWriterService getFallOutWriterService(String falloutPath) {
+        return new FalloutWriterService(falloutPath,
             new FalloutWriterGroup(new CsvFalloutWriter(falloutPath, "suppressedviolations.txt")),
             new FalloutWriterGroup(
                 new CsvFalloutWriter(falloutPath, "fallout.txt"),

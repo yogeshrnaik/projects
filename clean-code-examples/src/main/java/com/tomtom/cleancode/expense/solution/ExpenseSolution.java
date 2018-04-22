@@ -23,6 +23,7 @@ class Expense {
         DINNER("Dinner", 5000, true),
         BREAKFAST("Breakfast", 1000, true),
         CAR_RENTAL("Car Rental", Integer.MAX_VALUE, false);
+
         private final String expenseName;
         private final int expenseLimit;
         private final boolean isMeal;
@@ -32,10 +33,12 @@ class Expense {
             this.expenseLimit = expenseLimit;
             this.isMeal = isMeal;
         }
+
         public boolean isMeal() {
             return isMeal;
         }
     }
+
     public Type type;
     public int amount;
 
@@ -47,9 +50,11 @@ class Expense {
     public String getName() {
         return type.expenseName;
     }
+
     public boolean isMeal() {
         return type.isMeal();
     }
+
     public boolean isOverExpense() {
         return amount > type.expenseLimit;
     }

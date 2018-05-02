@@ -68,9 +68,8 @@ class ExpenseReportPrinter {
         printFooter(expenses);
     }
 
-    private static void printFooter(Expenses expenses) {
-        System.out.println("Meal expenses : " + expenses.getMealExpenses());
-        System.out.println("Total expenses : " + expenses.getTotal());
+    private static void printHeader() {
+        System.out.println("Expenses " + new Date() + "\n");
     }
 
     private static void printExpenses(Expenses expenses) {
@@ -82,8 +81,9 @@ class ExpenseReportPrinter {
         return String.format("%s\t%s\t%s", expense.getName(), expense.amount, overExpensesMarker);
     }
 
-    private static void printHeader() {
-        System.out.println("Expenses " + new Date() + "\n");
+    private static void printFooter(Expenses expenses) {
+        System.out.println("Meal expenses : " + expenses.getMealExpenses());
+        System.out.println("Total expenses : " + expenses.getTotal());
     }
 }
 

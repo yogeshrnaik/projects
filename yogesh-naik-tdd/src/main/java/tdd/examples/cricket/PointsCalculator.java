@@ -1,19 +1,34 @@
 package tdd.examples.cricket;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 
-public class PointsCalculator implements PointsCalculationRule {
+public class PointsCalculator {
 
-    private final List<PointsCalculationRule> rules;
+    private final Optional<PointsRule> runRules;
+    private final Optional<PointsRule> wicketRules;
 
-    public PointsCalculator(PointsCalculationRule... rules) {
-        this.rules = Arrays.asList(rules);
+    public PointsCalculator(RunRules runRules) {
+        this(runRules, null);
     }
 
-    @Override
-    public int calculatePoints(int runsScored) {
-        return rules.stream().mapToInt(rule -> rule.calculatePoints(runsScored)).sum();
+    public PointsCalculator(WicketRules wicketRules) {
+        this(null, wicketRules);
     }
 
+    public PointsCalculator(RunRules runRules, WicketRules wicketRules) {
+        this.runRules = Optional.ofNullable(runRules);
+        this.wicketRules = Optional.ofNullable(wicketRules);
+    }
+
+    public int calculate(Player player) {
+        return calculate(runRules, player.getRuns()) +
+            calculate(wicketRules, player.getWickets());
+    }
+
+    private int calculate(Optional<PointsRule> rule, int runsOrWicketsOrCatches) {
+        if (rule.isPresent()) {
+            return rule.get().calculate(runsOrWicketsOrCatches);
+        }
+        return 0;
+    }
 }

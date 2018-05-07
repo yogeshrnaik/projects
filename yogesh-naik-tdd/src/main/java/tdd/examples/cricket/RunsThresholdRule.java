@@ -1,6 +1,6 @@
 package tdd.examples.cricket;
 
-public class RunsThresholdRule implements PointsCalculationRule {
+public class RunsThresholdRule implements PointsBasedOnRunsRule {
 
     private final int runsThreshold;
     private final int bonusPoints;
@@ -11,7 +11,7 @@ public class RunsThresholdRule implements PointsCalculationRule {
     }
 
     @Override
-    public int calculatePoints(int runsScored) {
-        return runsScored >= runsThreshold ? bonusPoints : 0;
+    public int calculate(int runs) {
+        return runs >= runsThreshold ? bonusPoints : 0;
     }
 }

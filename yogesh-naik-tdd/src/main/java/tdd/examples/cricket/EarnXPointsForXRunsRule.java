@@ -1,9 +1,9 @@
 package tdd.examples.cricket;
 
-public class EarnXPointsForXRunsRule implements PointsCalculationRule {
+public class EarnXPointsForXRunsRule implements PointsBasedOnRunsRule {
 
     @Override
-    public int calculatePoints(int runsScored) {
-        return runsScored;
+    public int calculate(int runs) {
+        return runs;
     }
 }

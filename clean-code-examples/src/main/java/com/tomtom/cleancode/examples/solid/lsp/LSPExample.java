@@ -2,7 +2,7 @@ package com.tomtom.cleancode.examples.solid.lsp;
 
 public class LSPExample {
 
-    public void calculateArea(Rectangle r) {
+    public void testCalculateArea(Rectangle r) {
         r.setBreadth(2);
         r.setLength(3);
         assert r.getArea() == 6 : printError("area", r);
@@ -16,8 +16,8 @@ public class LSPExample {
 
     public static void main(String[] args) {
         LSPExample lsp = new LSPExample();
-        lsp.calculateArea(new Rectangle());
-        lsp.calculateArea(new Square());
+        lsp.testCalculateArea(new Rectangle());
+        lsp.testCalculateArea(new Square());
     }
 }
 

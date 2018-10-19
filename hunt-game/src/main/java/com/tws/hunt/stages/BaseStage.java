@@ -17,6 +17,7 @@ import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tws.hunt.config.HuntGameConfig;
+import com.tws.hunt.stages.result.HuntGameResult;
 
 public abstract class BaseStage {
 
@@ -29,7 +30,7 @@ public abstract class BaseStage {
         sendCount(getCount(result));
     }
 
-    protected abstract long getCount(JSONArray result);
+    protected abstract HuntGameResult getCount(JSONArray result);
 
     protected JSONArray parseResponse(HttpResponse res) throws Exception {
         String resp = readResponse(res);
@@ -59,19 +60,17 @@ public abstract class BaseStage {
         return result.toString();
     }
 
-    protected void sendCount(long count) throws ClientProtocolException, IOException {
+    protected void sendCount(HuntGameResult result) throws ClientProtocolException, IOException {
         HttpClient client = HttpClientBuilder.create().build();
         HttpPost post = new HttpPost(config.getOutputUrl());
         addUserIdHeader(post);
         post.addHeader("content-type", "application/json");
 
-        String countResponse = "{\"count\": " + count + "}";
-        System.out.println(countResponse);
-        StringEntity params = new StringEntity(countResponse);
+        StringEntity params = new StringEntity(result.toJson());
         post.setEntity(params);
 
         HttpResponse response = client.execute(post);
-        String result = readResponse(response);
-        System.out.println(result);
+        String postResp = readResponse(response);
+        System.out.println(postResp);
     }
 }

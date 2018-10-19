@@ -8,23 +8,28 @@ import java.util.Map;
 import org.json.simple.JSONArray;
 import org.springframework.stereotype.Component;
 
+import com.tws.hunt.stages.result.HuntGameResult;
+import com.tws.hunt.stages.result.SimpleCount;
+
 @Component
 public class ActiveProductCountStage extends BaseStage {
 
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    protected long getCount(JSONArray result) {
-        return result.stream()
-            .filter(p -> isActive((Map)p)).count();
+    protected HuntGameResult getCount(JSONArray result) {
+        return new SimpleCount(result.stream()
+            .filter(p -> isActive((Map)p))
+            .count());
     }
 
     @SuppressWarnings("rawtypes")
     protected boolean isActive(Map product) {
         Date startDate = getDate(product, "startDate");
         Date endDate = getDate(product, "endDate");
-        return startDate.before(new Date())
+        boolean isActive = startDate.before(new Date())
             && (endDate == null || endDate.after(new Date()));
+        return isActive;
     }
 
     @SuppressWarnings("rawtypes")

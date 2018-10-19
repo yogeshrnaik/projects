@@ -16,14 +16,13 @@ public class ActiveProductByCategoryStage extends ActiveProductCountStage {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     protected HuntGameResult getCount(JSONArray result) {
-
-        Object collect = result.stream()
-            .filter(p -> isActive((Map)p))
-            .collect(groupingBy(p -> byCategory((Map)p), counting()));
-        System.out.println(collect.toString());
-        return new CountByCategory((Map)collect);
+        return new CountByCategory(
+            (Map)result.stream()
+                .filter(p -> isActive((Map)p))
+                .collect(groupingBy(p -> byCategory((Map)p), counting())));
     }
 
+    @SuppressWarnings({"rawtypes"})
     private String byCategory(Map p) {
         return p.get("category").toString();
     }

@@ -12,6 +12,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tws.hunt.config.HuntGameConfig;
@@ -23,11 +25,16 @@ public abstract class BaseStage {
 
     public void play() throws Exception {
         HttpResponse res = executeGetRequest(config.getInputUrl());
-        int count = getCount(res);
-        sendCount(count);
+        JSONArray result = parseResponse(res);
+        sendCount(getCount(result));
     }
 
-    protected abstract int getCount(HttpResponse res) throws Exception;
+    protected abstract long getCount(JSONArray result);
+
+    protected JSONArray parseResponse(HttpResponse res) throws Exception {
+        String resp = readResponse(res);
+        return (JSONArray)new JSONParser().parse(resp);
+    }
 
     private HttpResponse executeGetRequest(String url) throws IOException, ClientProtocolException {
         HttpClient client = HttpClientBuilder.create().build();
@@ -52,7 +59,7 @@ public abstract class BaseStage {
         return result.toString();
     }
 
-    protected void sendCount(int count) throws ClientProtocolException, IOException {
+    protected void sendCount(long count) throws ClientProtocolException, IOException {
         HttpClient client = HttpClientBuilder.create().build();
         HttpPost post = new HttpPost(config.getOutputUrl());
         addUserIdHeader(post);
@@ -64,9 +71,6 @@ public abstract class BaseStage {
         post.setEntity(params);
 
         HttpResponse response = client.execute(post);
-        System.out.println("Response Code : "
-            + response.getStatusLine().getStatusCode());
-
         String result = readResponse(response);
         System.out.println(result);
     }

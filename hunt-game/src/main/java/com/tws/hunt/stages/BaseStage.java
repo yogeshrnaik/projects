@@ -1,6 +1,8 @@
 package com.tws.hunt.stages;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -25,7 +27,7 @@ public abstract class BaseStage {
         sendCount(count);
     }
 
-    protected abstract int getCount(HttpResponse res);
+    protected abstract int getCount(HttpResponse res) throws Exception;
 
     private HttpResponse executeGetRequest(String url) throws IOException, ClientProtocolException {
         HttpClient client = HttpClientBuilder.create().build();
@@ -38,7 +40,19 @@ public abstract class BaseStage {
         request.addHeader("userId", config.getUserId());
     }
 
-    private void sendCount(int count) throws ClientProtocolException, IOException {
+    protected String readResponse(HttpResponse response) throws IOException {
+        BufferedReader rd = new BufferedReader(
+            new InputStreamReader(response.getEntity().getContent()));
+
+        StringBuilder result = new StringBuilder();
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            result.append(line).append("\n");
+        }
+        return result.toString();
+    }
+
+    protected void sendCount(int count) throws ClientProtocolException, IOException {
         HttpClient client = HttpClientBuilder.create().build();
         HttpPost post = new HttpPost(config.getOutputUrl());
         addUserIdHeader(post);

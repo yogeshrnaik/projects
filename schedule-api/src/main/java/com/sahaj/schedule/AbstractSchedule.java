@@ -8,6 +8,7 @@ public abstract class AbstractSchedule implements Schedule {
         this.eventName = eventName;
     }
 
+    @Override
     public String getEventName() {
         return eventName;
     }

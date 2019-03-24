@@ -3,7 +3,9 @@ package com.sahaj.schedule;
 import java.util.Date;
 import java.util.List;
 
-interface Schedule {
+public interface Schedule {
+
+    String getEventName();
 
     Date startDate();
 

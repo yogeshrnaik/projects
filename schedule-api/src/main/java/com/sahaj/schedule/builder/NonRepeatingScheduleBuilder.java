@@ -1,24 +1,21 @@
 package com.sahaj.schedule.builder;
 
-import java.time.Month;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.time.LocalDateTime;
 
+import com.sahaj.schedule.BoundedSchedule;
 import com.sahaj.schedule.NonRepeatingSchedule;
-import com.sahaj.schedule.Schedule;
 
-public class NonRepeatingScheduleBuilder {
+public class NonRepeatingScheduleBuilder extends ScheduleBuilder {
 
-    private String eventName;
     private Integer dateOfMonth;
-    private Month month;
+    private Integer month;
     private Integer year;
 
     public NonRepeatingScheduleBuilder(String eventName) {
-        this.eventName = eventName;
+        super(eventName);
     }
 
-    public NonRepeatingSchedule on(Date scheduledDate) {
+    public BoundedSchedule on(LocalDateTime scheduledDate) {
         return new NonRepeatingSchedule(eventName, scheduledDate);
     }
 
@@ -27,20 +24,20 @@ public class NonRepeatingScheduleBuilder {
         return this;
     }
 
-    public NonRepeatingScheduleBuilder month(Month month) {
+    public NonRepeatingScheduleBuilder month(int month) {
         this.month = month;
         return this;
     }
 
-    public Schedule year(int year) {
+    public BoundedSchedule year(int year) {
         this.year = year;
         validate();
 
         return new NonRepeatingSchedule(this.eventName, getScheduledDate());
     }
 
-    private Date getScheduledDate() {
-        return new GregorianCalendar(year, month.ordinal(), dateOfMonth).getTime();
+    private LocalDateTime getScheduledDate() {
+        return LocalDateTime.of(year, month, dateOfMonth, 0, 0);
     }
 
     private void validate() {

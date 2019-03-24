@@ -2,12 +2,9 @@ package com.sahaj.schedule;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.Month;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,22 +13,22 @@ import com.sahaj.schedule.builder.ScheduleBuilder;
 
 public class NonRepeatingScheduleTest {
 
-    private Schedule schedule1;
-    private Schedule schedule2;
+    private BoundedSchedule schedule1;
+    private BoundedSchedule schedule2;
 
-    private final Date SCHEDULE_DATE_12_FEB_2020 = new GregorianCalendar(2020, Calendar.FEBRUARY, 12).getTime();
-    private final Date DATE_11_FEB_2020 = new GregorianCalendar(2020, Calendar.FEBRUARY, 11).getTime();
-    private final Date DATE_13_FEB_2020 = new GregorianCalendar(2020, Calendar.FEBRUARY, 13).getTime();
+    private final LocalDateTime SCHEDULE_DATE_12_FEB_2020 = LocalDateTime.of(2020, 2, 12, 0, 0);
+    private final LocalDateTime DATE_11_FEB_2020 = LocalDateTime.of(2020, 2, 11, 0, 0);
+    private final LocalDateTime DATE_13_FEB_2020 = LocalDateTime.of(2020, 2, 13, 0, 0);
 
     private final String EVENT_NAME_1 = "Event name 1";
     private final String EVENT_NAME_2 = "Event name 2";
 
     @Before
     public void setup() {
-        Date _12_Feb_2020 = new GregorianCalendar(2020, Calendar.FEBRUARY, 12).getTime();
+        LocalDateTime _12_Feb_2020 = LocalDateTime.of(2020, 2, 12, 0, 0);
         schedule1 = ScheduleBuilder.newSchedule(EVENT_NAME_1).once().on(_12_Feb_2020);
 
-        schedule2 = ScheduleBuilder.newSchedule(EVENT_NAME_2).once().date(12).month(Month.FEBRUARY).year(2020);
+        schedule2 = ScheduleBuilder.newSchedule(EVENT_NAME_2).once().date(12).month(2).year(2020);
     }
 
     @Test
@@ -40,7 +37,7 @@ public class NonRepeatingScheduleTest {
         scheduleHasEventName(schedule2, EVENT_NAME_2);
     }
 
-    private void scheduleHasEventName(Schedule schedule, String expectedEvenName) {
+    private void scheduleHasEventName(BoundedSchedule schedule, String expectedEvenName) {
         assertEquals(expectedEvenName, schedule.getEventName());
     }
 
@@ -50,7 +47,7 @@ public class NonRepeatingScheduleTest {
         startAndEndDateIsSameAsScheduledDate(schedule2, SCHEDULE_DATE_12_FEB_2020);
     }
 
-    private void startAndEndDateIsSameAsScheduledDate(Schedule schedule, Date expectedDate) {
+    private void startAndEndDateIsSameAsScheduledDate(BoundedSchedule schedule, LocalDateTime expectedDate) {
         assertEquals(expectedDate, schedule.startDate());
         assertEquals(expectedDate, schedule.endDate());
     }
@@ -61,7 +58,7 @@ public class NonRepeatingScheduleTest {
         scheduleHasOnlyOneOccurrence(schedule2, SCHEDULE_DATE_12_FEB_2020);
     }
 
-    private void scheduleHasOnlyOneOccurrence(Schedule schedule, Date expectedScheduleDate) {
+    private void scheduleHasOnlyOneOccurrence(BoundedSchedule schedule, LocalDateTime expectedScheduleDate) {
         assertEquals(Arrays.asList(expectedScheduleDate), schedule.getOccurrences(1));
         assertEquals(Arrays.asList(expectedScheduleDate), schedule.getOccurrences(Integer.MAX_VALUE));
 
@@ -75,7 +72,7 @@ public class NonRepeatingScheduleTest {
         scheduleHasOneOccurrenceBeforeScheduleDate(schedule2, SCHEDULE_DATE_12_FEB_2020);
     }
 
-    private void scheduleHasOneOccurrenceBeforeScheduleDate(Schedule schedule, Date expectedScheduleDate) {
+    private void scheduleHasOneOccurrenceBeforeScheduleDate(BoundedSchedule schedule, LocalDateTime expectedScheduleDate) {
         assertEquals(Arrays.asList(expectedScheduleDate), schedule.getOccurrencesFrom(DATE_11_FEB_2020, 1));
         assertEquals(Arrays.asList(expectedScheduleDate), schedule.getOccurrencesFrom(DATE_11_FEB_2020, Integer.MAX_VALUE));
     }
@@ -86,7 +83,7 @@ public class NonRepeatingScheduleTest {
         scheduleHasZeroOccurrenceAfterScheduleDate(schedule2);
     }
 
-    private void scheduleHasZeroOccurrenceAfterScheduleDate(Schedule schedule) {
+    private void scheduleHasZeroOccurrenceAfterScheduleDate(BoundedSchedule schedule) {
         assertEquals(Collections.emptyList(), schedule.getOccurrencesFrom(DATE_13_FEB_2020, 1));
     }
 

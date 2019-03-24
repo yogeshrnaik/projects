@@ -1,43 +1,43 @@
 package com.sahaj.schedule;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
-public class NonRepeatingSchedule extends AbstractSchedule {
+public class NonRepeatingSchedule extends AbstractSchedule implements BoundedSchedule {
 
-    private final Date scheduledDate;
+    private final LocalDateTime scheduledDate;
 
-    public NonRepeatingSchedule(String eventName, Date scheduledDate) {
+    public NonRepeatingSchedule(String eventName, LocalDateTime scheduledDate) {
         super(eventName);
         this.scheduledDate = scheduledDate;
     }
 
     @Override
-    public Date startDate() {
+    public LocalDateTime startDate() {
         return scheduledDate;
     }
 
     @Override
-    public Date endDate() {
+    public LocalDateTime endDate() {
         return scheduledDate;
     }
 
     @Override
-    public List<Date> getOccurrences(int limitNumberOfOccurences) {
+    public List<LocalDateTime> getOccurrences(int limitNumberOfOccurences) {
         return Arrays.asList(scheduledDate);
     }
 
     @Override
-    public List<Date> getOccurrencesFrom(Date startDate, int numberOfOccurences) {
-        return scheduledDate.after(startDate)
+    public List<LocalDateTime> getOccurrencesFrom(LocalDateTime startDate, int numberOfOccurences) {
+        return scheduledDate.isAfter(startDate)
             ? getOccurrences(numberOfOccurences)
             : Collections.emptyList();
     }
 
     @Override
-    public List<Date> getAllOccurrences() {
+    public List<LocalDateTime> getAllOccurrences() {
         return getOccurrences(1);
     }
 

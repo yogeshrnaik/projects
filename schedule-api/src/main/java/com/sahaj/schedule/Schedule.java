@@ -1,22 +1,16 @@
 package com.sahaj.schedule;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface Schedule {
 
     String getEventName();
 
-    Date startDate();
+    LocalDateTime startDate();
 
-    Date endDate();
+    List<LocalDateTime> getOccurrences(int limitNumberOfOccurences);
 
-    List<Date> getOccurrences(int limitNumberOfOccurences);
+    List<LocalDateTime> getOccurrencesFrom(LocalDateTime startDate, int numberOfOccurences);
 
-    List<Date> getOccurrencesFrom(Date startDate, int numberOfOccurences);
-
-    List<Date> getAllOccurrences();
-
-    // # of occurrences for bounded schedules.
-    int getNumberOfOccurences();
 }

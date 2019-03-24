@@ -2,9 +2,9 @@ package com.sahaj.schedule.builder;
 
 public class ScheduleBuilder {
 
-    private String eventName;
+    protected String eventName;
 
-    private ScheduleBuilder(String eventName) {
+    protected ScheduleBuilder(String eventName) {
         this.eventName = eventName;
     }
 
@@ -14,6 +14,10 @@ public class ScheduleBuilder {
 
     public NonRepeatingScheduleBuilder once() {
         return new NonRepeatingScheduleBuilder(this.eventName);
+    }
+
+    public DailyScheduleBuilder daily() {
+        return new DailyScheduleBuilder(this.eventName);
     }
 
 }

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.sahaj.schedule.BoundedSchedule;
 import com.sahaj.schedule.DailyBoundedSchedule;
+import com.sahaj.schedule.DailyUnboundedSchedule;
 import com.sahaj.schedule.Schedule;
 
 public class DailyScheduleBuilder extends ScheduleBuilder {
@@ -35,6 +36,6 @@ public class DailyScheduleBuilder extends ScheduleBuilder {
 
     public Schedule neverEnding() {
         validate();
-        return new DailyBoundedSchedule(eventName, startDate, null);
+        return new DailyUnboundedSchedule(eventName, startDate);
     }
 }

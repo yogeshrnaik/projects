@@ -34,7 +34,7 @@ public class NonRecurringSchedule extends AbstractSchedule implements BoundedSch
 
     @Override
     public List<LocalDateTime> getOccurrencesFrom(LocalDateTime startDate, int numberOfOccurences) {
-        return scheduledDate.isAfter(startDate)
+        return (startDate.isBefore(scheduledDate) || startDate.equals(scheduledDate))
             ? getOccurrences(numberOfOccurences)
             : Collections.emptyList();
     }

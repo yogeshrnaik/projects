@@ -14,12 +14,15 @@ import com.sahaj.schedule.builder.ScheduleBuilder;
 
 public class NonRecurringScheduleTest {
 
-    private BoundedSchedule schedule1;
-    private BoundedSchedule schedule2;
+    private BoundedSchedule onceOn12Feb2020;
+    private BoundedSchedule onceOn13Feb2020;
 
     private final LocalDateTime SCHEDULE_DATE_12_FEB_2020 = LocalDateTime.of(2020, 2, 12, 0, 0);
+    private final LocalDateTime SCHEDULE_DATE_13_FEB_2020 = LocalDateTime.of(2020, 2, 13, 0, 0);
+
     private final LocalDateTime DATE_11_FEB_2020 = LocalDateTime.of(2020, 2, 11, 0, 0);
     private final LocalDateTime DATE_13_FEB_2020 = LocalDateTime.of(2020, 2, 13, 0, 0);
+    private final LocalDateTime DATE_14_FEB_2020 = LocalDateTime.of(2020, 2, 14, 0, 0);
 
     private final String EVENT_NAME_1 = "Event name 1";
     private final String EVENT_NAME_2 = "Event name 2";
@@ -27,15 +30,15 @@ public class NonRecurringScheduleTest {
     @Before
     public void setup() {
         LocalDateTime _12_Feb_2020 = LocalDateTime.of(2020, 2, 12, 0, 0);
-        schedule1 = ScheduleBuilder.newSchedule(EVENT_NAME_1).once().on(_12_Feb_2020);
+        onceOn12Feb2020 = ScheduleBuilder.newSchedule(EVENT_NAME_1).once().on(_12_Feb_2020);
 
-        schedule2 = ScheduleBuilder.newSchedule(EVENT_NAME_2).once().date(12).month(2).year(2020);
+        onceOn13Feb2020 = ScheduleBuilder.newSchedule(EVENT_NAME_2).once().date(13).month(2).year(2020);
     }
 
     @Test
     public void eventNameIsStoredInSchedule() {
-        scheduleHasEventName(schedule1, EVENT_NAME_1);
-        scheduleHasEventName(schedule2, EVENT_NAME_2);
+        scheduleHasEventName(onceOn12Feb2020, EVENT_NAME_1);
+        scheduleHasEventName(onceOn13Feb2020, EVENT_NAME_2);
     }
 
     private void scheduleHasEventName(BoundedSchedule schedule, String expectedEvenName) {
@@ -43,9 +46,9 @@ public class NonRecurringScheduleTest {
     }
 
     @Test
-    public void startAndEndDateOfNonRepeatingScheduleIsSameAsScheduledDate() {
-        startAndEndDateIsSameAsScheduledDate(schedule1, SCHEDULE_DATE_12_FEB_2020);
-        startAndEndDateIsSameAsScheduledDate(schedule2, SCHEDULE_DATE_12_FEB_2020);
+    public void startAndEndDateOfNonRecurringScheduleIsSameAsScheduledDate() {
+        startAndEndDateIsSameAsScheduledDate(onceOn12Feb2020, SCHEDULE_DATE_12_FEB_2020);
+        startAndEndDateIsSameAsScheduledDate(onceOn13Feb2020, SCHEDULE_DATE_13_FEB_2020);
     }
 
     private void startAndEndDateIsSameAsScheduledDate(BoundedSchedule schedule, LocalDateTime expectedDate) {
@@ -54,9 +57,9 @@ public class NonRecurringScheduleTest {
     }
 
     @Test
-    public void thereIsOnlyOneOccurrenceOfNonRepeatingSchedule() {
-        scheduleHasOnlyOneOccurrence(schedule1, SCHEDULE_DATE_12_FEB_2020);
-        scheduleHasOnlyOneOccurrence(schedule2, SCHEDULE_DATE_12_FEB_2020);
+    public void thereIsOnlyOneOccurrenceOfNonRecurringSchedule() {
+        scheduleHasOnlyOneOccurrence(onceOn12Feb2020, SCHEDULE_DATE_12_FEB_2020);
+        scheduleHasOnlyOneOccurrence(onceOn13Feb2020, SCHEDULE_DATE_13_FEB_2020);
     }
 
     private void scheduleHasOnlyOneOccurrence(BoundedSchedule schedule, LocalDateTime expectedScheduleDate) {
@@ -68,9 +71,22 @@ public class NonRecurringScheduleTest {
     }
 
     @Test
-    public void nonRepeatingScheduleReturnsOccurenceBeforeScheduleDate() {
-        scheduleHasOneOccurrenceBeforeScheduleDate(schedule1, SCHEDULE_DATE_12_FEB_2020);
-        scheduleHasOneOccurrenceBeforeScheduleDate(schedule2, SCHEDULE_DATE_12_FEB_2020);
+    public void nonRecurringScheduleReturnsOccurenceBeforeScheduleDate() {
+        scheduleHasOneOccurrenceBeforeScheduleDate(onceOn12Feb2020, SCHEDULE_DATE_12_FEB_2020);
+        scheduleHasOneOccurrenceBeforeScheduleDate(onceOn13Feb2020, SCHEDULE_DATE_13_FEB_2020);
+    }
+
+    @Test
+    public void nonRecurringScheduleReturnsOneOccurenceOnScheduleDate() {
+        nonRecurringScheduleReturnsOneOccurenceOnScheduleDate(onceOn12Feb2020, SCHEDULE_DATE_12_FEB_2020);
+        nonRecurringScheduleReturnsOneOccurenceOnScheduleDate(onceOn13Feb2020, SCHEDULE_DATE_13_FEB_2020);
+    }
+
+    private void nonRecurringScheduleReturnsOneOccurenceOnScheduleDate(BoundedSchedule schedule, LocalDateTime scheduledDate) {
+        assertEquals(Arrays.asList(scheduledDate),
+            schedule.getOccurrencesFrom(scheduledDate, 1));
+        assertEquals(Arrays.asList(scheduledDate),
+            schedule.getOccurrencesFrom(scheduledDate, Integer.MAX_VALUE));
     }
 
     private void scheduleHasOneOccurrenceBeforeScheduleDate(BoundedSchedule schedule, LocalDateTime expectedScheduleDate) {
@@ -79,13 +95,13 @@ public class NonRecurringScheduleTest {
     }
 
     @Test
-    public void nonRepeatingScheduleReturnsNoOccurenceAfterScheduleDate() {
-        scheduleHasZeroOccurrenceAfterScheduleDate(schedule1);
-        scheduleHasZeroOccurrenceAfterScheduleDate(schedule2);
+    public void nonRecurringScheduleReturnsNoOccurenceAfterScheduleDate() {
+        scheduleHasZeroOccurrenceAfterScheduleDate(onceOn12Feb2020, DATE_13_FEB_2020);
+        scheduleHasZeroOccurrenceAfterScheduleDate(onceOn13Feb2020, DATE_14_FEB_2020);
     }
 
-    private void scheduleHasZeroOccurrenceAfterScheduleDate(BoundedSchedule schedule) {
-        assertEquals(Collections.emptyList(), schedule.getOccurrencesFrom(DATE_13_FEB_2020, 1));
+    private void scheduleHasZeroOccurrenceAfterScheduleDate(BoundedSchedule schedule, LocalDateTime afterScheduleDate) {
+        assertEquals(Collections.emptyList(), schedule.getOccurrencesFrom(afterScheduleDate, 1));
     }
 
 }

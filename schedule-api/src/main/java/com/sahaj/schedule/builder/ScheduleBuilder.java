@@ -5,7 +5,7 @@ import com.sahaj.schedule.once.NonRecurringScheduleBuilder;
 
 public class ScheduleBuilder {
 
-    protected String eventName;
+    private String eventName;
 
     protected ScheduleBuilder(String eventName) {
         this.eventName = eventName;

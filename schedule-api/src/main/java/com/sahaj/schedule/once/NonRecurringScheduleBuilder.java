@@ -3,16 +3,16 @@ package com.sahaj.schedule.once;
 import java.time.LocalDateTime;
 
 import com.sahaj.schedule.BoundedSchedule;
-import com.sahaj.schedule.builder.ScheduleBuilder;
 
-public class NonRecurringScheduleBuilder extends ScheduleBuilder {
+public class NonRecurringScheduleBuilder {
 
+    private final String eventName;
     private Integer dateOfMonth;
     private Integer month;
     private Integer year;
 
     public NonRecurringScheduleBuilder(String eventName) {
-        super(eventName);
+        this.eventName = eventName;
     }
 
     public BoundedSchedule on(LocalDateTime scheduledDate) {

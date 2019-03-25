@@ -4,15 +4,15 @@ import java.time.LocalDateTime;
 
 import com.sahaj.schedule.BoundedSchedule;
 import com.sahaj.schedule.Schedule;
-import com.sahaj.schedule.builder.ScheduleBuilder;
 
-public class DailyScheduleBuilder extends ScheduleBuilder {
+public class DailyScheduleBuilder {
 
+    private String eventName;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
     public DailyScheduleBuilder(String eventName) {
-        super(eventName);
+        this.eventName = eventName;
     }
 
     public DailyScheduleBuilder startingOn(LocalDateTime start) {

@@ -76,26 +76,30 @@ public class DailyBoundedScheduleTest {
         assertTrue(occurrencesFrom.contains(boundedDaily.endDate()));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getOccurrencesFromDateBeforeEndStart_ThrowsIllegalArgumentException() {
+    @Test
+    public void getOccurrencesFromDateBeforeStartDate_ReturnsOccurrencesFromStartDate() {
         LocalDateTime _31_DEC_2018 = START_01_JAN_2019.minusDays(1);
-        boundedDaily.getOccurrencesFrom(_31_DEC_2018, 20);
+        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(_31_DEC_2018, 5);
+        checkOccurrences(occurrencesFrom, boundedDaily.startDate(), 5);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getOccurrencesFromDateAfterEndStart_ThrowsIllegalArgumentException() {
+    @Test
+    public void getOccurrencesFromDateAfterEndStart_ReturnsZeroOccurrences() {
         LocalDateTime _16_JAN_2019 = END_15_JAN_2019.plusDays(1);
-        boundedDaily.getOccurrencesFrom(_16_JAN_2019, 20);
+        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(_16_JAN_2019, 20);
+        assertTrue(occurrencesFrom.isEmpty());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getOccurrencesWithZeroOrNegativeLimit_ThrowsIllegalArgumentException() {
-        boundedDaily.getOccurrencesFrom(START_01_JAN_2019, 0);
+    @Test
+    public void getOccurrencesWithZeroOrNegativeLimit_ReturnsZeroOccurrences() {
+        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(START_01_JAN_2019, 0);
+        assertTrue(occurrencesFrom.isEmpty());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getOccurrencesWithNegativeLimit_ThrowsIllegalArgumentException() {
-        boundedDaily.getOccurrencesFrom(START_01_JAN_2019, -1);
+    @Test
+    public void getOccurrencesWithNegativeLimit_ReturnsZeroOccurrences() {
+        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(START_01_JAN_2019, -1);
+        assertTrue(occurrencesFrom.isEmpty());
     }
 
     @Test

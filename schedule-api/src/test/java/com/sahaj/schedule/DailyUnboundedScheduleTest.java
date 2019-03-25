@@ -1,6 +1,7 @@
 package com.sahaj.schedule;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,20 +50,23 @@ public class DailyUnboundedScheduleTest {
         checkOccurrences(occurrencesFrom, startDate, 20);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getOccurrencesFromDateBeforeEndStart_ThrowsIllegalArgumentException() {
+    @Test
+    public void getOccurrencesFromDateBeforeStartDate_ReturnsOccurrencesFromStartDate() {
         LocalDateTime _31_DEC_2018 = START_01_JAN_2019.minusDays(1);
-        unboundedDaily.getOccurrencesFrom(_31_DEC_2018, 20);
+        List<LocalDateTime> occurrencesFrom = unboundedDaily.getOccurrencesFrom(_31_DEC_2018, 15);
+        checkOccurrences(occurrencesFrom, unboundedDaily.startDate(), 15);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getOccurrencesWithZeroOrNegativeLimit_ThrowsIllegalArgumentException() {
-        unboundedDaily.getOccurrencesFrom(START_01_JAN_2019, 0);
+    @Test
+    public void getOccurrencesWithZeroOrNegativeLimit_ReturnsZeroOccurrences() {
+        List<LocalDateTime> occurrencesFrom = unboundedDaily.getOccurrencesFrom(START_01_JAN_2019, 0);
+        assertTrue(occurrencesFrom.isEmpty());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getOccurrencesWithNegativeLimit_ThrowsIllegalArgumentException() {
-        unboundedDaily.getOccurrencesFrom(START_01_JAN_2019, -1);
+    @Test
+    public void getOccurrencesWithNegativeLimit_ReturnsZeroOccurrences() {
+        List<LocalDateTime> occurrencesFrom = unboundedDaily.getOccurrencesFrom(START_01_JAN_2019, -1);
+        assertTrue(occurrencesFrom.isEmpty());
     }
 
     private void checkOccurrences(List<LocalDateTime> occurrencesToCheck, LocalDateTime startDate, int expectedNoOfOccurences) {

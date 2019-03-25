@@ -2,6 +2,7 @@ package com.sahaj.schedule;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -28,7 +29,7 @@ public class DailyBoundedSchedule extends AbstractDailySchedule implements Bound
     @Override
     public List<LocalDateTime> getOccurrencesFrom(LocalDateTime startDate, int numberOfOccurences) {
         if (startDate.isAfter(scheduleEndDate)) {
-            throw new IllegalArgumentException("Start date must be less than or equal to Schedule end date.");
+            return Collections.emptyList();
         }
         return getLimitedOccurrencesFrom(startDate, numberOfOccurences)
             .stream()

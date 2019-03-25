@@ -1,6 +1,7 @@
 package com.sahaj.schedule;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -25,13 +26,12 @@ public abstract class AbstractDailySchedule extends AbstractSchedule {
     }
 
     protected List<LocalDateTime> getLimitedOccurrencesFrom(LocalDateTime startDate, int limitNumberOfOccurences) {
-        if (startDate.isBefore(this.scheduleStartDate) || limitNumberOfOccurences <= 0) {
-            throw new IllegalArgumentException(
-                "Start date must be greater than or equal to Schedule start date and "
-                    + "Number of occurences must be positive integer greater than zero.");
+        if (limitNumberOfOccurences <= 0) {
+            return Collections.emptyList();
         }
+        final LocalDateTime actualStartDate = startDate.isBefore(this.scheduleStartDate) ? scheduleStartDate : startDate;
         return LongStream.range(0, limitNumberOfOccurences)
-            .mapToObj(i -> startDate.plusDays(i))
+            .mapToObj(i -> actualStartDate.plusDays(i))
             .collect(Collectors.toList());
     }
 }

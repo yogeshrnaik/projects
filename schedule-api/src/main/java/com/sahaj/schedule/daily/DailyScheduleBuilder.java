@@ -1,11 +1,10 @@
-package com.sahaj.schedule.builder;
+package com.sahaj.schedule.daily;
 
 import java.time.LocalDateTime;
 
 import com.sahaj.schedule.BoundedSchedule;
-import com.sahaj.schedule.DailyBoundedSchedule;
-import com.sahaj.schedule.DailyUnboundedSchedule;
 import com.sahaj.schedule.Schedule;
+import com.sahaj.schedule.builder.ScheduleBuilder;
 
 public class DailyScheduleBuilder extends ScheduleBuilder {
 

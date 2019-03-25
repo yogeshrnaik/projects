@@ -1,30 +1,30 @@
-package com.sahaj.schedule.builder;
+package com.sahaj.schedule.once;
 
 import java.time.LocalDateTime;
 
 import com.sahaj.schedule.BoundedSchedule;
-import com.sahaj.schedule.NonRepeatingSchedule;
+import com.sahaj.schedule.builder.ScheduleBuilder;
 
-public class NonRepeatingScheduleBuilder extends ScheduleBuilder {
+public class NonRecurringScheduleBuilder extends ScheduleBuilder {
 
     private Integer dateOfMonth;
     private Integer month;
     private Integer year;
 
-    public NonRepeatingScheduleBuilder(String eventName) {
+    public NonRecurringScheduleBuilder(String eventName) {
         super(eventName);
     }
 
     public BoundedSchedule on(LocalDateTime scheduledDate) {
-        return new NonRepeatingSchedule(eventName, scheduledDate);
+        return new NonRecurringSchedule(eventName, scheduledDate);
     }
 
-    public NonRepeatingScheduleBuilder date(int date) {
+    public NonRecurringScheduleBuilder date(int date) {
         this.dateOfMonth = date;
         return this;
     }
 
-    public NonRepeatingScheduleBuilder month(int month) {
+    public NonRecurringScheduleBuilder month(int month) {
         this.month = month;
         return this;
     }
@@ -33,7 +33,7 @@ public class NonRepeatingScheduleBuilder extends ScheduleBuilder {
         this.year = year;
         validate();
 
-        return new NonRepeatingSchedule(this.eventName, getScheduledDate());
+        return new NonRecurringSchedule(this.eventName, getScheduledDate());
     }
 
     private LocalDateTime getScheduledDate() {

@@ -1,10 +1,12 @@
-package com.sahaj.schedule;
+package com.sahaj.schedule.daily;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+
+import com.sahaj.schedule.AbstractSchedule;
 
 public abstract class AbstractDailySchedule extends AbstractSchedule {
 

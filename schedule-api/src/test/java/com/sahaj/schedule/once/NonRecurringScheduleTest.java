@@ -1,4 +1,4 @@
-package com.sahaj.schedule;
+package com.sahaj.schedule.once;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,9 +9,10 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sahaj.schedule.BoundedSchedule;
 import com.sahaj.schedule.builder.ScheduleBuilder;
 
-public class NonRepeatingScheduleTest {
+public class NonRecurringScheduleTest {
 
     private BoundedSchedule schedule1;
     private BoundedSchedule schedule2;

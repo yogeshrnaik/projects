@@ -1,4 +1,4 @@
-package com.sahaj.schedule;
+package com.sahaj.schedule.daily;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sahaj.schedule.BoundedSchedule;
 import com.sahaj.schedule.builder.ScheduleBuilder;
 
 public class DailyBoundedScheduleTest {

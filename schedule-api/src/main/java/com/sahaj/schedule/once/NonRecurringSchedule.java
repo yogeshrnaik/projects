@@ -1,15 +1,18 @@
-package com.sahaj.schedule;
+package com.sahaj.schedule.once;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class NonRepeatingSchedule extends AbstractSchedule implements BoundedSchedule {
+import com.sahaj.schedule.AbstractSchedule;
+import com.sahaj.schedule.BoundedSchedule;
+
+public class NonRecurringSchedule extends AbstractSchedule implements BoundedSchedule {
 
     private final LocalDateTime scheduledDate;
 
-    public NonRepeatingSchedule(String eventName, LocalDateTime scheduledDate) {
+    public NonRecurringSchedule(String eventName, LocalDateTime scheduledDate) {
         super(eventName);
         this.scheduledDate = scheduledDate;
     }

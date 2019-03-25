@@ -1,4 +1,4 @@
-package com.sahaj.schedule;
+package com.sahaj.schedule.daily;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+
+import com.sahaj.schedule.BoundedSchedule;
 
 public class DailyBoundedSchedule extends AbstractDailySchedule implements BoundedSchedule {
 

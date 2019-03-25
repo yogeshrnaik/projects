@@ -1,5 +1,8 @@
 package com.sahaj.schedule.builder;
 
+import com.sahaj.schedule.daily.DailyScheduleBuilder;
+import com.sahaj.schedule.once.NonRecurringScheduleBuilder;
+
 public class ScheduleBuilder {
 
     protected String eventName;
@@ -12,8 +15,8 @@ public class ScheduleBuilder {
         return new ScheduleBuilder(eventName);
     }
 
-    public NonRepeatingScheduleBuilder once() {
-        return new NonRepeatingScheduleBuilder(this.eventName);
+    public NonRecurringScheduleBuilder once() {
+        return new NonRecurringScheduleBuilder(this.eventName);
     }
 
     public DailyScheduleBuilder daily() {

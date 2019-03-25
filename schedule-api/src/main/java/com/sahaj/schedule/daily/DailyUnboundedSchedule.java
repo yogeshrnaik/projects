@@ -1,4 +1,4 @@
-package com.sahaj.schedule;
+package com.sahaj.schedule.daily;
 
 import java.time.LocalDateTime;
 import java.util.List;

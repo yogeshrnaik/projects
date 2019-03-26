@@ -2,10 +2,7 @@ package com.sahaj.schedule.daily;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 
 import com.sahaj.schedule.BoundedSchedule;
 
@@ -29,27 +26,29 @@ public class DailyBoundedSchedule extends AbstractDailySchedule implements Bound
     }
 
     @Override
-    public List<LocalDateTime> getOccurrencesFrom(LocalDateTime startDate, int numberOfOccurences) {
-        if (startDate.isAfter(scheduleEndDate)) {
-            return Collections.emptyList();
-        }
-        return getLimitedOccurrencesFrom(startDate, numberOfOccurences)
-            .stream()
-            .filter(currDate -> !currDate.isAfter(scheduleEndDate))
-            .collect(Collectors.toList());
-    }
-
-    @Override
     public List<LocalDateTime> getAllOccurrences() {
-        long numOfDaysBetween = ChronoUnit.DAYS.between(scheduleStartDate, scheduleEndDate.plusDays(1));
-
-        return LongStream.range(0, numOfDaysBetween)
-            .mapToObj(i -> scheduleStartDate.plusDays(i))
-            .collect(Collectors.toList());
+        Long numOfDaysBetween = ChronoUnit.DAYS.between(scheduleStartDate, scheduleEndDate.plusDays(1));
+        return getOccurrencesFrom(scheduleStartDate, numOfDaysBetween.intValue());
     }
 
     @Override
     public int getNumberOfOccurences() {
         return getAllOccurrences().size();
+    }
+
+    protected LocalDateTime getFirstOccurrenceFrom(LocalDateTime fromDate) {
+        LocalDateTime firstOccurrenceFrom = super.getFirstOccurrenceFrom(fromDate);
+        return (firstOccurrenceFrom != null &&
+            (firstOccurrenceFrom.isBefore(scheduleEndDate) || firstOccurrenceFrom.equals(scheduleEndDate)))
+                ? firstOccurrenceFrom
+                : null;
+    }
+
+    @Override
+    protected LocalDateTime getNextOccurrenceAfter(LocalDateTime currDate) {
+        LocalDateTime nextOccurence = currDate.plusDays(1);
+        return nextOccurence.isBefore(scheduleEndDate) || nextOccurence.equals(scheduleEndDate)
+            ? nextOccurence
+            : null;
     }
 }

@@ -1,10 +1,6 @@
 package com.sahaj.schedule.daily;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 
 import com.sahaj.schedule.AbstractSchedule;
 
@@ -14,18 +10,19 @@ public abstract class AbstractDailySchedule extends AbstractSchedule {
         super(eventName, startDate);
     }
 
-    @Override
-    public List<LocalDateTime> getOccurrences(int limitNumberOfOccurences) {
-        return getOccurrencesFrom(scheduleStartDate, limitNumberOfOccurences);
-    }
-
-    protected List<LocalDateTime> getLimitedOccurrencesFrom(LocalDateTime startDate, int limitNumberOfOccurences) {
-        if (limitNumberOfOccurences <= 0) {
-            return Collections.emptyList();
+    protected LocalDateTime getFirstOccurrenceFrom(LocalDateTime fromDate) {
+        if (isFromDateBeforeScheduleStartDate(fromDate)) {
+            return scheduleStartDate;
         }
-        final LocalDateTime actualStartDate = startDate.isBefore(this.scheduleStartDate) ? scheduleStartDate : startDate;
-        return LongStream.range(0, limitNumberOfOccurences)
-            .mapToObj(i -> actualStartDate.plusDays(i))
-            .collect(Collectors.toList());
+
+        if (fromDate.toLocalTime().isAfter(scheduleStartDate.toLocalTime())) {
+            return LocalDateTime.of(fromDate.toLocalDate().plusDays(1), scheduleStartDate.toLocalTime());
+        }
+        return LocalDateTime.of(fromDate.toLocalDate(), scheduleStartDate.toLocalTime());
+
+        // if time in fromDate is after the eventTime
+        // firstOccurrence = fromDate+1 day with eventTime
+        // else if time in fromDate is before the eventTime
+        // firstOccurrence = fromDate with eventTime
     }
 }

@@ -11,11 +11,11 @@ public class DailyUnboundedSchedule extends AbstractDailySchedule {
 
     @Override
     public List<LocalDateTime> getOccurrences(int limitNumberOfOccurences) {
-        return getLimitedOccurrencesFrom(scheduleStartDate, limitNumberOfOccurences);
+        return getOccurrencesFrom(scheduleStartDate, limitNumberOfOccurences);
     }
 
     @Override
-    public List<LocalDateTime> getOccurrencesFrom(LocalDateTime startDate, int numberOfOccurences) {
-        return getLimitedOccurrencesFrom(startDate, numberOfOccurences);
+    protected LocalDateTime getNextOccurrenceAfter(LocalDateTime currDate) {
+        return currDate.plusDays(1);
     }
 }

@@ -2,7 +2,6 @@ package com.sahaj.schedule.once;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import com.sahaj.schedule.AbstractSchedule;
@@ -25,13 +24,6 @@ public class NonRecurringSchedule extends AbstractSchedule implements BoundedSch
     }
 
     @Override
-    public List<LocalDateTime> getOccurrencesFrom(LocalDateTime startDate, int numberOfOccurences) {
-        return (startDate.isBefore(scheduleStartDate) || startDate.equals(scheduleStartDate))
-            ? getOccurrences(numberOfOccurences)
-            : Collections.emptyList();
-    }
-
-    @Override
     public List<LocalDateTime> getAllOccurrences() {
         return getOccurrences(1);
     }
@@ -39,5 +31,17 @@ public class NonRecurringSchedule extends AbstractSchedule implements BoundedSch
     @Override
     public int getNumberOfOccurences() {
         return 1;
+    }
+
+    @Override
+    protected LocalDateTime getFirstOccurrenceFrom(LocalDateTime fromDate) {
+        return (isFromDateBeforeScheduleStartDate(fromDate) || isFromDateEqualsScheduleStartDate(fromDate))
+            ? scheduleStartDate
+            : null;
+    }
+
+    @Override
+    protected LocalDateTime getNextOccurrenceAfter(LocalDateTime currDate) {
+        return isFromDateBeforeScheduleStartDate(currDate) ? scheduleStartDate : null;
     }
 }

@@ -11,6 +11,6 @@ public interface Schedule {
 
     List<LocalDateTime> getOccurrences(int limitNumberOfOccurences);
 
-    List<LocalDateTime> getOccurrencesFrom(LocalDateTime startDate, int numberOfOccurences);
+    List<LocalDateTime> getOccurrencesFrom(LocalDateTime fromDate, int numberOfOccurences);
 
 }

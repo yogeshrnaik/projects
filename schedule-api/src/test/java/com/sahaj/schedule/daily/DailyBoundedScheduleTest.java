@@ -19,14 +19,14 @@ public class DailyBoundedScheduleTest {
 
     private final String EVENT_NAME_1 = "Event name 1";
 
-    private final LocalDateTime START_01_JAN_2019 = LocalDateTime.of(2019, 1, 1, 10, 0);
-    private final LocalDateTime END_15_JAN_2019 = LocalDateTime.of(2019, 1, 15, 10, 0);
+    private final LocalDateTime START_01_JAN_2019_8PM = LocalDateTime.of(2019, 1, 1, 20, 0);
+    private final LocalDateTime END_15_JAN_2019_8PM = LocalDateTime.of(2019, 1, 15, 20, 0);
 
     @Before
     public void setup() {
         boundedDaily = ScheduleBuilder.newSchedule(EVENT_NAME_1).daily()
-            .startingOn(START_01_JAN_2019)
-            .endingOn(END_15_JAN_2019);
+            .startingOn(START_01_JAN_2019_8PM)
+            .endingOn(END_15_JAN_2019_8PM);
     }
 
     @Test
@@ -36,8 +36,8 @@ public class DailyBoundedScheduleTest {
 
     @Test
     public void testStartAndEndDatesOfBoundedDailySchedule() {
-        assertEquals(START_01_JAN_2019, boundedDaily.startDate());
-        assertEquals(END_15_JAN_2019, boundedDaily.endDate());
+        assertEquals(START_01_JAN_2019_8PM, boundedDaily.startDate());
+        assertEquals(END_15_JAN_2019_8PM, boundedDaily.endDate());
     }
 
     @Test
@@ -55,14 +55,14 @@ public class DailyBoundedScheduleTest {
 
     @Test
     public void getOccurrencesFromDateOtherThanStartDate_ContainDatesOnlyAfterProvidedDate() {
-        LocalDateTime startDate = START_01_JAN_2019.plusDays(10);
+        LocalDateTime startDate = START_01_JAN_2019_8PM.plusDays(10);
         List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(startDate, 5);
         checkOccurrences(occurrencesFrom, startDate, 5);
     }
 
     @Test
-    public void getOccurrencesFromDateOtherThanStartWithMoreLimit_ContainDatesOnlyAfterProvidedDateAndTillEndDate() {
-        LocalDateTime _11_JAN_2019 = START_01_JAN_2019.plusDays(10);
+    public void getOccurrencesFromDateOtherThanStartWithSameStartTimeWithMoreLimit_ContainDatesOnlyAfterProvidedDateAndTillEndDate() {
+        LocalDateTime _11_JAN_2019 = START_01_JAN_2019_8PM.plusDays(10);
         List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(_11_JAN_2019, 20);
 
         checkOccurrences(occurrencesFrom, _11_JAN_2019, 5);
@@ -71,35 +71,56 @@ public class DailyBoundedScheduleTest {
     }
 
     @Test
+    public void getOccurrencesFromDateOtherThanStartWithDifferentStartTimeWithMoreLimit_ContainDatesAfterProvidedDateAndTillEndDate() {
+        LocalDateTime _11_JAN_2019_9PM = START_01_JAN_2019_8PM.plusDays(10).plusHours(1);
+        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(_11_JAN_2019_9PM, 20);
+
+        LocalDateTime _12_JAN_2019_8PM = START_01_JAN_2019_8PM.plusDays(11);
+        checkOccurrences(occurrencesFrom, _12_JAN_2019_8PM, 4);
+        assertTrue(occurrencesFrom.contains(boundedDaily.endDate()));
+        assertFalse(occurrencesFrom.contains(boundedDaily.endDate().plusDays(1)));
+    }
+
+    @Test
+    public void getOccurrencesFromOneDayBeforeEndDateWithDifferentStartTimeWithMoreLimit_ContainsOnlyEndDate() {
+        LocalDateTime _14_JAN_2019_9PM = START_01_JAN_2019_8PM.plusDays(13).plusHours(1);
+        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(_14_JAN_2019_9PM, 20);
+
+        checkOccurrences(occurrencesFrom, END_15_JAN_2019_8PM, 1);
+        assertTrue(occurrencesFrom.contains(boundedDaily.endDate()));
+        assertFalse(occurrencesFrom.contains(boundedDaily.endDate().plusDays(1)));
+    }
+
+    @Test
     public void getOccurrencesFromEndDate_ContainOnlyEndDate() {
-        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(END_15_JAN_2019, 20);
-        checkOccurrences(occurrencesFrom, END_15_JAN_2019, 1);
+        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(END_15_JAN_2019_8PM, 20);
+        checkOccurrences(occurrencesFrom, END_15_JAN_2019_8PM, 1);
         assertTrue(occurrencesFrom.contains(boundedDaily.endDate()));
     }
 
     @Test
     public void getOccurrencesFromDateBeforeStartDate_ReturnsOccurrencesFromStartDate() {
-        LocalDateTime _31_DEC_2018 = START_01_JAN_2019.minusDays(1);
+        LocalDateTime _31_DEC_2018 = START_01_JAN_2019_8PM.minusDays(1);
         List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(_31_DEC_2018, 5);
         checkOccurrences(occurrencesFrom, boundedDaily.startDate(), 5);
     }
 
     @Test
     public void getOccurrencesFromDateAfterEndStart_ReturnsZeroOccurrences() {
-        LocalDateTime _16_JAN_2019 = END_15_JAN_2019.plusDays(1);
+        LocalDateTime _16_JAN_2019 = END_15_JAN_2019_8PM.plusDays(1);
         List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(_16_JAN_2019, 20);
         assertTrue(occurrencesFrom.isEmpty());
     }
 
     @Test
     public void getOccurrencesWithZeroOrNegativeLimit_ReturnsZeroOccurrences() {
-        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(START_01_JAN_2019, 0);
+        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(START_01_JAN_2019_8PM, 0);
         assertTrue(occurrencesFrom.isEmpty());
     }
 
     @Test
     public void getOccurrencesWithNegativeLimit_ReturnsZeroOccurrences() {
-        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(START_01_JAN_2019, -1);
+        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(START_01_JAN_2019_8PM, -1);
         assertTrue(occurrencesFrom.isEmpty());
     }
 

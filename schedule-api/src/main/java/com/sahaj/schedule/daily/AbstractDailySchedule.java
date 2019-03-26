@@ -1,28 +1,27 @@
 package com.sahaj.schedule.daily;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import com.sahaj.schedule.AbstractSchedule;
 
 public abstract class AbstractDailySchedule extends AbstractSchedule {
 
-    public AbstractDailySchedule(String eventName, LocalDateTime startDate) {
-        super(eventName, startDate);
+    public AbstractDailySchedule(String eventName, LocalDate startDate, LocalTime time) {
+        super(eventName, startDate, time);
     }
 
     protected LocalDateTime getFirstOccurrenceFrom(LocalDateTime fromDate) {
-        if (isFromDateBeforeScheduleStartDate(fromDate)) {
-            return scheduleStartDate;
+        if (isFromDateBeforeScheduleStartDate(fromDate) || isFromDateEqualsScheduleStartDate(fromDate)) {
+            return scheduleStartDateTime;
         }
 
-        if (fromDate.toLocalTime().isAfter(scheduleStartDate.toLocalTime())) {
-            return LocalDateTime.of(fromDate.toLocalDate().plusDays(1), scheduleStartDate.toLocalTime());
+        if (fromDate.toLocalTime().isAfter(scheduleTime)) {
+            // if time in fromDate is after the scheduleTime
+            // firstOccurrence = fromDate + 1 day with scheduleTime
+            return LocalDateTime.of(fromDate.toLocalDate().plusDays(1), scheduleTime);
         }
-        return LocalDateTime.of(fromDate.toLocalDate(), scheduleStartDate.toLocalTime());
-
-        // if time in fromDate is after the eventTime
-        // firstOccurrence = fromDate+1 day with eventTime
-        // else if time in fromDate is before the eventTime
-        // firstOccurrence = fromDate with eventTime
+        return LocalDateTime.of(fromDate.toLocalDate(), scheduleTime);
     }
 }

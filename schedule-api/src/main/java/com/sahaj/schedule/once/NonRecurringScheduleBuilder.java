@@ -1,6 +1,7 @@
 package com.sahaj.schedule.once;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import com.sahaj.schedule.BoundedSchedule;
 
@@ -10,13 +11,14 @@ public class NonRecurringScheduleBuilder {
     private Integer dateOfMonth;
     private Integer month;
     private Integer year;
+    private LocalTime time;
 
     public NonRecurringScheduleBuilder(String eventName) {
         this.eventName = eventName;
     }
 
-    public BoundedSchedule on(LocalDateTime scheduledDate) {
-        return new NonRecurringSchedule(eventName, scheduledDate);
+    public BoundedSchedule on(LocalDate scheduledDate, LocalTime time) {
+        return new NonRecurringSchedule(eventName, scheduledDate, time);
     }
 
     public NonRecurringScheduleBuilder date(int date) {
@@ -29,15 +31,20 @@ public class NonRecurringScheduleBuilder {
         return this;
     }
 
-    public BoundedSchedule year(int year) {
+    public NonRecurringScheduleBuilder year(int year) {
         this.year = year;
-        validate();
-
-        return new NonRecurringSchedule(this.eventName, getScheduledDate());
+        return this;
     }
 
-    private LocalDateTime getScheduledDate() {
-        return LocalDateTime.of(year, month, dateOfMonth, 0, 0);
+    public BoundedSchedule at(LocalTime time) {
+        this.time = time;
+        validate();
+
+        return new NonRecurringSchedule(this.eventName, getScheduledDate(), time);
+    }
+
+    private LocalDate getScheduledDate() {
+        return LocalDate.of(year, month, dateOfMonth);
     }
 
     private void validate() {

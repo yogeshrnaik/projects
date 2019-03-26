@@ -1,6 +1,8 @@
 package com.sahaj.schedule;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,11 +11,15 @@ import java.util.List;
 public abstract class AbstractSchedule implements Schedule {
 
     private final String eventName;
-    protected final LocalDateTime scheduleStartDate;
+    protected final LocalDate scheduleStartDate;
+    protected final LocalDateTime scheduleStartDateTime;
+    protected final LocalTime scheduleTime;
 
-    public AbstractSchedule(String eventName, LocalDateTime startDate) {
+    public AbstractSchedule(String eventName, LocalDate startDate, LocalTime scheduleTime) {
         this.eventName = eventName;
         this.scheduleStartDate = startDate;
+        this.scheduleStartDateTime = scheduleStartDate.atTime(scheduleTime);
+        this.scheduleTime = scheduleTime;
     }
 
     @Override
@@ -23,12 +29,12 @@ public abstract class AbstractSchedule implements Schedule {
 
     @Override
     public LocalDateTime startDate() {
-        return scheduleStartDate;
+        return scheduleStartDateTime;
     }
 
     @Override
     public List<LocalDateTime> getOccurrences(int limitNumberOfOccurences) {
-        return getOccurrencesFrom(scheduleStartDate, limitNumberOfOccurences);
+        return getOccurrencesFrom(scheduleStartDateTime, limitNumberOfOccurences);
     }
 
     @Override
@@ -60,14 +66,14 @@ public abstract class AbstractSchedule implements Schedule {
     protected abstract LocalDateTime getNextOccurrenceAfter(LocalDateTime currDate);
 
     protected boolean isFromDateBeforeScheduleStartDate(LocalDateTime fromDate) {
-        return fromDate.isBefore(scheduleStartDate);
+        return fromDate.isBefore(scheduleStartDateTime);
     }
 
     protected boolean isFromDateEqualsScheduleStartDate(LocalDateTime fromDate) {
-        return fromDate.equals(scheduleStartDate);
+        return fromDate.equals(scheduleStartDateTime);
     }
 
     protected boolean isFromDateAfterScheduleStartDate(LocalDateTime fromDate) {
-        return fromDate.isAfter(scheduleStartDate);
+        return fromDate.isAfter(scheduleStartDateTime);
     }
 }

@@ -38,7 +38,7 @@ public class NonRecurringScheduleTest {
     @Before
     public void setup() {
         onceOn12Feb2020_7pm = ScheduleBuilder.newSchedule(EVENT_NAME_1).once().on(SCHEDULE_12_FEB_2020, AT_7PM);
-        onceOn13Feb2020_7pm = ScheduleBuilder.newSchedule(EVENT_NAME_2).once().date(13).month(2).year(2020).at(AT_7PM);
+        onceOn13Feb2020_7pm = ScheduleBuilder.newSchedule(EVENT_NAME_2).once().on(SCHEDULE_13_FEB_2020, AT_7PM);
     }
 
     @Test

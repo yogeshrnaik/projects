@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -68,39 +69,34 @@ public class NonRecurringScheduleTest {
     }
 
     private void scheduleHasOnlyOneOccurrence(BoundedSchedule schedule, LocalDateTime expectedScheduleDate) {
-        assertEquals(Arrays.asList(expectedScheduleDate), schedule.getOccurrences(1));
-        assertEquals(Arrays.asList(expectedScheduleDate), schedule.getOccurrences(Integer.MAX_VALUE));
+        List<LocalDateTime> expectedOccurrences = Arrays.asList(expectedScheduleDate);
+        assertEquals(expectedOccurrences, schedule.getOccurrences(1));
+        assertEquals(expectedOccurrences, schedule.getOccurrences(Integer.MAX_VALUE));
 
-        assertEquals(Arrays.asList(expectedScheduleDate), schedule.getAllOccurrences());
+        assertEquals(expectedOccurrences, schedule.getAllOccurrences());
         assertEquals(1, schedule.getNumberOfOccurences());
     }
 
     @Test
-    public void nonRecurringScheduleReturnsOccurenceBeforeScheduleDate() {
-        scheduleHasOneOccurrenceBeforeScheduleDate(onceOn12Feb2020_7pm, SCHEDULE_12_FEB_2020_7PM);
-        scheduleHasOneOccurrenceBeforeScheduleDate(onceOn13Feb2020_7pm, SCHEDULE_13_FEB_2020_7PM);
+    public void getOccurrencesFromDateBeforeScheduleDate_ReturnsOneOccurenceOfScheduleDate() {
+        scheduleHasOneOccurrence(onceOn12Feb2020_7pm, DATE_11_FEB_2020_7PM, SCHEDULE_12_FEB_2020_7PM);
+        scheduleHasOneOccurrence(onceOn13Feb2020_7pm, DATE_11_FEB_2020_7PM, SCHEDULE_13_FEB_2020_7PM);
+    }
+
+    private void scheduleHasOneOccurrence(BoundedSchedule schedule, LocalDateTime fromDate,
+        LocalDateTime expectedScheduleDate) {
+        assertEquals(Arrays.asList(expectedScheduleDate), schedule.getOccurrencesFrom(fromDate, 1));
+        assertEquals(Arrays.asList(expectedScheduleDate), schedule.getOccurrencesFrom(fromDate, Integer.MAX_VALUE));
     }
 
     @Test
-    public void nonRecurringScheduleReturnsOneOccurenceOnScheduleDate() {
-        nonRecurringScheduleReturnsOneOccurenceOnScheduleDate(onceOn12Feb2020_7pm, SCHEDULE_12_FEB_2020_7PM);
-        nonRecurringScheduleReturnsOneOccurenceOnScheduleDate(onceOn13Feb2020_7pm, SCHEDULE_13_FEB_2020_7PM);
-    }
-
-    private void nonRecurringScheduleReturnsOneOccurenceOnScheduleDate(BoundedSchedule schedule, LocalDateTime scheduledDate) {
-        assertEquals(Arrays.asList(scheduledDate),
-            schedule.getOccurrencesFrom(scheduledDate, 1));
-        assertEquals(Arrays.asList(scheduledDate),
-            schedule.getOccurrencesFrom(scheduledDate, Integer.MAX_VALUE));
-    }
-
-    private void scheduleHasOneOccurrenceBeforeScheduleDate(BoundedSchedule schedule, LocalDateTime expectedScheduleDate) {
-        assertEquals(Arrays.asList(expectedScheduleDate), schedule.getOccurrencesFrom(DATE_11_FEB_2020_7PM, 1));
-        assertEquals(Arrays.asList(expectedScheduleDate), schedule.getOccurrencesFrom(DATE_11_FEB_2020_7PM, Integer.MAX_VALUE));
+    public void getOccurrencesFromDateEqualToScheduleDate_ReturnsOneOccurenceOfScheduleDate() {
+        scheduleHasOneOccurrence(onceOn12Feb2020_7pm, SCHEDULE_12_FEB_2020_7PM, SCHEDULE_12_FEB_2020_7PM);
+        scheduleHasOneOccurrence(onceOn13Feb2020_7pm, SCHEDULE_12_FEB_2020_7PM, SCHEDULE_13_FEB_2020_7PM);
     }
 
     @Test
-    public void nonRecurringScheduleReturnsNoOccurenceAfterScheduleDate() {
+    public void getOccurrencesFromDateAfterScheduleDate_ReturnsNoOccurence() {
         scheduleHasZeroOccurrenceAfterScheduleDate(onceOn12Feb2020_7pm, DATE_13_FEB_2020_7PM);
         scheduleHasZeroOccurrenceAfterScheduleDate(onceOn13Feb2020_7pm, DATE_14_FEB_2020_7PM);
     }

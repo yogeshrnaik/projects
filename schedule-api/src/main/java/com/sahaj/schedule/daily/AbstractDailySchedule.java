@@ -10,16 +10,8 @@ import com.sahaj.schedule.AbstractSchedule;
 
 public abstract class AbstractDailySchedule extends AbstractSchedule {
 
-    protected final LocalDateTime scheduleStartDate;
-
     public AbstractDailySchedule(String eventName, LocalDateTime startDate) {
-        super(eventName);
-        this.scheduleStartDate = startDate;
-    }
-
-    @Override
-    public LocalDateTime startDate() {
-        return scheduleStartDate;
+        super(eventName, startDate);
     }
 
     @Override

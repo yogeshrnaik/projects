@@ -10,31 +10,23 @@ import com.sahaj.schedule.BoundedSchedule;
 
 public class NonRecurringSchedule extends AbstractSchedule implements BoundedSchedule {
 
-    private final LocalDateTime scheduledDate;
-
     public NonRecurringSchedule(String eventName, LocalDateTime scheduledDate) {
-        super(eventName);
-        this.scheduledDate = scheduledDate;
-    }
-
-    @Override
-    public LocalDateTime startDate() {
-        return scheduledDate;
+        super(eventName, scheduledDate);
     }
 
     @Override
     public LocalDateTime endDate() {
-        return scheduledDate;
+        return startDate();
     }
 
     @Override
     public List<LocalDateTime> getOccurrences(int limitNumberOfOccurences) {
-        return Arrays.asList(scheduledDate);
+        return Arrays.asList(scheduleStartDate);
     }
 
     @Override
     public List<LocalDateTime> getOccurrencesFrom(LocalDateTime startDate, int numberOfOccurences) {
-        return (startDate.isBefore(scheduledDate) || startDate.equals(scheduledDate))
+        return (startDate.isBefore(scheduleStartDate) || startDate.equals(scheduleStartDate))
             ? getOccurrences(numberOfOccurences)
             : Collections.emptyList();
     }

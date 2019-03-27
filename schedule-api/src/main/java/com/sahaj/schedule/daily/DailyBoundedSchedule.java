@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 import com.sahaj.schedule.BoundedSchedule;
 
@@ -38,19 +39,19 @@ public class DailyBoundedSchedule extends AbstractDailySchedule implements Bound
         return getAllOccurrences().size();
     }
 
-    protected LocalDateTime getFirstOccurrenceFrom(LocalDateTime fromDate) {
-        LocalDateTime firstOccurrenceFrom = super.getFirstOccurrenceFrom(fromDate);
-        return (firstOccurrenceFrom != null &&
-            (firstOccurrenceFrom.isBefore(endDate()) || firstOccurrenceFrom.equals(endDate())))
+    protected Optional<LocalDateTime> getFirstOccurrenceFrom(LocalDateTime fromDate) {
+        Optional<LocalDateTime> firstOccurrenceFrom = super.getFirstOccurrenceFrom(fromDate);
+        return (firstOccurrenceFrom.isPresent() &&
+            (firstOccurrenceFrom.get().isBefore(endDate()) || firstOccurrenceFrom.get().equals(endDate())))
                 ? firstOccurrenceFrom
-                : null;
+                : Optional.empty();
     }
 
     @Override
-    protected LocalDateTime getNextOccurrenceAfter(LocalDateTime currDate) {
+    protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currDate) {
         LocalDateTime nextOccurence = currDate.plusDays(1);
         return nextOccurence.isBefore(endDate()) || nextOccurence.equals(endDate())
-            ? nextOccurence
-            : null;
+            ? Optional.of(nextOccurence)
+            : Optional.empty();
     }
 }

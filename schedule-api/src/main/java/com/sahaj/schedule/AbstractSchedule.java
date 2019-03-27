@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class AbstractSchedule implements Schedule {
 
@@ -39,31 +40,31 @@ public abstract class AbstractSchedule implements Schedule {
 
     @Override
     public List<LocalDateTime> getOccurrencesFrom(LocalDateTime fromDate, int numberOfOccurences) {
-        LocalDateTime firstOccurrence = getFirstOccurrenceFrom(fromDate);
-        if (firstOccurrence == null || numberOfOccurences <= 0) {
+        Optional<LocalDateTime> firstOccurrence = getFirstOccurrenceFrom(fromDate);
+        if (!firstOccurrence.isPresent() || numberOfOccurences <= 0) {
             return Collections.emptyList();
         }
 
-        return getNextOccurrencesFrom(firstOccurrence, numberOfOccurences);
+        return getNextOccurrencesFrom(firstOccurrence.get(), numberOfOccurences);
     }
 
     private List<LocalDateTime> getNextOccurrencesFrom(LocalDateTime firstOccurrence, int numberOfOccurences) {
         List<LocalDateTime> occurrences = new ArrayList<>(Arrays.asList(firstOccurrence));
-        LocalDateTime currOccurrence = firstOccurrence;
+        Optional<LocalDateTime> currOccurrence = Optional.of(firstOccurrence);
         int counter = 1;
-        while (counter < numberOfOccurences && currOccurrence != null) {
-            currOccurrence = getNextOccurrenceAfter(currOccurrence);
-            if (currOccurrence != null) {
-                occurrences.add(currOccurrence);
+        while (counter < numberOfOccurences && currOccurrence.isPresent()) {
+            currOccurrence = getNextOccurrenceAfter(currOccurrence.get());
+            if (currOccurrence.isPresent()) {
+                occurrences.add(currOccurrence.get());
                 counter++;
             }
         }
         return occurrences;
     }
 
-    protected abstract LocalDateTime getFirstOccurrenceFrom(LocalDateTime fromDate);
+    protected abstract Optional<LocalDateTime> getFirstOccurrenceFrom(LocalDateTime fromDate);
 
-    protected abstract LocalDateTime getNextOccurrenceAfter(LocalDateTime currDate);
+    protected abstract Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currDate);
 
     protected boolean isFromDateBeforeScheduleStartDate(LocalDateTime fromDate) {
         return fromDate.isBefore(scheduleStartDateTime);

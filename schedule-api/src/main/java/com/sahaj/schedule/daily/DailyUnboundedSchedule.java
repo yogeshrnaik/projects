@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 public class DailyUnboundedSchedule extends AbstractDailySchedule {
 
@@ -17,7 +18,7 @@ public class DailyUnboundedSchedule extends AbstractDailySchedule {
     }
 
     @Override
-    protected LocalDateTime getNextOccurrenceAfter(LocalDateTime currDate) {
-        return currDate.plusDays(1);
+    protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currDate) {
+        return Optional.of(currDate.plusDays(1));
     }
 }

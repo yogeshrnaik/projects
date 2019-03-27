@@ -6,6 +6,7 @@ import static java.time.DayOfWeek.WEDNESDAY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -23,6 +24,7 @@ public class WeeklyUnboundedScheduleTest {
     private Schedule weekly10AM_From01Jan2019_MonWedFri;
 
     private final String EVENT_NAME_1 = "Event name 1";
+    private final String EVENT_NAME_2 = "Event name 2";
 
     private final LocalDate START_01_JAN_2019 = LocalDate.of(2019, 1, 1);
     private final LocalTime AT_10AM = LocalTime.of(10, 0);
@@ -40,22 +42,42 @@ public class WeeklyUnboundedScheduleTest {
     private final LocalDateTime MONDAY_21_JAN_2019_10AM = LocalDateTime.of(2019, 1, 21, 10, 0);
     private final LocalDateTime WEDNESDAY_23_JAN_2019_10AM = LocalDateTime.of(2019, 1, 23, 10, 0);
 
+    private Schedule weekly4PM_From15Dec2018_TuesThur;
+    private final LocalDate START_15_DEC_2018 = LocalDate.of(2018, 12, 15);
+    private final LocalTime AT_4PM = LocalTime.of(16, 0);
+    private final LocalDateTime START_SATURDAY_15_DEC_2018_4PM = START_15_DEC_2018.atTime(AT_4PM);
+    private final LocalDateTime TUESDAY_18_DEC_2018_4PM = LocalDateTime.of(2018, 12, 18, 16, 0);
+    private final LocalDateTime THURSDAY_20_DEC_2018_4PM = LocalDateTime.of(2018, 12, 20, 16, 0);
+    private final LocalDateTime TUESDAY_25_DEC_2018_4PM = LocalDateTime.of(2018, 12, 25, 16, 0);
+    private final LocalDateTime THURSDAY_27_DEC_2018_4PM = LocalDateTime.of(2018, 12, 27, 16, 0);
+    private final LocalDateTime TUESDAY_1_JAN_2019_4PM = LocalDateTime.of(2019, 1, 1, 16, 0);
+    private final LocalDateTime THURSDAY_3_JAN_2019_4PM = LocalDateTime.of(2019, 1, 3, 16, 0);
+    private final LocalDateTime TUESDAY_8_JAN_2019_4PM = LocalDateTime.of(2019, 1, 8, 16, 0);
+    private final LocalDateTime TTHURSDAY_10_JAN_2019_4PM = LocalDateTime.of(2019, 1, 10, 16, 0);
+
     @Before
     public void setup() {
         weekly10AM_From01Jan2019_MonWedFri = ScheduleBuilder.newSchedule(EVENT_NAME_1)
             .weekly(MONDAY, WEDNESDAY, FRIDAY)
             .startingOn(START_01_JAN_2019, AT_10AM)
             .neverEnding();
+
+        weekly4PM_From15Dec2018_TuesThur = ScheduleBuilder.newSchedule(EVENT_NAME_2)
+            .weekly(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY)
+            .startingOn(START_15_DEC_2018, AT_4PM)
+            .neverEnding();
     }
 
     @Test
     public void eventNameIsStoredInSchedule() {
         assertEquals(EVENT_NAME_1, weekly10AM_From01Jan2019_MonWedFri.getEventName());
+        assertEquals(EVENT_NAME_2, weekly4PM_From15Dec2018_TuesThur.getEventName());
     }
 
     @Test
     public void startDateIsAdjustedToFirstOccurrence() {
         assertEquals(WEDNESDAY_02_JAN_2019_10AM, weekly10AM_From01Jan2019_MonWedFri.startDate());
+        assertEquals(TUESDAY_18_DEC_2018_4PM, weekly4PM_From15Dec2018_TuesThur.startDate());
     }
 
     @Test
@@ -67,6 +89,14 @@ public class WeeklyUnboundedScheduleTest {
                 MONDAY_07_JAN_2019_10AM,
                 WEDNESDAY_09_JAN_2019_10AM,
                 FRIDAY_11_JAN_2019_10AM));
+
+        checkOccurrences(weekly4PM_From15Dec2018_TuesThur.getOccurrences(5),
+            Arrays.asList(
+                TUESDAY_18_DEC_2018_4PM,
+                THURSDAY_20_DEC_2018_4PM,
+                TUESDAY_25_DEC_2018_4PM,
+                THURSDAY_27_DEC_2018_4PM,
+                TUESDAY_1_JAN_2019_4PM));
     }
 
     @Test
@@ -80,6 +110,16 @@ public class WeeklyUnboundedScheduleTest {
                 MONDAY_07_JAN_2019_10AM,
                 WEDNESDAY_09_JAN_2019_10AM,
                 FRIDAY_11_JAN_2019_10AM));
+
+        LocalDateTime _14_DEC_2018_4PM = START_SATURDAY_15_DEC_2018_4PM.minusDays(1);
+        occurrencesFrom = weekly4PM_From15Dec2018_TuesThur.getOccurrencesFrom(_14_DEC_2018_4PM, 5);
+        checkOccurrences(occurrencesFrom,
+            Arrays.asList(
+                TUESDAY_18_DEC_2018_4PM,
+                THURSDAY_20_DEC_2018_4PM,
+                TUESDAY_25_DEC_2018_4PM,
+                THURSDAY_27_DEC_2018_4PM,
+                TUESDAY_1_JAN_2019_4PM));
     }
 
     @Test
@@ -92,6 +132,15 @@ public class WeeklyUnboundedScheduleTest {
                 MONDAY_07_JAN_2019_10AM,
                 WEDNESDAY_09_JAN_2019_10AM,
                 FRIDAY_11_JAN_2019_10AM));
+
+        occurrencesFrom = weekly4PM_From15Dec2018_TuesThur.getOccurrencesFrom(TUESDAY_18_DEC_2018_4PM, 5);
+        checkOccurrences(occurrencesFrom,
+            Arrays.asList(
+                TUESDAY_18_DEC_2018_4PM,
+                THURSDAY_20_DEC_2018_4PM,
+                TUESDAY_25_DEC_2018_4PM,
+                THURSDAY_27_DEC_2018_4PM,
+                TUESDAY_1_JAN_2019_4PM));
     }
 
     @Test
@@ -104,6 +153,16 @@ public class WeeklyUnboundedScheduleTest {
             WEDNESDAY_16_JAN_2019_10AM,
             FRIDAY_18_JAN_2019_10AM,
             MONDAY_21_JAN_2019_10AM));
+
+        LocalDateTime MONDAY_24_DEC_2018_4PM = START_SATURDAY_15_DEC_2018_4PM.plusDays(9);
+        occurrencesFrom = weekly4PM_From15Dec2018_TuesThur.getOccurrencesFrom(MONDAY_24_DEC_2018_4PM, 5);
+        checkOccurrences(occurrencesFrom,
+            Arrays.asList(
+                TUESDAY_25_DEC_2018_4PM,
+                THURSDAY_27_DEC_2018_4PM,
+                TUESDAY_1_JAN_2019_4PM,
+                THURSDAY_3_JAN_2019_4PM,
+                TUESDAY_8_JAN_2019_4PM));
     }
 
     @Test
@@ -116,17 +175,32 @@ public class WeeklyUnboundedScheduleTest {
             FRIDAY_18_JAN_2019_10AM,
             MONDAY_21_JAN_2019_10AM,
             WEDNESDAY_23_JAN_2019_10AM));
+
+        LocalDateTime TUESDAY_25_DEC_2018_5PM = START_SATURDAY_15_DEC_2018_4PM.plusDays(10).plusHours(1);
+        occurrencesFrom = weekly4PM_From15Dec2018_TuesThur.getOccurrencesFrom(TUESDAY_25_DEC_2018_5PM, 5);
+        checkOccurrences(occurrencesFrom, Arrays.asList(
+            THURSDAY_27_DEC_2018_4PM,
+            TUESDAY_1_JAN_2019_4PM,
+            THURSDAY_3_JAN_2019_4PM,
+            TUESDAY_8_JAN_2019_4PM,
+            TTHURSDAY_10_JAN_2019_4PM));
     }
 
     @Test
     public void getOccurrencesWithZeroOrNegativeLimit_ReturnsZeroOccurrences() {
         List<LocalDateTime> occurrencesFrom = weekly10AM_From01Jan2019_MonWedFri.getOccurrencesFrom(START_TUESDAY_01_JAN_2019_10AM, 0);
         assertTrue(occurrencesFrom.isEmpty());
+
+        occurrencesFrom = weekly4PM_From15Dec2018_TuesThur.getOccurrencesFrom(START_SATURDAY_15_DEC_2018_4PM, 0);
+        assertTrue(occurrencesFrom.isEmpty());
     }
 
     @Test
     public void getOccurrencesWithNegativeLimit_ReturnsZeroOccurrences() {
         List<LocalDateTime> occurrencesFrom = weekly10AM_From01Jan2019_MonWedFri.getOccurrencesFrom(START_TUESDAY_01_JAN_2019_10AM, -1);
+        assertTrue(occurrencesFrom.isEmpty());
+
+        occurrencesFrom = weekly4PM_From15Dec2018_TuesThur.getOccurrencesFrom(START_SATURDAY_15_DEC_2018_4PM, -1);
         assertTrue(occurrencesFrom.isEmpty());
     }
 

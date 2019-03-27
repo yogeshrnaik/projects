@@ -19,11 +19,6 @@ public class DailyBoundedSchedule extends AbstractDailySchedule implements Bound
     }
 
     @Override
-    public LocalDateTime startDate() {
-        return super.startDate();
-    }
-
-    @Override
     public LocalDateTime endDate() {
         return scheduleEndDate.atTime(scheduleTime);
     }

@@ -30,7 +30,7 @@ public abstract class AbstractSchedule implements Schedule {
 
     @Override
     public LocalDateTime startDate() {
-        return scheduleStartDateTime;
+        return getFirstOccurrenceFrom(scheduleStartDateTime).get();
     }
 
     @Override

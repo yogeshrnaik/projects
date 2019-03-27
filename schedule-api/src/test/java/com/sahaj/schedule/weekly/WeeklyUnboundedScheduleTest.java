@@ -26,18 +26,19 @@ public class WeeklyUnboundedScheduleTest {
 
     private final LocalDate START_01_JAN_2019 = LocalDate.of(2019, 1, 1);
     private final LocalTime AT_10AM = LocalTime.of(10, 0);
-    private final LocalDateTime START_01_JAN_2019_10AM = START_01_JAN_2019.atTime(AT_10AM);
+    private final LocalDateTime START_TUESDAY_01_JAN_2019_10AM = START_01_JAN_2019.atTime(AT_10AM);
 
-    private final LocalDateTime _WEDNESDAY_02_JAN_2019_10AM = LocalDateTime.of(2019, 1, 2, 10, 0);
-    private final LocalDateTime _FRIDAY_04_JAN_2019_10AM = LocalDateTime.of(2019, 1, 4, 10, 0);
-    private final LocalDateTime _MONDAY_07_JAN_2019_10AM = LocalDateTime.of(2019, 1, 7, 10, 0);
-    private final LocalDateTime _WEDNESDAY_09_JAN_2019_10AM = LocalDateTime.of(2019, 1, 9, 10, 0);
-    private final LocalDateTime _FRIDAY_11_JAN_2019_10AM = LocalDateTime.of(2019, 1, 11, 10, 0);
+    private final LocalDateTime WEDNESDAY_02_JAN_2019_10AM = LocalDateTime.of(2019, 1, 2, 10, 0);
+    private final LocalDateTime FRIDAY_04_JAN_2019_10AM = LocalDateTime.of(2019, 1, 4, 10, 0);
+    private final LocalDateTime MONDAY_07_JAN_2019_10AM = LocalDateTime.of(2019, 1, 7, 10, 0);
+    private final LocalDateTime WEDNESDAY_09_JAN_2019_10AM = LocalDateTime.of(2019, 1, 9, 10, 0);
+    private final LocalDateTime FRIDAY_11_JAN_2019_10AM = LocalDateTime.of(2019, 1, 11, 10, 0);
 
-    private final LocalDateTime _MONDAY_14_JAN_2019_10AM = LocalDateTime.of(2019, 1, 14, 10, 0);
-    private final LocalDateTime _WEDNESDAY_16_JAN_2019_10AM = LocalDateTime.of(2019, 1, 16, 10, 0);
-    private final LocalDateTime _FRIDAY_18_JAN_2019_10AM = LocalDateTime.of(2019, 1, 18, 10, 0);
-    private final LocalDateTime _MONDAY_21_JAN_2019_10AM = LocalDateTime.of(2019, 1, 21, 10, 0);
+    private final LocalDateTime MONDAY_14_JAN_2019_10AM = LocalDateTime.of(2019, 1, 14, 10, 0);
+    private final LocalDateTime WEDNESDAY_16_JAN_2019_10AM = LocalDateTime.of(2019, 1, 16, 10, 0);
+    private final LocalDateTime FRIDAY_18_JAN_2019_10AM = LocalDateTime.of(2019, 1, 18, 10, 0);
+    private final LocalDateTime MONDAY_21_JAN_2019_10AM = LocalDateTime.of(2019, 1, 21, 10, 0);
+    private final LocalDateTime WEDNESDAY_23_JAN_2019_10AM = LocalDateTime.of(2019, 1, 23, 10, 0);
 
     @Before
     public void setup() {
@@ -54,78 +55,78 @@ public class WeeklyUnboundedScheduleTest {
 
     @Test
     public void startDateIsAdjustedToFirstOccurrence() {
-        assertEquals(_WEDNESDAY_02_JAN_2019_10AM, weekly10AM_From01Jan2019_MonWedFri.startDate());
+        assertEquals(WEDNESDAY_02_JAN_2019_10AM, weekly10AM_From01Jan2019_MonWedFri.startDate());
     }
 
     @Test
     public void getOccurrencesWithLimit_ContainsNumberofDatesSameAsProvidedLimitAndFromFirstOccurrence() {
         checkOccurrences(weekly10AM_From01Jan2019_MonWedFri.getOccurrences(5),
             Arrays.asList(
-                _WEDNESDAY_02_JAN_2019_10AM,
-                _FRIDAY_04_JAN_2019_10AM,
-                _MONDAY_07_JAN_2019_10AM,
-                _WEDNESDAY_09_JAN_2019_10AM,
-                _FRIDAY_11_JAN_2019_10AM));
+                WEDNESDAY_02_JAN_2019_10AM,
+                FRIDAY_04_JAN_2019_10AM,
+                MONDAY_07_JAN_2019_10AM,
+                WEDNESDAY_09_JAN_2019_10AM,
+                FRIDAY_11_JAN_2019_10AM));
     }
 
     @Test
     public void getOccurrencesFromDateBeforeStartDate_ReturnsOccurrencesFromFirstOccurrence() {
-        LocalDateTime _31_DEC_2018_10AM = START_01_JAN_2019_10AM.minusDays(1);
+        LocalDateTime _31_DEC_2018_10AM = START_TUESDAY_01_JAN_2019_10AM.minusDays(1);
         List<LocalDateTime> occurrencesFrom = weekly10AM_From01Jan2019_MonWedFri.getOccurrencesFrom(_31_DEC_2018_10AM, 5);
         checkOccurrences(occurrencesFrom,
             Arrays.asList(
-                _WEDNESDAY_02_JAN_2019_10AM,
-                _FRIDAY_04_JAN_2019_10AM,
-                _MONDAY_07_JAN_2019_10AM,
-                _WEDNESDAY_09_JAN_2019_10AM,
-                _FRIDAY_11_JAN_2019_10AM));
+                WEDNESDAY_02_JAN_2019_10AM,
+                FRIDAY_04_JAN_2019_10AM,
+                MONDAY_07_JAN_2019_10AM,
+                WEDNESDAY_09_JAN_2019_10AM,
+                FRIDAY_11_JAN_2019_10AM));
     }
 
     @Test
     public void getOccurrencesFromDateSameAsFirstOccurrence_ContainDatesFromFirstOccurrence() {
-        List<LocalDateTime> occurrencesFrom = weekly10AM_From01Jan2019_MonWedFri.getOccurrencesFrom(_WEDNESDAY_02_JAN_2019_10AM, 5);
+        List<LocalDateTime> occurrencesFrom = weekly10AM_From01Jan2019_MonWedFri.getOccurrencesFrom(WEDNESDAY_02_JAN_2019_10AM, 5);
         checkOccurrences(occurrencesFrom,
             Arrays.asList(
-                _WEDNESDAY_02_JAN_2019_10AM,
-                _FRIDAY_04_JAN_2019_10AM,
-                _MONDAY_07_JAN_2019_10AM,
-                _WEDNESDAY_09_JAN_2019_10AM,
-                _FRIDAY_11_JAN_2019_10AM));
+                WEDNESDAY_02_JAN_2019_10AM,
+                FRIDAY_04_JAN_2019_10AM,
+                MONDAY_07_JAN_2019_10AM,
+                WEDNESDAY_09_JAN_2019_10AM,
+                FRIDAY_11_JAN_2019_10AM));
     }
 
     @Test
     public void getOccurrencesFromDateAfterStartDate_ContainDatesOnlyAfterProvidedFromDate() {
-        LocalDateTime _10_JAN_2019_10AM = START_01_JAN_2019_10AM.plusDays(9);
-        List<LocalDateTime> occurrencesFrom = weekly10AM_From01Jan2019_MonWedFri.getOccurrencesFrom(_10_JAN_2019_10AM, 5);
+        LocalDateTime THURSDAY_10_JAN_2019_10AM = START_TUESDAY_01_JAN_2019_10AM.plusDays(9);
+        List<LocalDateTime> occurrencesFrom = weekly10AM_From01Jan2019_MonWedFri.getOccurrencesFrom(THURSDAY_10_JAN_2019_10AM, 5);
         checkOccurrences(occurrencesFrom, Arrays.asList(
-            _FRIDAY_11_JAN_2019_10AM,
-            _MONDAY_14_JAN_2019_10AM,
-            _WEDNESDAY_16_JAN_2019_10AM,
-            _FRIDAY_18_JAN_2019_10AM,
-            _MONDAY_21_JAN_2019_10AM));
+            FRIDAY_11_JAN_2019_10AM,
+            MONDAY_14_JAN_2019_10AM,
+            WEDNESDAY_16_JAN_2019_10AM,
+            FRIDAY_18_JAN_2019_10AM,
+            MONDAY_21_JAN_2019_10AM));
     }
 
     @Test
     public void getOccurrencesFromDateAfterStartDateWithDifferentTime_ContainDatesOnlyAfterProvidedFromDate() {
-        LocalDateTime _11_JAN_2019_11AM = START_01_JAN_2019_10AM.plusDays(10).plusHours(1);
-        List<LocalDateTime> occurrencesFrom = weekly10AM_From01Jan2019_MonWedFri.getOccurrencesFrom(_11_JAN_2019_11AM, 4);
-
+        LocalDateTime FRIDAY_11_JAN_2019_11AM = START_TUESDAY_01_JAN_2019_10AM.plusDays(10).plusHours(1);
+        List<LocalDateTime> occurrencesFrom = weekly10AM_From01Jan2019_MonWedFri.getOccurrencesFrom(FRIDAY_11_JAN_2019_11AM, 5);
         checkOccurrences(occurrencesFrom, Arrays.asList(
-            _MONDAY_14_JAN_2019_10AM,
-            _WEDNESDAY_16_JAN_2019_10AM,
-            _FRIDAY_18_JAN_2019_10AM,
-            _MONDAY_21_JAN_2019_10AM));
+            MONDAY_14_JAN_2019_10AM,
+            WEDNESDAY_16_JAN_2019_10AM,
+            FRIDAY_18_JAN_2019_10AM,
+            MONDAY_21_JAN_2019_10AM,
+            WEDNESDAY_23_JAN_2019_10AM));
     }
 
     @Test
     public void getOccurrencesWithZeroOrNegativeLimit_ReturnsZeroOccurrences() {
-        List<LocalDateTime> occurrencesFrom = weekly10AM_From01Jan2019_MonWedFri.getOccurrencesFrom(START_01_JAN_2019_10AM, 0);
+        List<LocalDateTime> occurrencesFrom = weekly10AM_From01Jan2019_MonWedFri.getOccurrencesFrom(START_TUESDAY_01_JAN_2019_10AM, 0);
         assertTrue(occurrencesFrom.isEmpty());
     }
 
     @Test
     public void getOccurrencesWithNegativeLimit_ReturnsZeroOccurrences() {
-        List<LocalDateTime> occurrencesFrom = weekly10AM_From01Jan2019_MonWedFri.getOccurrencesFrom(START_01_JAN_2019_10AM, -1);
+        List<LocalDateTime> occurrencesFrom = weekly10AM_From01Jan2019_MonWedFri.getOccurrencesFrom(START_TUESDAY_01_JAN_2019_10AM, -1);
         assertTrue(occurrencesFrom.isEmpty());
     }
 

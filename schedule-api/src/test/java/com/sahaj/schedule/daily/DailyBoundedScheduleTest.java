@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,34 +51,38 @@ public class DailyBoundedScheduleTest {
     @Test
     public void getOccurrencesWithLimitUpto15ForScheduleOf15Days_ContainDatesEqualtoLimitProvided() {
         for (int occurrenceLimit = 1; occurrenceLimit <= 15; occurrenceLimit++) {
-            checkOccurrences(daily8PM_From01Jan_to_15Jan2019.getOccurrences(occurrenceLimit), START_01_JAN_2019_8PM, occurrenceLimit);
+            checkOccurrences(daily8PM_From01Jan_to_15Jan2019.getOccurrences(occurrenceLimit),
+                getListOfLocalDateTimeFrom(START_01_JAN_2019_8PM, occurrenceLimit));
         }
     }
 
     @Test
     public void getOccurrencesWithLimitMoreThan15ForScheduleOf15Days_Contain15DatesOnly() {
-        checkOccurrences(daily8PM_From01Jan_to_15Jan2019.getOccurrences(16), START_01_JAN_2019_8PM, 15);
-        checkOccurrences(daily8PM_From01Jan_to_15Jan2019.getOccurrences(Integer.MAX_VALUE), START_01_JAN_2019_8PM, 15);
+        checkOccurrences(daily8PM_From01Jan_to_15Jan2019.getOccurrences(16),
+            getListOfLocalDateTimeFrom(START_01_JAN_2019_8PM, 15));
+
+        checkOccurrences(daily8PM_From01Jan_to_15Jan2019.getOccurrences(Integer.MAX_VALUE),
+            getListOfLocalDateTimeFrom(START_01_JAN_2019_8PM, 15));
     }
 
     @Test
     public void getOccurrencesFromDateBeforeStartDate_ReturnsOccurrencesFromStartDate() {
         LocalDateTime _31_DEC_2018_8PM = START_01_JAN_2019_8PM.minusDays(1);
         List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(_31_DEC_2018_8PM, 5);
-        checkOccurrences(occurrencesFrom, START_01_JAN_2019_8PM, 5);
+        checkOccurrences(occurrencesFrom, getListOfLocalDateTimeFrom(START_01_JAN_2019_8PM, 5));
     }
 
     @Test
     public void getOccurrencesFromDateSameAsStartDate_ContainDatesFromStartDate() {
         List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(START_01_JAN_2019_8PM, 5);
-        checkOccurrences(occurrencesFrom, START_01_JAN_2019_8PM, 5);
+        checkOccurrences(occurrencesFrom, getListOfLocalDateTimeFrom(START_01_JAN_2019_8PM, 5));
     }
 
     @Test
     public void getOccurrencesFromDateAfterStartDate_ContainDatesOnlyAfterProvidedFromDate() {
         LocalDateTime _11_JAN_2019_8PM = START_01_JAN_2019_8PM.plusDays(10);
         List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(_11_JAN_2019_8PM, 5);
-        checkOccurrences(occurrencesFrom, _11_JAN_2019_8PM, 5);
+        checkOccurrences(occurrencesFrom, getListOfLocalDateTimeFrom(_11_JAN_2019_8PM, 5));
     }
 
     @Test
@@ -84,7 +90,7 @@ public class DailyBoundedScheduleTest {
         LocalDateTime _11_JAN_2019_8PM = START_01_JAN_2019_8PM.plusDays(10);
         List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(_11_JAN_2019_8PM, 20);
 
-        checkOccurrences(occurrencesFrom, _11_JAN_2019_8PM, 5);
+        checkOccurrences(occurrencesFrom, getListOfLocalDateTimeFrom(_11_JAN_2019_8PM, 5));
         lastOccurrenceIsOfEndDate(occurrencesFrom);
     }
 
@@ -99,7 +105,7 @@ public class DailyBoundedScheduleTest {
         List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(_11_JAN_2019_9PM, 20);
 
         LocalDateTime _12_JAN_2019_8PM = START_01_JAN_2019_8PM.plusDays(11);
-        checkOccurrences(occurrencesFrom, _12_JAN_2019_8PM, 4);
+        checkOccurrences(occurrencesFrom, getListOfLocalDateTimeFrom(_12_JAN_2019_8PM, 4));
         lastOccurrenceIsOfEndDate(occurrencesFrom);
     }
 
@@ -108,14 +114,14 @@ public class DailyBoundedScheduleTest {
         LocalDateTime _14_JAN_2019_9PM = START_01_JAN_2019_8PM.plusDays(13).plusHours(1);
         List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(_14_JAN_2019_9PM, 20);
 
-        checkOccurrences(occurrencesFrom, END_15_JAN_2019_8PM, 1);
+        checkOccurrences(occurrencesFrom, getListOfLocalDateTimeFrom(END_15_JAN_2019_8PM, 1));
         lastOccurrenceIsOfEndDate(occurrencesFrom);
     }
 
     @Test
     public void getOccurrencesFromEndDate_ContainOnlyEndDate() {
         List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(END_15_JAN_2019_8PM, 20);
-        checkOccurrences(occurrencesFrom, END_15_JAN_2019_8PM, 1);
+        checkOccurrences(occurrencesFrom, getListOfLocalDateTimeFrom(END_15_JAN_2019_8PM, 1));
         assertTrue(occurrencesFrom.contains(daily8PM_From01Jan_to_15Jan2019.endDate()));
     }
 
@@ -141,20 +147,26 @@ public class DailyBoundedScheduleTest {
     @Test
     public void allOccurencesOfBoundedScheduleOf15Days_Contain15Dates() {
         List<LocalDateTime> allOccurrences = daily8PM_From01Jan_to_15Jan2019.getAllOccurrences();
-        checkOccurrences(allOccurrences, START_01_JAN_2019_8PM, 15);
+        checkOccurrences(allOccurrences, getListOfLocalDateTimeFrom(START_01_JAN_2019_8PM, 15));
         lastOccurrenceIsOfEndDate(allOccurrences);
-    }
-
-    private void checkOccurrences(List<LocalDateTime> occurrencesToCheck, LocalDateTime startDate, int expectedNoOfOccurences) {
-        assertEquals(expectedNoOfOccurences, occurrencesToCheck.size());
-        for (int i = 0; i < expectedNoOfOccurences; i++) {
-            assertEquals(startDate.plusDays(i), occurrencesToCheck.get(i));
-        }
     }
 
     @Test
     public void numberOfOccurencesOfBoundedScheduleOf15Days_ShouldBe15() {
         assertEquals(15, daily8PM_From01Jan_to_15Jan2019.getNumberOfOccurences());
+    }
+
+    private void checkOccurrences(List<LocalDateTime> occurrencesToCheck, List<LocalDateTime> expectedDates) {
+        assertEquals(expectedDates.size(), occurrencesToCheck.size());
+        for (int i = 0; i < expectedDates.size(); i++) {
+            assertEquals(expectedDates.get(i), occurrencesToCheck.get(i));
+        }
+    }
+
+    private List<LocalDateTime> getListOfLocalDateTimeFrom(LocalDateTime first, int noOfDates) {
+        return IntStream.range(0, noOfDates)
+            .mapToObj(i -> first.plusDays(i))
+            .collect(Collectors.toList());
     }
 
 }

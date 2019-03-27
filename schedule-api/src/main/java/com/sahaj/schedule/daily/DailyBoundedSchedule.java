@@ -41,10 +41,13 @@ public class DailyBoundedSchedule extends AbstractDailySchedule implements Bound
 
     protected Optional<LocalDateTime> getFirstOccurrenceFrom(LocalDateTime fromDate) {
         Optional<LocalDateTime> firstOccurrenceFrom = super.getFirstOccurrenceFrom(fromDate);
-        return (firstOccurrenceFrom.isPresent() &&
-            (firstOccurrenceFrom.get().isBefore(endDate()) || firstOccurrenceFrom.get().equals(endDate())))
-                ? firstOccurrenceFrom
-                : Optional.empty();
+        return (firstOccurrenceFrom.isPresent() && isBeforeOrEqualToEndDate(firstOccurrenceFrom.get()))
+            ? firstOccurrenceFrom
+            : Optional.empty();
+    }
+
+    private boolean isBeforeOrEqualToEndDate(LocalDateTime occurrence) {
+        return occurrence.isBefore(endDate()) || occurrence.equals(endDate());
     }
 
     @Override

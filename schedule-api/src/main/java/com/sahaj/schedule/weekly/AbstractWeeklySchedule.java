@@ -22,7 +22,7 @@ public abstract class AbstractWeeklySchedule extends AbstractSchedule {
 
     @Override
     protected Optional<LocalDateTime> getFirstOccurrenceFrom(LocalDateTime fromDate) {
-        if (isDayOfWeekOfDateSameAsScheduleDay(fromDate)) {
+        if (isDayOfWeekOfDateSameAsScheduleDay(fromDate.toLocalDate())) {
             if (fromDate.isAfter(scheduleStartDateTime) || fromDate.equals(scheduleStartDateTime)) {
                 if (fromDate.toLocalTime().isBefore(scheduleTime)
                     || fromDate.toLocalTime().equals(scheduleTime)) {
@@ -35,7 +35,7 @@ public abstract class AbstractWeeklySchedule extends AbstractSchedule {
         return Optional.of(fromDate.toLocalDate().with(TemporalAdjusters.next(nextDayOfWeek)).atTime(scheduleTime));
     }
 
-    protected boolean isDayOfWeekOfDateSameAsScheduleDay(LocalDateTime fromDate) {
+    protected boolean isDayOfWeekOfDateSameAsScheduleDay(LocalDate fromDate) {
         return daysOfWeek.contains(fromDate.getDayOfWeek());
     }
 
@@ -43,6 +43,14 @@ public abstract class AbstractWeeklySchedule extends AbstractSchedule {
         DayOfWeek next = currDayOfWeek;
         do {
             next = next.plus(1);
+        } while (!daysOfWeek.contains(next));
+        return next;
+    }
+
+    protected DayOfWeek getPreviousDayOfWeek(DayOfWeek currDayOfWeek) {
+        DayOfWeek next = currDayOfWeek;
+        do {
+            next = next.minus(1);
         } while (!daysOfWeek.contains(next));
         return next;
     }

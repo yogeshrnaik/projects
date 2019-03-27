@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
 
+import com.sahaj.schedule.BoundedSchedule;
+
 public class WeeklyScheduleBuilder {
 
     private String eventName;
@@ -22,6 +24,24 @@ public class WeeklyScheduleBuilder {
         this.startDate = start;
         this.time = time;
         return this;
+    }
+
+    public BoundedSchedule endingOn(LocalDate end) {
+        this.endDate = end;
+        validate();
+        return new WeeklyBoundedSchedule(eventName, startDate, time, daysOfWeek, endDate);
+    }
+
+    private void validate() {
+        if (startDate == null) {
+            throw new IllegalStateException("Start date is mandatory");
+        }
+        if (time == null) {
+            throw new IllegalStateException("Time is mandatory");
+        }
+        if (daysOfWeek == null || daysOfWeek.isEmpty()) {
+            throw new IllegalStateException("Day of week is mandatory");
+        }
     }
 
     public WeeklyUnboundedSchedule neverEnding() {

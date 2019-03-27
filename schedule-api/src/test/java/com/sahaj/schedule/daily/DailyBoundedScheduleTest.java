@@ -17,7 +17,7 @@ import com.sahaj.schedule.builder.ScheduleBuilder;
 
 public class DailyBoundedScheduleTest {
 
-    private BoundedSchedule boundedDaily;
+    private BoundedSchedule daily8PM_From01Jan_to_15Jan2019;
 
     private final String EVENT_NAME_1 = "Event name 1";
 
@@ -30,109 +30,119 @@ public class DailyBoundedScheduleTest {
 
     @Before
     public void setup() {
-        boundedDaily = ScheduleBuilder.newSchedule(EVENT_NAME_1).daily()
+        daily8PM_From01Jan_to_15Jan2019 = ScheduleBuilder.newSchedule(EVENT_NAME_1).daily()
             .startingOn(START_01_JAN_2019, AT_8PM)
             .endingOn(END_15_JAN_2019);
     }
 
     @Test
     public void eventNameIsStoredInSchedule() {
-        assertEquals(EVENT_NAME_1, boundedDaily.getEventName());
+        assertEquals(EVENT_NAME_1, daily8PM_From01Jan_to_15Jan2019.getEventName());
     }
 
     @Test
-    public void testStartAndEndDatesOfBoundedDailySchedule() {
-        assertEquals(START_01_JAN_2019_8PM, boundedDaily.startDate());
-        assertEquals(END_15_JAN_2019_8PM, boundedDaily.endDate());
+    public void startAndEndDatesAreStoredInSchedule() {
+        assertEquals(START_01_JAN_2019_8PM, daily8PM_From01Jan_to_15Jan2019.startDate());
+        assertEquals(END_15_JAN_2019_8PM, daily8PM_From01Jan_to_15Jan2019.endDate());
     }
 
     @Test
     public void getOccurrencesWithLimitUpto15ForScheduleOf15Days_ContainDatesEqualtoLimitProvided() {
         for (int occurrenceLimit = 1; occurrenceLimit <= 15; occurrenceLimit++) {
-            checkOccurrences(boundedDaily.getOccurrences(occurrenceLimit), boundedDaily.startDate(), occurrenceLimit);
+            checkOccurrences(daily8PM_From01Jan_to_15Jan2019.getOccurrences(occurrenceLimit), START_01_JAN_2019_8PM, occurrenceLimit);
         }
     }
 
     @Test
     public void getOccurrencesWithLimitMoreThan15ForScheduleOf15Days_Contain15DatesOnly() {
-        checkOccurrences(boundedDaily.getOccurrences(16), boundedDaily.startDate(), 15);
-        checkOccurrences(boundedDaily.getOccurrences(20), boundedDaily.startDate(), 15);
-    }
-
-    @Test
-    public void getOccurrencesFromDateOtherThanStartDate_ContainDatesOnlyAfterProvidedDate() {
-        LocalDateTime _11_JAN_2019_8PM = START_01_JAN_2019_8PM.plusDays(10);
-        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(_11_JAN_2019_8PM, 5);
-        checkOccurrences(occurrencesFrom, _11_JAN_2019_8PM, 5);
-    }
-
-    @Test
-    public void getOccurrencesFromDateOtherThanStartWithSameStartTimeWithMoreLimit_ContainDatesOnlyAfterProvidedDateAndTillEndDate() {
-        LocalDateTime _11_JAN_2019_8PM = START_01_JAN_2019_8PM.plusDays(10);
-        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(_11_JAN_2019_8PM, 20);
-
-        checkOccurrences(occurrencesFrom, _11_JAN_2019_8PM, 5);
-        assertTrue(occurrencesFrom.contains(boundedDaily.endDate()));
-        assertFalse(occurrencesFrom.contains(boundedDaily.endDate().plusDays(1)));
-    }
-
-    @Test
-    public void getOccurrencesFromDateOtherThanStartWithDifferentStartTimeWithMoreLimit_ContainDatesAfterProvidedDateAndTillEndDate() {
-        LocalDateTime _11_JAN_2019_9PM = START_01_JAN_2019_8PM.plusDays(10).plusHours(1);
-        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(_11_JAN_2019_9PM, 20);
-
-        LocalDateTime _12_JAN_2019_8PM = START_01_JAN_2019_8PM.plusDays(11);
-        checkOccurrences(occurrencesFrom, _12_JAN_2019_8PM, 4);
-        assertTrue(occurrencesFrom.contains(boundedDaily.endDate()));
-        assertFalse(occurrencesFrom.contains(boundedDaily.endDate().plusDays(1)));
-    }
-
-    @Test
-    public void getOccurrencesFromOneDayBeforeEndDateWithDifferentStartTimeWithMoreLimit_ContainsOnlyEndDate() {
-        LocalDateTime _14_JAN_2019_9PM = START_01_JAN_2019_8PM.plusDays(13).plusHours(1);
-        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(_14_JAN_2019_9PM, 20);
-
-        checkOccurrences(occurrencesFrom, END_15_JAN_2019_8PM, 1);
-        assertTrue(occurrencesFrom.contains(boundedDaily.endDate()));
-        assertFalse(occurrencesFrom.contains(boundedDaily.endDate().plusDays(1)));
-    }
-
-    @Test
-    public void getOccurrencesFromEndDate_ContainOnlyEndDate() {
-        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(END_15_JAN_2019_8PM, 20);
-        checkOccurrences(occurrencesFrom, END_15_JAN_2019_8PM, 1);
-        assertTrue(occurrencesFrom.contains(boundedDaily.endDate()));
+        checkOccurrences(daily8PM_From01Jan_to_15Jan2019.getOccurrences(16), START_01_JAN_2019_8PM, 15);
+        checkOccurrences(daily8PM_From01Jan_to_15Jan2019.getOccurrences(Integer.MAX_VALUE), START_01_JAN_2019_8PM, 15);
     }
 
     @Test
     public void getOccurrencesFromDateBeforeStartDate_ReturnsOccurrencesFromStartDate() {
         LocalDateTime _31_DEC_2018_8PM = START_01_JAN_2019_8PM.minusDays(1);
-        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(_31_DEC_2018_8PM, 5);
-        checkOccurrences(occurrencesFrom, boundedDaily.startDate(), 5);
+        List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(_31_DEC_2018_8PM, 5);
+        checkOccurrences(occurrencesFrom, START_01_JAN_2019_8PM, 5);
+    }
+
+    @Test
+    public void getOccurrencesFromDateSameAsStartDate_ContainDatesFromStartDate() {
+        List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(START_01_JAN_2019_8PM, 5);
+        checkOccurrences(occurrencesFrom, START_01_JAN_2019_8PM, 5);
+    }
+
+    @Test
+    public void getOccurrencesFromDateAfterStartDate_ContainDatesOnlyAfterProvidedFromDate() {
+        LocalDateTime _11_JAN_2019_8PM = START_01_JAN_2019_8PM.plusDays(10);
+        List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(_11_JAN_2019_8PM, 5);
+        checkOccurrences(occurrencesFrom, _11_JAN_2019_8PM, 5);
+    }
+
+    @Test
+    public void getOccurrencesFromDateAfterStartDateWithMoreLimit_ContainDatesAfterProvidedFromDateAndTillEndDate() {
+        LocalDateTime _11_JAN_2019_8PM = START_01_JAN_2019_8PM.plusDays(10);
+        List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(_11_JAN_2019_8PM, 20);
+
+        checkOccurrences(occurrencesFrom, _11_JAN_2019_8PM, 5);
+        lastOccurrenceIsOfEndDate(occurrencesFrom);
+    }
+
+    private void lastOccurrenceIsOfEndDate(List<LocalDateTime> occurrencesFrom) {
+        assertEquals(occurrencesFrom.get(occurrencesFrom.size() - 1), daily8PM_From01Jan_to_15Jan2019.endDate());
+        assertFalse(occurrencesFrom.contains(daily8PM_From01Jan_to_15Jan2019.endDate().plusDays(1)));
+    }
+
+    @Test
+    public void getOccurrencesFromDateOtherThanStartWithDifferentTimeWithMoreLimit_ContainDatesAfterProvidedFromDateAndTillEndDate() {
+        LocalDateTime _11_JAN_2019_9PM = START_01_JAN_2019_8PM.plusDays(10).plusHours(1);
+        List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(_11_JAN_2019_9PM, 20);
+
+        LocalDateTime _12_JAN_2019_8PM = START_01_JAN_2019_8PM.plusDays(11);
+        checkOccurrences(occurrencesFrom, _12_JAN_2019_8PM, 4);
+        lastOccurrenceIsOfEndDate(occurrencesFrom);
+    }
+
+    @Test
+    public void getOccurrencesFromOneDayBeforeEndDateWithDifferentTimeWithMoreLimit_ContainsOnlyEndDate() {
+        LocalDateTime _14_JAN_2019_9PM = START_01_JAN_2019_8PM.plusDays(13).plusHours(1);
+        List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(_14_JAN_2019_9PM, 20);
+
+        checkOccurrences(occurrencesFrom, END_15_JAN_2019_8PM, 1);
+        lastOccurrenceIsOfEndDate(occurrencesFrom);
+    }
+
+    @Test
+    public void getOccurrencesFromEndDate_ContainOnlyEndDate() {
+        List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(END_15_JAN_2019_8PM, 20);
+        checkOccurrences(occurrencesFrom, END_15_JAN_2019_8PM, 1);
+        assertTrue(occurrencesFrom.contains(daily8PM_From01Jan_to_15Jan2019.endDate()));
     }
 
     @Test
     public void getOccurrencesFromDateAfterEndStart_ReturnsZeroOccurrences() {
-        LocalDateTime _16_JAN_2019_8PM = END_15_JAN_2019_8PM.plusDays(1);
-        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(_16_JAN_2019_8PM, 20);
+        LocalDateTime _15_JAN_2019_9PM = END_15_JAN_2019_8PM.plusHours(1);
+        List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(_15_JAN_2019_9PM, 20);
         assertTrue(occurrencesFrom.isEmpty());
     }
 
     @Test
     public void getOccurrencesWithZeroOrNegativeLimit_ReturnsZeroOccurrences() {
-        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(START_01_JAN_2019_8PM, 0);
+        List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(START_01_JAN_2019_8PM, 0);
         assertTrue(occurrencesFrom.isEmpty());
     }
 
     @Test
     public void getOccurrencesWithNegativeLimit_ReturnsZeroOccurrences() {
-        List<LocalDateTime> occurrencesFrom = boundedDaily.getOccurrencesFrom(START_01_JAN_2019_8PM, -1);
+        List<LocalDateTime> occurrencesFrom = daily8PM_From01Jan_to_15Jan2019.getOccurrencesFrom(START_01_JAN_2019_8PM, -1);
         assertTrue(occurrencesFrom.isEmpty());
     }
 
     @Test
     public void allOccurencesOfBoundedScheduleOf15Days_Contain15Dates() {
-        checkOccurrences(boundedDaily.getAllOccurrences(), boundedDaily.startDate(), 15);
+        List<LocalDateTime> allOccurrences = daily8PM_From01Jan_to_15Jan2019.getAllOccurrences();
+        checkOccurrences(allOccurrences, START_01_JAN_2019_8PM, 15);
+        lastOccurrenceIsOfEndDate(allOccurrences);
     }
 
     private void checkOccurrences(List<LocalDateTime> occurrencesToCheck, LocalDateTime startDate, int expectedNoOfOccurences) {
@@ -144,7 +154,7 @@ public class DailyBoundedScheduleTest {
 
     @Test
     public void numberOfOccurencesOfBoundedScheduleOf15Days_ShouldBe15() {
-        assertEquals(15, boundedDaily.getNumberOfOccurences());
+        assertEquals(15, daily8PM_From01Jan_to_15Jan2019.getNumberOfOccurences());
     }
 
 }

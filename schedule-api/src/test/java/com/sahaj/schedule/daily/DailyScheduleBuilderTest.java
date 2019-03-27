@@ -49,7 +49,25 @@ public class DailyScheduleBuilderTest {
     }
 
     @Test
-    public void createBoundedScheduleWithStartAndEndDate_ScheduleShouldGetCreated() {
+    public void createBoundedScheduleWithNullTime_ShouldThrowIllegalStateException() {
+        try {
+            builder.startingOn(START_01_JAN_2019, null).endingOn(END_15_JAN_2019);
+        } catch (IllegalStateException e) {
+            assertEquals("Time is mandatory", e.getMessage());
+        }
+    }
+
+    @Test
+    public void createUnboundedScheduleWithNullTime_ShouldThrowIllegalStateException() {
+        try {
+            builder.startingOn(START_01_JAN_2019, null).neverEnding();
+        } catch (IllegalStateException e) {
+            assertEquals("Time is mandatory", e.getMessage());
+        }
+    }
+
+    @Test
+    public void createBoundedScheduleWithStartAndEndDateAndTime_ScheduleShouldGetCreated() {
         BoundedSchedule schedule = builder.startingOn(START_01_JAN_2019, AT_10_AM).endingOn(END_15_JAN_2019);
 
         assertEquals(EVENT_NAME, schedule.getEventName());
@@ -58,7 +76,7 @@ public class DailyScheduleBuilderTest {
     }
 
     @Test
-    public void createUnboundedScheduleWithStartDate_ScheduleShouldGetCreated() {
+    public void createUnboundedScheduleWithStartDateAndTime_ScheduleShouldGetCreated() {
         Schedule schedule = builder.startingOn(START_01_JAN_2019, AT_10_AM).neverEnding();
 
         assertEquals(EVENT_NAME, schedule.getEventName());

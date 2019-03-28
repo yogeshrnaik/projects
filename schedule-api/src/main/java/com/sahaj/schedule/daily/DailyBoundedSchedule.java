@@ -46,8 +46,8 @@ public class DailyBoundedSchedule extends AbstractDailySchedule implements Bound
     }
 
     @Override
-    protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currDate) {
-        LocalDateTime nextOccurence = currDate.plusDays(1);
+    protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currOccurrence) {
+        LocalDateTime nextOccurence = currOccurrence.plusDays(1);
         return nextOccurence.isBefore(endDate()) || nextOccurence.equals(endDate())
             ? Optional.of(nextOccurence)
             : Optional.empty();

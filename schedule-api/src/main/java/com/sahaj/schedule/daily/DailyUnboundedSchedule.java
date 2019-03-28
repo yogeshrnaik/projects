@@ -18,7 +18,7 @@ public class DailyUnboundedSchedule extends AbstractDailySchedule {
     }
 
     @Override
-    protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currDate) {
-        return Optional.of(currDate.plusDays(1));
+    protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currOccurrence) {
+        return Optional.of(currOccurrence.plusDays(1));
     }
 }

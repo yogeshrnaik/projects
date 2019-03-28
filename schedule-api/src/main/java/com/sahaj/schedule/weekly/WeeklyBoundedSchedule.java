@@ -34,10 +34,10 @@ public class WeeklyBoundedSchedule extends AbstractWeeklySchedule implements Bou
     }
 
     @Override
-    protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currDate) {
-        DayOfWeek nextDayOfWeek = getNextDayOfWeek(currDate.getDayOfWeek());
+    protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currOccurrence) {
+        DayOfWeek nextDayOfWeek = getNextDayOfWeek(currOccurrence.getDayOfWeek());
 
-        LocalDateTime nextOccurence = currDate.toLocalDate().with(next(nextDayOfWeek)).atTime(scheduleTime);
+        LocalDateTime nextOccurence = currOccurrence.toLocalDate().with(next(nextDayOfWeek)).atTime(scheduleTime);
 
         return nextOccurence.isBefore(endDate()) || nextOccurence.equals(endDate())
             ? Optional.of(nextOccurence)

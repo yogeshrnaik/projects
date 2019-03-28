@@ -44,7 +44,7 @@ public class NonRecurringSchedule extends AbstractSchedule implements BoundedSch
     }
 
     @Override
-    protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currDate) {
-        return isFromDateBeforeScheduleStartDate(currDate) ? Optional.of(scheduleStartDateTime) : Optional.empty();
+    protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currOccurrence) {
+        return isFromDateBeforeScheduleStartDate(currOccurrence) ? Optional.of(scheduleStartDateTime) : Optional.empty();
     }
 }

@@ -16,9 +16,9 @@ public class WeeklyUnboundedSchedule extends AbstractWeeklySchedule {
     }
 
     @Override
-    protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currDate) {
-        DayOfWeek nextDayOfWeek = getNextDayOfWeek(currDate.getDayOfWeek());
-        return Optional.of(currDate.toLocalDate()
+    protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currOccurrence) {
+        DayOfWeek nextDayOfWeek = getNextDayOfWeek(currOccurrence.getDayOfWeek());
+        return Optional.of(currOccurrence.toLocalDate()
             .with(next(nextDayOfWeek))
             .atTime(scheduleTime));
     }

@@ -9,6 +9,9 @@ import com.sahaj.schedule.BoundedSchedule;
 
 public class WeeklyScheduleBuilder {
 
+    static final String DAY_OF_WEEK_IS_MANDATORY = "Day of week is mandatory";
+    static final String TIME_IS_MANDATORY = "Time is mandatory";
+    static final String START_DATE_IS_MANDATORY = "Start date is mandatory";
     private String eventName;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -34,17 +37,18 @@ public class WeeklyScheduleBuilder {
 
     private void validate() {
         if (startDate == null) {
-            throw new IllegalStateException("Start date is mandatory");
+            throw new IllegalStateException(START_DATE_IS_MANDATORY);
         }
         if (time == null) {
-            throw new IllegalStateException("Time is mandatory");
+            throw new IllegalStateException(TIME_IS_MANDATORY);
         }
         if (daysOfWeek == null || daysOfWeek.isEmpty()) {
-            throw new IllegalStateException("Day of week is mandatory");
+            throw new IllegalStateException(DAY_OF_WEEK_IS_MANDATORY);
         }
     }
 
     public WeeklyUnboundedSchedule neverEnding() {
+        validate();
         return new WeeklyUnboundedSchedule(eventName, startDate, time, daysOfWeek);
     }
 

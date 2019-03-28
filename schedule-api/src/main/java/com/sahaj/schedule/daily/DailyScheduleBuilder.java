@@ -8,6 +8,9 @@ import com.sahaj.schedule.Schedule;
 
 public class DailyScheduleBuilder {
 
+    static final String START_DATE_IS_MANDATORY = "Start date is mandatory";
+    static final String TIME_IS_MANDATORY = "Time is mandatory";
+
     private String eventName;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -31,10 +34,10 @@ public class DailyScheduleBuilder {
 
     private void validate() {
         if (startDate == null) {
-            throw new IllegalStateException("Start date is mandatory");
+            throw new IllegalStateException(START_DATE_IS_MANDATORY);
         }
         if (time == null) {
-            throw new IllegalStateException("Time is mandatory");
+            throw new IllegalStateException(TIME_IS_MANDATORY);
         }
     }
 

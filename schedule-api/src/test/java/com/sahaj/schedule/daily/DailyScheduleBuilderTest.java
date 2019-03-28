@@ -1,5 +1,7 @@
 package com.sahaj.schedule.daily;
 
+import static com.sahaj.schedule.daily.DailyScheduleBuilder.START_DATE_IS_MANDATORY;
+import static com.sahaj.schedule.daily.DailyScheduleBuilder.TIME_IS_MANDATORY;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
@@ -35,7 +37,7 @@ public class DailyScheduleBuilderTest {
         try {
             builder.endingOn(END_15_JAN_2019);
         } catch (IllegalStateException e) {
-            assertEquals("Start date is mandatory", e.getMessage());
+            assertEquals(START_DATE_IS_MANDATORY, e.getMessage());
         }
     }
 
@@ -44,7 +46,7 @@ public class DailyScheduleBuilderTest {
         try {
             builder.neverEnding();
         } catch (IllegalStateException e) {
-            assertEquals("Start date is mandatory", e.getMessage());
+            assertEquals(START_DATE_IS_MANDATORY, e.getMessage());
         }
     }
 
@@ -53,7 +55,7 @@ public class DailyScheduleBuilderTest {
         try {
             builder.startingOn(START_01_JAN_2019, null).endingOn(END_15_JAN_2019);
         } catch (IllegalStateException e) {
-            assertEquals("Time is mandatory", e.getMessage());
+            assertEquals(TIME_IS_MANDATORY, e.getMessage());
         }
     }
 
@@ -62,7 +64,7 @@ public class DailyScheduleBuilderTest {
         try {
             builder.startingOn(START_01_JAN_2019, null).neverEnding();
         } catch (IllegalStateException e) {
-            assertEquals("Time is mandatory", e.getMessage());
+            assertEquals(TIME_IS_MANDATORY, e.getMessage());
         }
     }
 

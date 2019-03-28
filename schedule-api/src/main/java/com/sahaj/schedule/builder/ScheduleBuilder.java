@@ -31,7 +31,8 @@ public class ScheduleBuilder {
 
     public WeeklyScheduleBuilder weekly(DayOfWeek dayofWeek, DayOfWeek... daysOfWeek) {
         Set<DayOfWeek> daysOfWeekSet = new TreeSet<>(Arrays.asList(daysOfWeek));
-        daysOfWeekSet.add(dayofWeek);
+        if (dayofWeek != null)
+            daysOfWeekSet.add(dayofWeek);
 
         return new WeeklyScheduleBuilder(this.eventName, daysOfWeekSet);
     }

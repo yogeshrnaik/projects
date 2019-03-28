@@ -1,10 +1,13 @@
 package com.sahaj.schedule.weekly;
 
+import static java.time.temporal.TemporalAdjusters.next;
+import static java.time.temporal.TemporalAdjusters.previous;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -27,15 +30,18 @@ public class WeeklyBoundedSchedule extends AbstractWeeklySchedule implements Bou
         }
 
         DayOfWeek prevDayOfWeek = getPreviousDayOfWeek(endDate.getDayOfWeek());
-        return endDate.with(TemporalAdjusters.previous(prevDayOfWeek));
+        return endDate.with(previous(prevDayOfWeek));
     }
 
     @Override
     protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currDate) {
         DayOfWeek nextDayOfWeek = getNextDayOfWeek(currDate.getDayOfWeek());
-        return Optional.of(currDate.toLocalDate()
-            .with(TemporalAdjusters.next(nextDayOfWeek))
-            .atTime(scheduleTime));
+
+        LocalDateTime nextOccurence = currDate.toLocalDate().with(next(nextDayOfWeek)).atTime(scheduleTime);
+
+        return nextOccurence.isBefore(endDate()) || nextOccurence.equals(endDate())
+            ? Optional.of(nextOccurence)
+            : Optional.empty();
     }
 
     @Override
@@ -45,11 +51,12 @@ public class WeeklyBoundedSchedule extends AbstractWeeklySchedule implements Bou
 
     @Override
     public List<LocalDateTime> getAllOccurrences() {
-        return null;
+        Long numOfDaysBetween = ChronoUnit.DAYS.between(scheduleStartDate, scheduleEndDate.plusDays(1));
+        return getOccurrencesFrom(scheduleStartDateTime, numOfDaysBetween.intValue());
     }
 
     @Override
     public int getNumberOfOccurences() {
-        return 0;
+        return getAllOccurrences().size();
     }
 }

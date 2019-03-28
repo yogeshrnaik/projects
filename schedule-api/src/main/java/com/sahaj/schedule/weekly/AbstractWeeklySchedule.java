@@ -1,10 +1,11 @@
 package com.sahaj.schedule.weekly;
 
+import static java.time.temporal.TemporalAdjusters.next;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -32,7 +33,7 @@ public abstract class AbstractWeeklySchedule extends AbstractSchedule {
             }
         }
         DayOfWeek nextDayOfWeek = getNextDayOfWeek(fromDate.getDayOfWeek());
-        return Optional.of(fromDate.toLocalDate().with(TemporalAdjusters.next(nextDayOfWeek)).atTime(scheduleTime));
+        return Optional.of(fromDate.toLocalDate().with(next(nextDayOfWeek)).atTime(scheduleTime));
     }
 
     protected boolean isDayOfWeekOfDateSameAsScheduleDay(LocalDate fromDate) {

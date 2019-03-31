@@ -1,6 +1,5 @@
 package com.sahaj.schedule.biweekly;
 
-import static java.time.temporal.TemporalAdjusters.next;
 import static java.time.temporal.TemporalAdjusters.previous;
 
 import java.time.DayOfWeek;
@@ -13,9 +12,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.sahaj.schedule.BoundedSchedule;
-import com.sahaj.schedule.weekly.AbstractWeeklySchedule;
 
-public class BiWeeklyBoundedSchedule extends AbstractWeeklySchedule implements BoundedSchedule {
+public class BiWeeklyBoundedSchedule extends AbstractBiWeeklySchedule implements BoundedSchedule {
 
     private final LocalDate scheduleEndDate;
 
@@ -27,60 +25,35 @@ public class BiWeeklyBoundedSchedule extends AbstractWeeklySchedule implements B
 
     @Override
     protected Optional<LocalDateTime> getFirstOccurrenceFrom(LocalDateTime fromDate) {
-        LocalDateTime firstOccurFromStart = getFirstOccurrenceFromScheduleStartDate();
         Optional<LocalDateTime> firstOccurFromDate = super.getFirstOccurrenceFrom(fromDate);
-        if (firstOccurFromDate.isPresent()) {
-            long weeksBetween = ChronoUnit.WEEKS.between(firstOccurFromStart, firstOccurFromDate.get());
-            if (weeksBetween % 2 == 0) {
-                return checkIfBeforeEndDate(firstOccurFromDate.get().toLocalDate());
-            } else {
-                getFirstOccurrenceFrom(firstOccurFromDate.get());
-            }
-        }
-        return Optional.empty();
+        return firstOccurFromDate.isPresent()
+            ? checkIfBeforeEndDate(firstOccurFromDate.get().toLocalDate())
+            : Optional.empty();
     }
 
     private Optional<LocalDateTime> checkIfBeforeEndDate(LocalDate occurrence) {
         return occurrence.isBefore(scheduleEndDate) ? Optional.of(occurrence.atTime(scheduleTime)) : Optional.empty();
     }
 
-    private LocalDateTime getFirstOccurrenceFromScheduleStartDate() {
-        if (isDayOfWeekOfDateSameAsScheduleDay(scheduleStartDateTime.toLocalDate())) {
-            return scheduleStartDateTime;
-        } else {
-            DayOfWeek nextDayOfWeekOfSchedule = getNextDayOfWeek(scheduleStartDateTime.getDayOfWeek());
-            LocalDateTime firstOccurrence = scheduleStartDateTime.with(next(nextDayOfWeekOfSchedule));
-            return firstOccurrence;
-        }
-    }
-
     private LocalDate getLastOccurrence(LocalDateTime endDate) {
-        LocalDateTime firstOccurFromStart = getFirstOccurrenceFromScheduleStartDate();
         if (isDayOfWeekOfDateSameAsScheduleDay(endDate.toLocalDate())) {
-            // check the difference of weeks between firstOccurrence and endDate
-            long weeksBetween = ChronoUnit.WEEKS.between(firstOccurFromStart, endDate);
-            if (weeksBetween % 2 == 0) {
+            if (isWeeksBetweenEven(firstOccurence, endDate.toLocalDate())) {
                 return endDate.toLocalDate();
-            } else {
-                DayOfWeek prevDayOfWeek = getPreviousDayOfWeek(endDate.getDayOfWeek());
-                return getLastOccurrence(endDate.with(previous(prevDayOfWeek)));
             }
-        } else {
-            DayOfWeek prevDayOfWeek = getPreviousDayOfWeek(endDate.getDayOfWeek());
-            return getLastOccurrence(endDate.with(previous(prevDayOfWeek)));
         }
+        DayOfWeek prevDayOfWeek = getPreviousDayOfWeek(endDate.getDayOfWeek());
+        return getLastOccurrence(endDate.with(previous(prevDayOfWeek)));
     }
 
     @Override
     protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currOccurrence) {
-        // TODO: change implementation
-        DayOfWeek nextDayOfWeek = getNextDayOfWeek(currOccurrence.getDayOfWeek());
-
-        LocalDateTime nextOccurence = currOccurrence.toLocalDate().with(next(nextDayOfWeek)).atTime(scheduleTime);
-
-        return nextOccurence.isBefore(endDate()) || nextOccurence.equals(endDate())
-            ? Optional.of(nextOccurence)
-            : Optional.empty();
+        Optional<LocalDateTime> nextOccurence = super.getNextOccurrenceAfter(currOccurrence);
+        if (nextOccurence.isPresent()) {
+            return nextOccurence.get().isBefore(endDate()) || nextOccurence.get().equals(endDate())
+                ? nextOccurence
+                : Optional.empty();
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -90,7 +63,6 @@ public class BiWeeklyBoundedSchedule extends AbstractWeeklySchedule implements B
 
     @Override
     public List<LocalDateTime> getAllOccurrences() {
-        // TODO: change implementation
         Long numOfDaysBetween = ChronoUnit.DAYS.between(scheduleStartDate, scheduleEndDate.plusDays(1));
         return getOccurrencesFrom(scheduleStartDateTime, numOfDaysBetween.intValue());
     }

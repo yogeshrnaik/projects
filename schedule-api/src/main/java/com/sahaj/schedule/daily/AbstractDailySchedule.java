@@ -14,7 +14,7 @@ public abstract class AbstractDailySchedule extends AbstractSchedule {
     }
 
     protected Optional<LocalDateTime> getFirstOccurrenceFrom(LocalDateTime fromDate) {
-        if (isFromDateBeforeScheduleStartDate(fromDate) || isFromDateEqualsScheduleStartDate(fromDate)) {
+        if (isBeforeScheduleStartDate(fromDate) || isSameAsScheduleStartDate(fromDate)) {
             return Optional.of(scheduleStartDateTime);
         }
 

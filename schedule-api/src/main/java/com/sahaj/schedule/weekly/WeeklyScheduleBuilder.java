@@ -6,17 +6,18 @@ import java.time.LocalTime;
 import java.util.Set;
 
 import com.sahaj.schedule.BoundedSchedule;
+import com.sahaj.schedule.Schedule;
 
 public class WeeklyScheduleBuilder {
 
-    static final String DAY_OF_WEEK_IS_MANDATORY = "Day of week is mandatory";
-    static final String TIME_IS_MANDATORY = "Time is mandatory";
-    static final String START_DATE_IS_MANDATORY = "Start date is mandatory";
-    private String eventName;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private LocalTime time;
-    private Set<DayOfWeek> daysOfWeek;
+    public static final String DAY_OF_WEEK_IS_MANDATORY = "Day of week is mandatory";
+    public static final String TIME_IS_MANDATORY = "Time is mandatory";
+    public static final String START_DATE_IS_MANDATORY = "Start date is mandatory";
+    protected String eventName;
+    protected LocalDate startDate;
+    protected LocalDate endDate;
+    protected LocalTime time;
+    protected Set<DayOfWeek> daysOfWeek;
 
     public WeeklyScheduleBuilder(String eventName, Set<DayOfWeek> daysOfWeek) {
         this.eventName = eventName;
@@ -35,7 +36,7 @@ public class WeeklyScheduleBuilder {
         return new WeeklyBoundedSchedule(eventName, startDate, time, daysOfWeek, endDate);
     }
 
-    private void validate() {
+    protected void validate() {
         if (startDate == null) {
             throw new IllegalStateException(START_DATE_IS_MANDATORY);
         }
@@ -47,7 +48,7 @@ public class WeeklyScheduleBuilder {
         }
     }
 
-    public WeeklyUnboundedSchedule neverEnding() {
+    public Schedule neverEnding() {
         validate();
         return new WeeklyUnboundedSchedule(eventName, startDate, time, daysOfWeek);
     }

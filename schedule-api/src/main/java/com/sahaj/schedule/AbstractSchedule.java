@@ -66,15 +66,15 @@ public abstract class AbstractSchedule implements Schedule {
 
     protected abstract Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currOccurrence);
 
-    protected boolean isFromDateBeforeScheduleStartDate(LocalDateTime fromDate) {
+    protected boolean isBeforeScheduleStartDate(LocalDateTime fromDate) {
         return fromDate.isBefore(scheduleStartDateTime);
     }
 
-    protected boolean isFromDateEqualsScheduleStartDate(LocalDateTime fromDate) {
+    protected boolean isSameAsScheduleStartDate(LocalDateTime fromDate) {
         return fromDate.equals(scheduleStartDateTime);
     }
 
-    protected boolean isFromDateAfterScheduleStartDate(LocalDateTime fromDate) {
+    protected boolean isAfterScheduleStartDate(LocalDateTime fromDate) {
         return fromDate.isAfter(scheduleStartDateTime);
     }
 }

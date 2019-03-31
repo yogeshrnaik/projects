@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.sahaj.schedule.biweekly.BiWeeklyScheduleBuilder;
 import com.sahaj.schedule.daily.DailyScheduleBuilder;
 import com.sahaj.schedule.once.NonRecurringScheduleBuilder;
 import com.sahaj.schedule.weekly.WeeklyScheduleBuilder;
@@ -35,6 +36,14 @@ public class ScheduleBuilder {
             daysOfWeekSet.add(dayofWeek);
 
         return new WeeklyScheduleBuilder(this.eventName, daysOfWeekSet);
+    }
+
+    public BiWeeklyScheduleBuilder biWeekly(DayOfWeek dayofWeek, DayOfWeek... daysOfWeek) {
+        Set<DayOfWeek> daysOfWeekSet = new TreeSet<>(Arrays.asList(daysOfWeek));
+        if (dayofWeek != null)
+            daysOfWeekSet.add(dayofWeek);
+
+        return new BiWeeklyScheduleBuilder(this.eventName, daysOfWeekSet);
     }
 
 }

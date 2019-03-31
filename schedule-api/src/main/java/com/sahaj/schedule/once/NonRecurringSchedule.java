@@ -38,13 +38,13 @@ public class NonRecurringSchedule extends AbstractSchedule implements BoundedSch
 
     @Override
     protected Optional<LocalDateTime> getFirstOccurrenceFrom(LocalDateTime fromDate) {
-        return (isFromDateBeforeScheduleStartDate(fromDate) || isFromDateEqualsScheduleStartDate(fromDate))
+        return (isBeforeScheduleStartDate(fromDate) || isSameAsScheduleStartDate(fromDate))
             ? Optional.of(scheduleStartDateTime)
             : Optional.empty();
     }
 
     @Override
     protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currOccurrence) {
-        return isFromDateBeforeScheduleStartDate(currOccurrence) ? Optional.of(scheduleStartDateTime) : Optional.empty();
+        return isBeforeScheduleStartDate(currOccurrence) ? Optional.of(scheduleStartDateTime) : Optional.empty();
     }
 }

@@ -210,7 +210,7 @@ public class WeeklyBoundedScheduleTest {
     }
 
     @Test
-    public void allOccurencesOfBoundedSchedule_ContainsAllDatesFromFirstTillLastOccurrcen() {
+    public void allOccurencesOfBoundedSchedule_ContainsAllDatesFromFirstTillLastOccurrence() {
         List<LocalDateTime> allOccurrences = weekly10AM_31Dec2018to24Jan2019_MonWedFri.getAllOccurrences();
         checkOccurrences(allOccurrences, Arrays.asList(
             START_MONDAY_31_DEC_2018_10AM,

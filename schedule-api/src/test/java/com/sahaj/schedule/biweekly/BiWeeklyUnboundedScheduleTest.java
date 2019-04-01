@@ -44,12 +44,11 @@ public class BiWeeklyUnboundedScheduleTest {
     private final LocalDateTime START_SATURDAY_15_DEC_2018_4PM = START_15_DEC_2018.atTime(AT_4PM);
     private final LocalDateTime TUESDAY_18_DEC_2018_4PM = LocalDate.of(2018, 12, 18).atTime(AT_4PM);
     private final LocalDateTime THURSDAY_20_DEC_2018_4PM = LocalDate.of(2018, 12, 20).atTime(AT_4PM);
-    private final LocalDateTime TUESDAY_25_DEC_2018_4PM = LocalDate.of(2018, 12, 25).atTime(AT_4PM);
-    private final LocalDateTime THURSDAY_27_DEC_2018_4PM = LocalDate.of(2018, 12, 27).atTime(AT_4PM);
     private final LocalDateTime TUESDAY_1_JAN_2019_4PM = LocalDate.of(2019, 1, 1).atTime(AT_4PM);
     private final LocalDateTime THURSDAY_3_JAN_2019_4PM = LocalDate.of(2019, 1, 3).atTime(AT_4PM);
-    private final LocalDateTime TUESDAY_8_JAN_2019_4PM = LocalDate.of(2019, 1, 8).atTime(AT_4PM);
-    private final LocalDateTime TTHURSDAY_10_JAN_2019_4PM = LocalDate.of(2019, 1, 10).atTime(AT_4PM);
+    private final LocalDateTime TUESDAY_15_JAN_2019_4PM = LocalDate.of(2019, 1, 15).atTime(AT_4PM);
+    private final LocalDateTime THURSDAY_17_JAN_2019_4PM = LocalDate.of(2019, 1, 17).atTime(AT_4PM);
+    private final LocalDateTime TUESDAY_29_JAN_2019_4PM = LocalDate.of(2019, 1, 29).atTime(AT_4PM);
 
     @Before
     public void setup() {
@@ -90,9 +89,9 @@ public class BiWeeklyUnboundedScheduleTest {
             Arrays.asList(
                 TUESDAY_18_DEC_2018_4PM,
                 THURSDAY_20_DEC_2018_4PM,
-                TUESDAY_25_DEC_2018_4PM,
-                THURSDAY_27_DEC_2018_4PM,
-                TUESDAY_1_JAN_2019_4PM));
+                TUESDAY_1_JAN_2019_4PM,
+                THURSDAY_3_JAN_2019_4PM,
+                TUESDAY_15_JAN_2019_4PM));
     }
 
     @Test
@@ -113,9 +112,9 @@ public class BiWeeklyUnboundedScheduleTest {
             Arrays.asList(
                 TUESDAY_18_DEC_2018_4PM,
                 THURSDAY_20_DEC_2018_4PM,
-                TUESDAY_25_DEC_2018_4PM,
-                THURSDAY_27_DEC_2018_4PM,
-                TUESDAY_1_JAN_2019_4PM));
+                TUESDAY_1_JAN_2019_4PM,
+                THURSDAY_3_JAN_2019_4PM,
+                TUESDAY_15_JAN_2019_4PM));
     }
 
     @Test
@@ -134,9 +133,9 @@ public class BiWeeklyUnboundedScheduleTest {
             Arrays.asList(
                 TUESDAY_18_DEC_2018_4PM,
                 THURSDAY_20_DEC_2018_4PM,
-                TUESDAY_25_DEC_2018_4PM,
-                THURSDAY_27_DEC_2018_4PM,
-                TUESDAY_1_JAN_2019_4PM));
+                TUESDAY_1_JAN_2019_4PM,
+                THURSDAY_3_JAN_2019_4PM,
+                TUESDAY_15_JAN_2019_4PM));
     }
 
     @Test
@@ -154,11 +153,11 @@ public class BiWeeklyUnboundedScheduleTest {
         occurrencesFrom = biweekly4PM_From15Dec2018_TuesThur.getOccurrencesFrom(MONDAY_24_DEC_2018_4PM, 5);
         checkOccurrences(occurrencesFrom,
             Arrays.asList(
-                TUESDAY_25_DEC_2018_4PM,
-                THURSDAY_27_DEC_2018_4PM,
                 TUESDAY_1_JAN_2019_4PM,
                 THURSDAY_3_JAN_2019_4PM,
-                TUESDAY_8_JAN_2019_4PM));
+                TUESDAY_15_JAN_2019_4PM,
+                THURSDAY_17_JAN_2019_4PM,
+                TUESDAY_29_JAN_2019_4PM));
     }
 
     @Test
@@ -175,11 +174,11 @@ public class BiWeeklyUnboundedScheduleTest {
         LocalDateTime TUESDAY_25_DEC_2018_5PM = START_SATURDAY_15_DEC_2018_4PM.plusDays(10).plusHours(1);
         occurrencesFrom = biweekly4PM_From15Dec2018_TuesThur.getOccurrencesFrom(TUESDAY_25_DEC_2018_5PM, 5);
         checkOccurrences(occurrencesFrom, Arrays.asList(
-            THURSDAY_27_DEC_2018_4PM,
             TUESDAY_1_JAN_2019_4PM,
             THURSDAY_3_JAN_2019_4PM,
-            TUESDAY_8_JAN_2019_4PM,
-            TTHURSDAY_10_JAN_2019_4PM));
+            TUESDAY_15_JAN_2019_4PM,
+            THURSDAY_17_JAN_2019_4PM,
+            TUESDAY_29_JAN_2019_4PM));
     }
 
     @Test

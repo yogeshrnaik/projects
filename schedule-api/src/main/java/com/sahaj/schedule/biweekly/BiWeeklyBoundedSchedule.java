@@ -37,7 +37,7 @@ public class BiWeeklyBoundedSchedule extends AbstractBiWeeklySchedule implements
 
     private LocalDate getLastOccurrence(LocalDateTime endDate) {
         if (isDayOfWeekOfDateSameAsScheduleDay(endDate.toLocalDate())) {
-            if (isWeeksBetweenEven(firstOccurenceOnOrAfterStartDate, endDate.toLocalDate())) {
+            if (checkWeekFromFirstOccurrenceWeek(endDate.toLocalDate())) {
                 return endDate.toLocalDate();
             }
         }

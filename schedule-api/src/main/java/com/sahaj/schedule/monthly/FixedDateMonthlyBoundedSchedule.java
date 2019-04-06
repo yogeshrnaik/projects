@@ -9,29 +9,29 @@ import java.util.Optional;
 
 import com.sahaj.schedule.BoundedSchedule;
 
-public class MonthlyBoundedSchedule extends AbstractMonthlySchedule implements BoundedSchedule {
+public class FixedDateMonthlyBoundedSchedule extends AbstractMonthlySchedule implements BoundedSchedule {
 
     private final LocalDate scheduleEndDate;
 
-    public MonthlyBoundedSchedule(String eventName, LocalDate startDate, LocalTime scheduleTime, int dayOfMonth,
+    public FixedDateMonthlyBoundedSchedule(String eventName, LocalDate startDate, LocalTime scheduleTime, int dateOfMonth,
         LocalDate endDate) {
-        super(eventName, startDate, scheduleTime, dayOfMonth);
+        super(eventName, startDate, scheduleTime, dateOfMonth);
         this.scheduleEndDate = getLastOccurrence(endDate);
     }
 
     private LocalDate getLastOccurrence(LocalDate endDate) {
-        if (isDayOfMonthSameAsScheduleDay(endDate)) {
+        if (isDateOfMonthSameAsFixedDay(endDate)) {
             return endDate;
         }
 
         LocalDate prev = endDate.minusMonths(1);
-        return prev.withDayOfMonth(Math.min(dayOfMonth, prev.lengthOfMonth()));
+        return prev.withDayOfMonth(Math.min(fixedDateOfMonth, prev.lengthOfMonth()));
     }
 
     @Override
     protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currOccurrence) {
         LocalDate next = currOccurrence.toLocalDate().plusMonths(1);
-        int validDayOfMonth = Math.min(dayOfMonth, next.lengthOfMonth());
+        int validDayOfMonth = Math.min(fixedDateOfMonth, next.lengthOfMonth());
         LocalDateTime nextOccurence = next.withDayOfMonth(validDayOfMonth).atTime(scheduleTime);
         return nextOccurence.isBefore(endDate()) || nextOccurence.equals(endDate())
             ? Optional.of(nextOccurence)

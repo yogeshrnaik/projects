@@ -1,8 +1,8 @@
 package com.sahaj.schedule.monthly;
 
-import static com.sahaj.schedule.monthly.MonthlyScheduleBuilder.DATE_OF_MONTH_IS_INVALID;
-import static com.sahaj.schedule.monthly.MonthlyScheduleBuilder.START_DATE_IS_MANDATORY;
-import static com.sahaj.schedule.monthly.MonthlyScheduleBuilder.TIME_IS_MANDATORY;
+import static com.sahaj.schedule.monthly.FixedDateMonthlyScheduleBuilder.DATE_OF_MONTH_IS_INVALID;
+import static com.sahaj.schedule.monthly.FixedDateMonthlyScheduleBuilder.START_DATE_IS_MANDATORY;
+import static com.sahaj.schedule.monthly.FixedDateMonthlyScheduleBuilder.TIME_IS_MANDATORY;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
@@ -16,9 +16,9 @@ import com.sahaj.schedule.BoundedSchedule;
 import com.sahaj.schedule.Schedule;
 import com.sahaj.schedule.builder.ScheduleBuilder;
 
-public class MonthlyScheduleBuilderTest {
+public class FixedDateMonthlyScheduleBuilderTest {
 
-    private MonthlyScheduleBuilder monthlyBuilder;
+    private FixedDateMonthlyScheduleBuilder monthlyBuilder;
     private final String EVENT_NAME = "Event name";
 
     private final LocalDate START_TUES_01_JAN_2019 = LocalDate.of(2019, 1, 1);

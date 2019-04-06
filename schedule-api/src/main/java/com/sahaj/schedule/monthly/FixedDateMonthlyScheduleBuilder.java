@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import com.sahaj.schedule.BoundedSchedule;
 import com.sahaj.schedule.Schedule;
 
-public class MonthlyScheduleBuilder {
+public class FixedDateMonthlyScheduleBuilder {
 
     public static final String DATE_OF_MONTH_IS_INVALID = "Day of month must be <= 31";
     public static final String TIME_IS_MANDATORY = "Time is mandatory";
@@ -18,12 +18,12 @@ public class MonthlyScheduleBuilder {
     protected LocalTime time;
     protected int dayOfMonth;
 
-    public MonthlyScheduleBuilder(String eventName, int dayOfMonth) {
+    public FixedDateMonthlyScheduleBuilder(String eventName, int dayOfMonth) {
         this.eventName = eventName;
         this.dayOfMonth = dayOfMonth;
     }
 
-    public MonthlyScheduleBuilder startingOn(LocalDate start, LocalTime time) {
+    public FixedDateMonthlyScheduleBuilder startingOn(LocalDate start, LocalTime time) {
         this.startDate = start;
         this.time = time;
         return this;
@@ -32,12 +32,12 @@ public class MonthlyScheduleBuilder {
     public BoundedSchedule endingOn(LocalDate end) {
         this.endDate = end;
         validate();
-        return new MonthlyBoundedSchedule(eventName, startDate, time, dayOfMonth, endDate);
+        return new FixedDateMonthlyBoundedSchedule(eventName, startDate, time, dayOfMonth, endDate);
     }
 
     public Schedule neverEnding() {
         validate();
-        return new MonthlyUnboundedSchedule(eventName, startDate, time, dayOfMonth);
+        return new FixedDateMonthlyUnboundedSchedule(eventName, startDate, time, dayOfMonth);
     }
 
     protected void validate() {

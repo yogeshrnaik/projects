@@ -9,11 +9,11 @@ import com.sahaj.schedule.AbstractSchedule;
 
 public abstract class AbstractMonthlySchedule extends AbstractSchedule {
 
-    protected final int dayOfMonth;
+    protected final int fixedDateOfMonth;
 
-    public AbstractMonthlySchedule(String eventName, LocalDate startDate, LocalTime scheduleTime, int dayOfMonth) {
+    public AbstractMonthlySchedule(String eventName, LocalDate startDate, LocalTime scheduleTime, int dateOfMonth) {
         super(eventName, startDate, scheduleTime);
-        this.dayOfMonth = dayOfMonth;
+        this.fixedDateOfMonth = dateOfMonth;
     }
 
     @Override
@@ -21,28 +21,26 @@ public abstract class AbstractMonthlySchedule extends AbstractSchedule {
         if (fromDate.isBefore(scheduleStartDateTime)) {
             return getFirstOccurrenceFrom(scheduleStartDateTime);
         }
-
-        if (fromDate.getDayOfMonth() == dayOfMonth) {
+        if (fromDate.getDayOfMonth() < fixedDateOfMonth) {
+            final int validDayOfMonth = Math.min(fixedDateOfMonth, fromDate.toLocalDate().lengthOfMonth());
+            return Optional.of(fromDate.toLocalDate().withDayOfMonth(validDayOfMonth).atTime(scheduleTime));
+        } else if (fromDate.getDayOfMonth() == fixedDateOfMonth) {
             if (fromDate.toLocalTime().isBefore(scheduleTime)
                 || fromDate.toLocalTime().equals(scheduleTime)) {
                 return Optional.of(fromDate.toLocalDate().atTime(scheduleTime));
             }
-        } else if (fromDate.getDayOfMonth() < dayOfMonth) {
-            final int validDayOfMonth = Math.min(dayOfMonth, fromDate.toLocalDate().lengthOfMonth());
-            return Optional.of(fromDate.toLocalDate().withDayOfMonth(validDayOfMonth).atTime(scheduleTime));
         }
-
-        return getOccurrence(fromDate);
+        return getNextOccurrence(fromDate);
     }
 
-    private Optional<LocalDateTime> getOccurrence(LocalDateTime fromDate) {
+    private Optional<LocalDateTime> getNextOccurrence(LocalDateTime fromDate) {
         LocalDate next = fromDate.toLocalDate().plusMonths(1);
-        final int validDayOfMonth = Math.min(dayOfMonth, next.lengthOfMonth());
+        final int validDayOfMonth = Math.min(fixedDateOfMonth, next.lengthOfMonth());
         return Optional.of(next.withDayOfMonth(validDayOfMonth).atTime(scheduleTime));
     }
 
-    protected boolean isDayOfMonthSameAsScheduleDay(LocalDate fromDate) {
-        return dayOfMonth == fromDate.getDayOfMonth();
+    protected boolean isDateOfMonthSameAsFixedDay(LocalDate fromDate) {
+        return fixedDateOfMonth == fromDate.getDayOfMonth();
     }
 
 }

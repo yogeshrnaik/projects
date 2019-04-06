@@ -45,7 +45,7 @@ public class FixedDateMonthlyBoundedSchedule extends AbstractFixedDateMonthlySch
 
     @Override
     public List<LocalDateTime> getAllOccurrences() {
-        Long numOfMonthsBetween = ChronoUnit.MONTHS.between(scheduleStartDate, scheduleEndDate.plusDays(1));
+        Long numOfMonthsBetween = 1 + ChronoUnit.MONTHS.between(scheduleStartDate, scheduleEndDate);
         return getOccurrencesFrom(scheduleStartDateTime, numOfMonthsBetween.intValue());
     }
 

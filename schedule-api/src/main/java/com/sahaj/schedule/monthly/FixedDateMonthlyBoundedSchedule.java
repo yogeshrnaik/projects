@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import com.sahaj.schedule.BoundedSchedule;
 
-public class FixedDateMonthlyBoundedSchedule extends AbstractMonthlySchedule implements BoundedSchedule {
+public class FixedDateMonthlyBoundedSchedule extends AbstractFixedDateMonthlySchedule implements BoundedSchedule {
 
     private final LocalDate scheduleEndDate;
 

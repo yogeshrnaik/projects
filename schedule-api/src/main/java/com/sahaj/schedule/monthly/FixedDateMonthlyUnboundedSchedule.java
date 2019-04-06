@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
-public class FixedDateMonthlyUnboundedSchedule extends AbstractMonthlySchedule {
+public class FixedDateMonthlyUnboundedSchedule extends AbstractFixedDateMonthlySchedule {
 
     public FixedDateMonthlyUnboundedSchedule(String eventName, LocalDate startDate, LocalTime scheduleTime, int dateOfMonth) {
         super(eventName, startDate, scheduleTime, dateOfMonth);

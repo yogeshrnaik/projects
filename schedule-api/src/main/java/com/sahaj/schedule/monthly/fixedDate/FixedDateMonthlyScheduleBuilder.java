@@ -1,4 +1,4 @@
-package com.sahaj.schedule.monthly;
+package com.sahaj.schedule.monthly.fixedDate;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

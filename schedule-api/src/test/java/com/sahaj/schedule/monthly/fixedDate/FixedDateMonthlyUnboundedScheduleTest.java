@@ -1,4 +1,4 @@
-package com.sahaj.schedule.monthly;
+package com.sahaj.schedule.monthly.fixedDate;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

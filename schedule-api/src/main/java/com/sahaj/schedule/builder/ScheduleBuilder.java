@@ -7,7 +7,7 @@ import java.util.TreeSet;
 
 import com.sahaj.schedule.biweekly.BiWeeklyScheduleBuilder;
 import com.sahaj.schedule.daily.DailyScheduleBuilder;
-import com.sahaj.schedule.monthly.FixedDateMonthlyScheduleBuilder;
+import com.sahaj.schedule.monthly.fixedDate.FixedDateMonthlyScheduleBuilder;
 import com.sahaj.schedule.once.NonRecurringScheduleBuilder;
 import com.sahaj.schedule.weekly.WeeklyScheduleBuilder;
 

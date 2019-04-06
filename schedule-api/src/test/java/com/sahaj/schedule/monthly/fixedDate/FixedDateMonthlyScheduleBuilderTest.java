@@ -1,8 +1,8 @@
-package com.sahaj.schedule.monthly;
+package com.sahaj.schedule.monthly.fixedDate;
 
-import static com.sahaj.schedule.monthly.FixedDateMonthlyScheduleBuilder.DATE_OF_MONTH_IS_INVALID;
-import static com.sahaj.schedule.monthly.FixedDateMonthlyScheduleBuilder.START_DATE_IS_MANDATORY;
-import static com.sahaj.schedule.monthly.FixedDateMonthlyScheduleBuilder.TIME_IS_MANDATORY;
+import static com.sahaj.schedule.monthly.fixedDate.FixedDateMonthlyScheduleBuilder.DATE_OF_MONTH_IS_INVALID;
+import static com.sahaj.schedule.monthly.fixedDate.FixedDateMonthlyScheduleBuilder.START_DATE_IS_MANDATORY;
+import static com.sahaj.schedule.monthly.fixedDate.FixedDateMonthlyScheduleBuilder.TIME_IS_MANDATORY;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
@@ -15,6 +15,7 @@ import org.junit.Test;
 import com.sahaj.schedule.BoundedSchedule;
 import com.sahaj.schedule.Schedule;
 import com.sahaj.schedule.builder.ScheduleBuilder;
+import com.sahaj.schedule.monthly.fixedDate.FixedDateMonthlyScheduleBuilder;
 
 public class FixedDateMonthlyScheduleBuilderTest {
 

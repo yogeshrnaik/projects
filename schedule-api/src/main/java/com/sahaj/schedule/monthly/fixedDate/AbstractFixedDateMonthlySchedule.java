@@ -21,7 +21,7 @@ public abstract class AbstractFixedDateMonthlySchedule extends AbstractSchedule 
         if (fromDate.isBefore(scheduleStartDateTime)) {
             return getFirstOccurrenceFrom(scheduleStartDateTime);
         }
-        if (isDateOfMonthBeforeAsFixedDay(fromDate.toLocalDate())) {
+        if (isDateOfMonthBeforeFixedDate(fromDate.toLocalDate())) {
             final int validDayOfMonth = Math.min(fixedDateOfMonth, fromDate.toLocalDate().lengthOfMonth());
             return Optional.of(fromDate.toLocalDate().withDayOfMonth(validDayOfMonth).atTime(scheduleTime));
         } else if (isDateOfMonthSameAsFixedDay(fromDate.toLocalDate())) {
@@ -43,7 +43,7 @@ public abstract class AbstractFixedDateMonthlySchedule extends AbstractSchedule 
         return fixedDateOfMonth == fromDate.getDayOfMonth();
     }
 
-    protected boolean isDateOfMonthBeforeAsFixedDay(LocalDate fromDate) {
+    protected boolean isDateOfMonthBeforeFixedDate(LocalDate fromDate) {
         return fromDate.getDayOfMonth() < fixedDateOfMonth;
     }
 

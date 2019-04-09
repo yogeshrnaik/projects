@@ -17,6 +17,6 @@ public class FixedDayMonthlyUnboundedSchedule extends AbstractFixedDayMonthlySch
 
     @Override
     protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currOccurrence) {
-        return Optional.of(getOccurrence(currOccurrence.with(firstDayOfNextMonth())));
+        return Optional.of(getOccurrenceByOrdinal(currOccurrence.toLocalDate().with(firstDayOfNextMonth())));
     }
 }

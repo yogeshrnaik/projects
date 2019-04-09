@@ -30,20 +30,22 @@ public abstract class AbstractFixedDayMonthlySchedule extends AbstractSchedule {
             return getFirstOccurrenceFrom(scheduleStartDateTime);
         }
 
-        LocalDateTime fixedDayInMonthOfFromDate = getOccurrence(fromDate);
+        LocalDateTime fixedDayInMonthOfFromDate = getOccurrenceByOrdinal(fromDate.toLocalDate());
 
         if (fixedDayInMonthOfFromDate.isAfter(fromDate) || fixedDayInMonthOfFromDate.isEqual(fromDate)) {
             return Optional.of(fixedDayInMonthOfFromDate);
         }
 
-        LocalDateTime firstDayOfNextMonthAfterFromDate = fromDate.toLocalDate().atTime(scheduleTime).with(firstDayOfNextMonth());
-        return Optional.of(getOccurrence(firstDayOfNextMonthAfterFromDate));
+        LocalDate firstDayOfNextMonthAfterFromDate = fromDate.toLocalDate().with(firstDayOfNextMonth());
+        return Optional.of(getOccurrenceByOrdinal(firstDayOfNextMonthAfterFromDate));
     }
 
-    protected LocalDateTime getOccurrence(LocalDateTime fromDate) {
-        LocalDateTime fixedDayInMonthOfFromDate = fromDate.with(dayOfWeekInMonth(ordinal.getOrdinal(), fixedDayOfWeek));
+    protected LocalDateTime getOccurrenceByOrdinal(LocalDate fromDate) {
+        LocalDateTime fixedDayInMonthOfFromDate = fromDate.atTime(scheduleTime)
+            .with(dayOfWeekInMonth(ordinal.getOrdinal(), fixedDayOfWeek));
         if (fixedDayInMonthOfFromDate.getMonthValue() != fromDate.getMonthValue()) {
-            fixedDayInMonthOfFromDate = fromDate.with(dayOfWeekInMonth(FOURTH.getOrdinal(), fixedDayOfWeek));
+            fixedDayInMonthOfFromDate = fromDate.atTime(scheduleTime)
+                .with(dayOfWeekInMonth(FOURTH.getOrdinal(), fixedDayOfWeek));
         }
         return fixedDayInMonthOfFromDate;
     }

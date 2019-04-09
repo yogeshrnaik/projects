@@ -8,6 +8,8 @@ import java.util.TreeSet;
 import com.sahaj.schedule.biweekly.BiWeeklyScheduleBuilder;
 import com.sahaj.schedule.daily.DailyScheduleBuilder;
 import com.sahaj.schedule.monthly.fixedDate.FixedDateMonthlyScheduleBuilder;
+import com.sahaj.schedule.monthly.fixedDay.FixedDayMonthlyScheduleBuilder;
+import com.sahaj.schedule.monthly.fixedDay.Ordinal;
 import com.sahaj.schedule.once.NonRecurringScheduleBuilder;
 import com.sahaj.schedule.weekly.WeeklyScheduleBuilder;
 
@@ -49,5 +51,9 @@ public class ScheduleBuilder {
 
     public FixedDateMonthlyScheduleBuilder monthly(int dayOfMonth) {
         return new FixedDateMonthlyScheduleBuilder(this.eventName, dayOfMonth);
+    }
+
+    public FixedDayMonthlyScheduleBuilder monthly(Ordinal ordinal, DayOfWeek dayOfweek) {
+        return new FixedDayMonthlyScheduleBuilder(this.eventName, ordinal, dayOfweek);
     }
 }

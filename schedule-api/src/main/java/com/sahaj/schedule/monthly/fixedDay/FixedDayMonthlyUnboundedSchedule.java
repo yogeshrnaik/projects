@@ -1,6 +1,6 @@
 package com.sahaj.schedule.monthly.fixedDay;
 
-import static java.time.temporal.TemporalAdjusters.dayOfWeekInMonth;
+import static java.time.temporal.TemporalAdjusters.firstDayOfNextMonth;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -17,7 +17,6 @@ public class FixedDayMonthlyUnboundedSchedule extends AbstractFixedDayMonthlySch
 
     @Override
     protected Optional<LocalDateTime> getNextOccurrenceAfter(LocalDateTime currOccurrence) {
-        LocalDate next = currOccurrence.toLocalDate().plusMonths(1).with(dayOfWeekInMonth(ordinal.getOrdinal(), fixedDayOfWeek));
-        return Optional.of(next.atTime(scheduleTime));
+        return Optional.of(getOccurrence(currOccurrence.with(firstDayOfNextMonth())));
     }
 }

@@ -1,11 +1,14 @@
 package com.sahaj.schedule.monthly.fixedDay;
 
 import static com.sahaj.schedule.monthly.fixedDay.Ordinal.FIRST;
+import static com.sahaj.schedule.monthly.fixedDay.Ordinal.FOURTH;
+import static com.sahaj.schedule.monthly.fixedDay.Ordinal.LAST;
+import static java.time.DayOfWeek.FRIDAY;
 import static java.time.DayOfWeek.MONDAY;
+import static java.time.DayOfWeek.SATURDAY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -24,6 +27,7 @@ public class FixedDayMonthlyBoundedScheduleTest {
 
     private final String EVENT_NAME_1 = "Event name 1";
     private final String EVENT_NAME_2 = "Event name 2";
+    private final String EVENT_NAME_3 = "Event name 3";
 
     private final LocalDate START_01_JAN_2019 = LocalDate.of(2019, 1, 1);
     private final LocalTime AT_10AM = LocalTime.of(10, 0);
@@ -54,6 +58,17 @@ public class FixedDayMonthlyBoundedScheduleTest {
     private final LocalDateTime _26_JUL_2019_4PM = LocalDate.of(2019, 7, 26).atTime(AT_4PM);
     private final LocalDateTime _30_AUG_2019_4PM = LocalDate.of(2019, 8, 30).atTime(AT_4PM);
 
+    private BoundedSchedule from24Aug2019To31Jan2020FourthSaturdayOfEveryMonthAt4PM;
+    private final LocalDate START_24_AUG_2019 = LocalDate.of(2019, 8, 24);
+    private final LocalDate END_31_JAN_2020 = LocalDate.of(2020, 1, 31);
+    private final LocalDateTime START_24_AUG_2019_4PM = START_24_AUG_2019.atTime(AT_4PM);
+    private final LocalDateTime _24_AUG_2019_4PM = LocalDate.of(2019, 8, 24).atTime(AT_4PM);
+    private final LocalDateTime _28_SEP_2019_4PM = LocalDate.of(2019, 9, 28).atTime(AT_4PM);
+    private final LocalDateTime _26_OCT_2019_4PM = LocalDate.of(2019, 10, 26).atTime(AT_4PM);
+    private final LocalDateTime _23_NOV_2019_4PM = LocalDate.of(2019, 11, 23).atTime(AT_4PM);
+    private final LocalDateTime _28_DEC_2019_4PM = LocalDate.of(2019, 12, 28).atTime(AT_4PM);
+    private final LocalDateTime _25_JAN_2020_4PM = LocalDate.of(2020, 1, 25).atTime(AT_4PM);
+
     @Before
     public void setup() {
         from01JanTo30Aug2019FirstMondayOfEveryMonthAt10AM = ScheduleBuilder.newSchedule(EVENT_NAME_1)
@@ -62,21 +77,28 @@ public class FixedDayMonthlyBoundedScheduleTest {
             .endingOn(END_30_AUG_2019);
 
         from30Nov2018To30Aug2019LastFridayOfEveryMonthAt4PM = ScheduleBuilder.newSchedule(EVENT_NAME_2)
-            .monthly(Ordinal.LAST, DayOfWeek.FRIDAY)
+            .monthly(LAST, FRIDAY)
             .startingOn(START_30_NOV_2018, AT_4PM)
             .endingOn(END_30_AUG_2019);
+
+        from24Aug2019To31Jan2020FourthSaturdayOfEveryMonthAt4PM = ScheduleBuilder.newSchedule(EVENT_NAME_3)
+            .monthly(FOURTH, SATURDAY)
+            .startingOn(START_24_AUG_2019, AT_4PM)
+            .endingOn(END_31_JAN_2020);
     }
 
     @Test
     public void eventNameIsStoredInSchedule() {
         assertEquals(EVENT_NAME_1, from01JanTo30Aug2019FirstMondayOfEveryMonthAt10AM.getEventName());
         assertEquals(EVENT_NAME_2, from30Nov2018To30Aug2019LastFridayOfEveryMonthAt4PM.getEventName());
+        assertEquals(EVENT_NAME_3, from24Aug2019To31Jan2020FourthSaturdayOfEveryMonthAt4PM.getEventName());
     }
 
     @Test
     public void startDateIsAdjustedToFirstOccurrence() {
         assertEquals(_07_JAN_2019_10AM, from01JanTo30Aug2019FirstMondayOfEveryMonthAt10AM.startDate());
-        assertEquals(START_30_NOV_2018_4PM, from30Nov2018To30Aug2019LastFridayOfEveryMonthAt4PM.startDate());
+        assertEquals(_30_NOV_2018_4PM, from30Nov2018To30Aug2019LastFridayOfEveryMonthAt4PM.startDate());
+        assertEquals(_24_AUG_2019_4PM, from24Aug2019To31Jan2020FourthSaturdayOfEveryMonthAt4PM.startDate());
     }
 
     @Test
@@ -96,6 +118,14 @@ public class FixedDayMonthlyBoundedScheduleTest {
                 _25_JAN_2019_4PM,
                 _22_FEB_2019_4PM,
                 _29_MAR_2019_4PM));
+
+        checkOccurrences(from24Aug2019To31Jan2020FourthSaturdayOfEveryMonthAt4PM.getOccurrences(5),
+            Arrays.asList(
+                _24_AUG_2019_4PM,
+                _28_SEP_2019_4PM,
+                _26_OCT_2019_4PM,
+                _23_NOV_2019_4PM,
+                _28_DEC_2019_4PM));
     }
 
     @Test
@@ -119,6 +149,16 @@ public class FixedDayMonthlyBoundedScheduleTest {
                 _25_JAN_2019_4PM,
                 _22_FEB_2019_4PM,
                 _29_MAR_2019_4PM));
+
+        LocalDateTime _23_AUG_2019_4PM = START_24_AUG_2019_4PM.minusDays(1);
+        occurrencesFrom = from24Aug2019To31Jan2020FourthSaturdayOfEveryMonthAt4PM.getOccurrencesFrom(_23_AUG_2019_4PM, 5);
+        checkOccurrences(occurrencesFrom,
+            Arrays.asList(
+                _24_AUG_2019_4PM,
+                _28_SEP_2019_4PM,
+                _26_OCT_2019_4PM,
+                _23_NOV_2019_4PM,
+                _28_DEC_2019_4PM));
     }
 
     @Test
@@ -140,6 +180,15 @@ public class FixedDayMonthlyBoundedScheduleTest {
                 _25_JAN_2019_4PM,
                 _22_FEB_2019_4PM,
                 _29_MAR_2019_4PM));
+
+        occurrencesFrom = from24Aug2019To31Jan2020FourthSaturdayOfEveryMonthAt4PM.getOccurrencesFrom(START_24_AUG_2019_4PM, 5);
+        checkOccurrences(occurrencesFrom,
+            Arrays.asList(
+                _24_AUG_2019_4PM,
+                _28_SEP_2019_4PM,
+                _26_OCT_2019_4PM,
+                _23_NOV_2019_4PM,
+                _28_DEC_2019_4PM));
     }
 
     @Test
@@ -162,6 +211,16 @@ public class FixedDayMonthlyBoundedScheduleTest {
                 _22_FEB_2019_4PM,
                 _29_MAR_2019_4PM,
                 _26_APR_2019_4PM));
+
+        LocalDateTime _28_SEP_2019_4PM = START_24_AUG_2019_4PM.plusDays(35);
+        occurrencesFrom = from24Aug2019To31Jan2020FourthSaturdayOfEveryMonthAt4PM.getOccurrencesFrom(_28_SEP_2019_4PM, 5);
+        checkOccurrences(occurrencesFrom,
+            Arrays.asList(
+                _28_SEP_2019_4PM,
+                _26_OCT_2019_4PM,
+                _23_NOV_2019_4PM,
+                _28_DEC_2019_4PM,
+                _25_JAN_2020_4PM));
     }
 
     @Test
@@ -183,6 +242,15 @@ public class FixedDayMonthlyBoundedScheduleTest {
             _29_MAR_2019_4PM,
             _26_APR_2019_4PM,
             _31_MAY_2019_4PM));
+
+        LocalDateTime _28_SEP_2019_5PM = START_24_AUG_2019_4PM.plusDays(35).plusHours(1);
+        occurrencesFrom = from24Aug2019To31Jan2020FourthSaturdayOfEveryMonthAt4PM.getOccurrencesFrom(_28_SEP_2019_5PM, 5);
+        checkOccurrences(occurrencesFrom,
+            Arrays.asList(
+                _26_OCT_2019_4PM,
+                _23_NOV_2019_4PM,
+                _28_DEC_2019_4PM,
+                _25_JAN_2020_4PM));
     }
 
     @Test
@@ -193,6 +261,9 @@ public class FixedDayMonthlyBoundedScheduleTest {
 
         occurrencesFrom = from30Nov2018To30Aug2019LastFridayOfEveryMonthAt4PM.getOccurrencesFrom(START_30_NOV_2018_4PM, 0);
         assertTrue(occurrencesFrom.isEmpty());
+
+        occurrencesFrom = from24Aug2019To31Jan2020FourthSaturdayOfEveryMonthAt4PM.getOccurrencesFrom(START_24_AUG_2019_4PM, 0);
+        assertTrue(occurrencesFrom.isEmpty());
     }
 
     @Test
@@ -202,6 +273,9 @@ public class FixedDayMonthlyBoundedScheduleTest {
         assertTrue(occurrencesFrom.isEmpty());
 
         occurrencesFrom = from30Nov2018To30Aug2019LastFridayOfEveryMonthAt4PM.getOccurrencesFrom(START_30_NOV_2018_4PM, -1);
+        assertTrue(occurrencesFrom.isEmpty());
+
+        occurrencesFrom = from24Aug2019To31Jan2020FourthSaturdayOfEveryMonthAt4PM.getOccurrencesFrom(START_24_AUG_2019_4PM, -1);
         assertTrue(occurrencesFrom.isEmpty());
     }
 
@@ -230,12 +304,22 @@ public class FixedDayMonthlyBoundedScheduleTest {
             _28_JUN_2019_4PM,
             _26_JUL_2019_4PM,
             _30_AUG_2019_4PM));
+
+        allOccurrences = from24Aug2019To31Jan2020FourthSaturdayOfEveryMonthAt4PM.getAllOccurrences();
+        checkOccurrences(allOccurrences, Arrays.asList(
+            _24_AUG_2019_4PM,
+            _28_SEP_2019_4PM,
+            _26_OCT_2019_4PM,
+            _23_NOV_2019_4PM,
+            _28_DEC_2019_4PM,
+            _25_JAN_2020_4PM));
     }
 
     @Test
     public void numberOfOccurencesOfBoundedSchedule_ShouldBeEqualToCountOfAllOccurrences() {
         assertEquals(8, from01JanTo30Aug2019FirstMondayOfEveryMonthAt10AM.getNumberOfOccurences());
         assertEquals(10, from30Nov2018To30Aug2019LastFridayOfEveryMonthAt4PM.getNumberOfOccurences());
+        assertEquals(6, from24Aug2019To31Jan2020FourthSaturdayOfEveryMonthAt4PM.getNumberOfOccurences());
     }
 
     private void checkOccurrences(List<LocalDateTime> occurrencesToCheck, List<LocalDateTime> expectedDates) {

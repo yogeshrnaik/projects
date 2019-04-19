@@ -11,6 +11,7 @@ import com.sahaj.schedule.monthly.fixedDate.FixedDateMonthlyScheduleBuilder;
 import com.sahaj.schedule.monthly.fixedDay.FixedDayMonthlyScheduleBuilder;
 import com.sahaj.schedule.monthly.fixedDay.Ordinal;
 import com.sahaj.schedule.once.NonRecurringScheduleBuilder;
+import com.sahaj.schedule.quaterly.fixedDate.FixedDateQuaterlyScheduleBuilder;
 import com.sahaj.schedule.weekly.WeeklyScheduleBuilder;
 
 public class ScheduleBuilder {
@@ -55,5 +56,9 @@ public class ScheduleBuilder {
 
     public FixedDayMonthlyScheduleBuilder monthly(Ordinal ordinal, DayOfWeek dayOfweek) {
         return new FixedDayMonthlyScheduleBuilder(this.eventName, ordinal, dayOfweek);
+    }
+
+    public FixedDateQuaterlyScheduleBuilder quaterly(int dayOfMonth) {
+        return new FixedDateQuaterlyScheduleBuilder(this.eventName, dayOfMonth);
     }
 }

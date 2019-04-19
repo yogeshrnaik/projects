@@ -43,7 +43,8 @@ public abstract class AbstractFixedDayMonthlySchedule extends AbstractSchedule {
     protected LocalDateTime getOccurrenceByOrdinal(LocalDate fromDate) {
         LocalDateTime fixedDayInMonthOfFromDate = fromDate.atTime(scheduleTime)
             .with(dayOfWeekInMonth(ordinal.getOrdinal(), fixedDayOfWeek));
-        if (fixedDayInMonthOfFromDate.getMonthValue() != fromDate.getMonthValue()) {
+        if (fixedDayInMonthOfFromDate.getMonthValue() != fromDate.getMonthValue()
+            && ordinal == Ordinal.LAST) {
             fixedDayInMonthOfFromDate = fromDate.atTime(scheduleTime)
                 .with(dayOfWeekInMonth(FOURTH.getOrdinal(), fixedDayOfWeek));
         }

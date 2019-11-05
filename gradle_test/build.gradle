@@ -42,12 +42,32 @@ void createRepo(String repoName) {
     }
 }
 
+void createReadMe(String repoName, String filePath) {
+    BufferedWriter w = null
+    try {
+        w = new BufferedWriter(new FileWriter(filePath))
+        w.writeLine("# " + repoName)
+        w.flush()
+    } catch (IOException io) {
+        // ignore
+    } finally {
+        if (w != null) {
+            try {
+                w.close()
+            } catch (IOException io) {
+                // ignore
+            }
+        }
+    }
+}
+
 task loadGitRepos {
     doLast {
         gitRepos.each { repo ->
             def repoDir = repo.split('/')[-1].replace('.git', '')
             createRepo(repoDir)
             delete "repos/${repoDir}/.git"
+            createReadMe(repoDir, "repos/${repoDir}/README.md")
             exec {
                 commandLine 'git', 'init'
                 workingDir "repos/${repoDir}"

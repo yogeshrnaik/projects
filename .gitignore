@@ -222,5 +222,4 @@ gradle_test/.idea
 gradle_test/.gradle
 gradle_test/gradle
 gradle_test/secrets.gradle
-gradle_test/repos
 

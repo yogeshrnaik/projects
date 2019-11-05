@@ -1,3 +1,3 @@
 ext {
-    gitRepos = ['yogeshrnaik/my_test_repo', 'yogeshrnaik/my_test_repo_1']
+    gitRepos = ['yogeshrnaik/my_test_repo']
 }

@@ -46,8 +46,8 @@ task loadGitRepos {
     doLast {
         gitRepos.each { repo ->
             def repoDir = repo.split('/')[-1].replace('.git', '')
-            delete "repos/${repoDir}/.git"
             createRepo(repoDir)
+            delete "repos/${repoDir}/.git"
             exec {
                 commandLine 'git', 'init'
                 workingDir "repos/${repoDir}"

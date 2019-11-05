@@ -1,0 +1,1 @@
+gradle loadGitRepos -PgitHost=github.com -PgitApiHost=api.github.com

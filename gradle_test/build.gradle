@@ -12,6 +12,10 @@ if(!project.hasProperty('gitHost')){
     throw new GradleException('gitHost must be defined as an input parameter. E.g. -PgitHost=github.ibm.com')
 }
 
+if(!project.hasProperty('gitApiHost')){
+    throw new GradleException('gitApiHost must be defined as an input parameter. E.g. -PgitApiHost=api.github.com')
+}
+
 import groovy.io.FileType
 
 String getLib(String filename) {
@@ -24,34 +28,25 @@ String getLib(String filename) {
     return files[0]
 }
 
-task createRepo {
+void createRepo(String repoName) {
+    println("creating repo ${repoName}")
+    def jsonBody = '{"name":"' + repoName + '", "auto_init": true}'
     def result = exec {
-        commandLine 'curl', '-u', "yogeshrnaik:${token}",
-                'https://api.github.com/user/repos', '-d', '{"name":"my_test_repo", "auto_init": true}'
+        commandLine 'curl', '-u', "${gitUser}:${token}",
+                "https://${gitApiHost}/user/repos", '-d', jsonBody
     }
     if (result.getExitValue() != 0) {
-        throw new GradleException('The git create repo failed: ' + result)
+        throw new GradleException("The git create repo ${repoName} failed: " + result)
     } else {
-        System.out.println('The git create repo successful: ' + result)
+        println("The git create repo ${repoName} successful: " + result)
     }
 }
-
-//task deleteRepo {
-//    def result = exec {
-//        commandLine 'curl', '-u', 'yogeshrnaik:<TOKEN_HERE>',
-//                '-X', 'DELETE', 'https://api.github.com/repos/yogeshrnaik/my_test_repo'
-//    }
-//    if (result.getExitValue() != 0) {
-//        throw new GradleException('The git delete repo failed: ' + result)
-//    } else {
-//        System.out.println('The git delete repo successful: ' + result)
-//    }
-//}
 
 task loadGitRepos {
     doLast {
         gitRepos.each { repo ->
             def repoDir = repo.split('/')[-1].replace('.git', '')
+            createRepo(repoDir)
             delete "repos/${repoDir}/.git"
             exec {
                 commandLine 'git', 'init'

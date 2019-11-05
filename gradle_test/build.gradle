@@ -8,11 +8,11 @@ System.setProperty('javax.net.ssl.trustStorePassword', 'changeit')
 apply from: new File('dependencies.gradle')
 apply from: new File('secrets.gradle')
 
-if(!project.hasProperty('gitHost')){
+if (!project.hasProperty('gitHost')) {
     throw new GradleException('gitHost must be defined as an input parameter. E.g. -PgitHost=github.ibm.com')
 }
 
-if(!project.hasProperty('gitApiHost')){
+if (!project.hasProperty('gitApiHost')) {
     throw new GradleException('gitApiHost must be defined as an input parameter. E.g. -PgitApiHost=api.github.com')
 }
 
@@ -20,8 +20,8 @@ import groovy.io.FileType
 
 String getLib(String filename) {
     def files = []
-    new File('lib').eachFileMatch(FileType.FILES, ~/${filename}\..*/, { files << it.name } )
-    if ( files.isEmpty() ) {
+    new File('lib').eachFileMatch(FileType.FILES, ~/${filename}\..*/, { files << it.name })
+    if (files.isEmpty()) {
         println "Could not find a file matching ${filename}.*"
         throw new GradleException("Could not find a file matching ${filename}.*")
     }
@@ -62,14 +62,14 @@ task loadGitRepos {
             }
             new ByteArrayOutputStream().withStream { os ->
                 def result = exec {
-                    commandLine 'git', 'commit', '-m', 'code drop '+ new Date().format('yyyy/MMM/dd HH:mm')
+                    commandLine 'git', 'commit', '-m', 'code drop ' + new Date().format('yyyy/MMM/dd HH:mm')
                     workingDir "repos/${repoDir}"
                     ignoreExitValue true
                     standardOutput = os
                 }
-                if(result.getExitValue() != 0 && !os.toString().contains('nothing to commit, working tree clean')){
-                    throw new GradleException('The git commit failed: '+os.toString())
-                } else if(result.getExitValue() == 0 ){
+                if (result.getExitValue() != 0 && !os.toString().contains('nothing to commit, working tree clean')) {
+                    throw new GradleException('The git commit failed: ' + os.toString())
+                } else if (result.getExitValue() == 0) {
                     exec {
                         commandLine 'git', 'push', '-f', '-u', 'origin', 'master'
                         workingDir "repos/${repoDir}"

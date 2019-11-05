@@ -1,0 +1,3 @@
+curl -u 'yogeshrnaik:<GIT_TOKEN>' -X DELETE 'https://api.github.com/repos/yogeshrnaik/test1'
+
+curl -u 'yogeshrnaik:<GIT_TOKEN>' -X GET 'https://api.github.com/repos/yogeshrnaik/test1'

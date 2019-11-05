@@ -221,4 +221,5 @@ pip-log.txt
 gradle_test/.idea
 gradle_test/.gradle
 gradle_test/gradle
+gradle_test/secrets.gradle
 

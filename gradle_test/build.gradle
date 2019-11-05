@@ -6,6 +6,7 @@ System.setProperty('javax.net.ssl.trustStore', 'cacerts')
 System.setProperty('javax.net.ssl.trustStorePassword', 'changeit')
 
 apply from: new File('dependencies.gradle')
+apply from: new File('secrets.gradle')
 
 if(!project.hasProperty('gitHost')){
     throw new GradleException('gitHost must be defined as an input parameter. E.g. -PgitHost=github.ibm.com')
@@ -23,18 +24,18 @@ String getLib(String filename) {
     return files[0]
 }
 
-//task createRepo {
-//    def result = exec {
-//        commandLine 'curl', '-u', 'yogeshrnaik:<TOKEN_HERE>',
-//                'https://api.github.com/user/repos', '-d', '{"name":"my_test_repo", "auto_init": true}'
-//    }
-//    if (result.getExitValue() != 0) {
-//        throw new GradleException('The git create repo failed: ' + result)
-//    } else {
-//        System.out.println('The git create repo successful: ' + result)
-//    }
-//}
-//
+task createRepo {
+    def result = exec {
+        commandLine 'curl', '-u', "yogeshrnaik:${token}",
+                'https://api.github.com/user/repos', '-d', '{"name":"my_test_repo", "auto_init": true}'
+    }
+    if (result.getExitValue() != 0) {
+        throw new GradleException('The git create repo failed: ' + result)
+    } else {
+        System.out.println('The git create repo successful: ' + result)
+    }
+}
+
 //task deleteRepo {
 //    def result = exec {
 //        commandLine 'curl', '-u', 'yogeshrnaik:<TOKEN_HERE>',

@@ -45,7 +45,11 @@ void createRepo(String repoName) {
 void createReadMe(String repoName, String filePath) {
     BufferedWriter w = null
     try {
-        w = new BufferedWriter(new FileWriter(filePath))
+        File file = new File(filePath)
+        if (file.exists()) {
+            return
+        }
+        w = new BufferedWriter(new FileWriter(file))
         w.writeLine("# " + repoName)
         w.flush()
     } catch (IOException io) {

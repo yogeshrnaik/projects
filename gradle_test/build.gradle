@@ -38,51 +38,94 @@ boolean checkIfMasterBranchExists(String repoName) {
     }
 }
 
+void createReadMe(String repoName, String filePath) {
+    println("creating readme")
+    BufferedWriter w = null
+    try {
+        File file = new File(filePath)
+        if (file.exists()) {
+            println("file exists " + filePath)
+            return
+        }
+        w = new BufferedWriter(new FileWriter(file))
+        w.writeLine("# " + repoName)
+        w.flush()
+    } catch (IOException io) {
+        // ignore
+        throw new GradleException("", io)
+    } finally {
+        if (w != null) {
+            try {
+                w.close()
+            } catch (IOException io) {
+                // ignore
+            }
+        }
+    }
+}
+
 void createMasterBranch(String repoName) {
+    createReadMe(repoName, "./repos/README.md")
+    exec {
+        commandLine "git", "init"
+        workingDir "repos/"
+    }
+    exec {
+        commandLine "git", "add", "README.md"
+        workingDir "repos/"
+    }
+    exec {
+        commandLine "git", "commit", "-m", '"first commit"'
+        workingDir "repos/"
+    }
     exec {
         commandLine "git", "remote", "add", "origin", "git@${gitHost}:${gitUser}/${repoName}.git"
+        workingDir "repos/"
+    }
+    exec {
         commandLine "git", "push", "-u", "origin", "master"
+        workingDir "repos/"
     }
 }
 
 task loadGitRepos {
-    if (!checkIfMasterBranchExists("test")) {
-        // create master branch as it does not exist
-        println("master branch do not exists for test repo")
-        createMasterBranch("test")
+    doLast {
+        if (!checkIfMasterBranchExists("test")) {
+            // create master branch as it does not exist
+            println("master branch do not exists for test repo")
+            createMasterBranch("test")
+        }
+        gitRepos.each { repo ->
+            def repoDir = repo.split('/')[-1].replace('.git', '')
+            delete "repos/${repoDir}/.git"
+            exec {
+                commandLine 'git', 'init'
+                workingDir "repos/${repoDir}"
+            }
+            exec {
+                commandLine 'git', 'remote', 'add', 'origin', "git@${gitHost}:${repo}"
+                workingDir "repos/${repoDir}"
+            }
+            exec {
+                commandLine 'git', 'add', '--all'
+                workingDir "repos/${repoDir}"
+            }
+            new ByteArrayOutputStream().withStream { os ->
+                def result = exec {
+                    commandLine 'git', 'commit', '-m', 'code drop ' + new Date().format('yyyy/MMM/dd HH:mm')
+                    workingDir "repos/${repoDir}"
+                    ignoreExitValue true
+                    standardOutput = os
+                }
+                if (result.getExitValue() != 0 && !os.toString().contains('nothing to commit, working tree clean')) {
+                    throw new GradleException('The git commit failed: ' + os.toString())
+                } else if (result.getExitValue() == 0) {
+                    exec {
+                        commandLine 'git', 'push', '-f', '-u', 'origin', 'master'
+                        workingDir "repos/${repoDir}"
+                    }
+                }
+            }
+        }
     }
-//    doLast {
-//        gitRepos.each { repo ->
-//            def repoDir = repo.split('/')[-1].replace('.git', '')
-//            delete "repos/${repoDir}/.git"
-//            exec {
-//                commandLine 'git', 'init'
-//                workingDir "repos/${repoDir}"
-//            }
-//            exec {
-//                commandLine 'git', 'remote', 'add', 'origin', "git@${gitHost}:${repo}"
-//                workingDir "repos/${repoDir}"
-//            }
-//            exec {
-//                commandLine 'git', 'add', '--all'
-//                workingDir "repos/${repoDir}"
-//            }
-//            new ByteArrayOutputStream().withStream { os ->
-//                def result = exec {
-//                    commandLine 'git', 'commit', '-m', 'code drop ' + new Date().format('yyyy/MMM/dd HH:mm')
-//                    workingDir "repos/${repoDir}"
-//                    ignoreExitValue true
-//                    standardOutput = os
-//                }
-//                if (result.getExitValue() != 0 && !os.toString().contains('nothing to commit, working tree clean')) {
-//                    throw new GradleException('The git commit failed: ' + os.toString())
-//                } else if (result.getExitValue() == 0) {
-//                    exec {
-//                        commandLine 'git', 'push', '-f', '-u', 'origin', 'master'
-//                        workingDir "repos/${repoDir}"
-//                    }
-//                }
-//            }
-//        }
-//    }
 }

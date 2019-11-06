@@ -6,15 +6,11 @@ System.setProperty('javax.net.ssl.trustStore', 'cacerts')
 System.setProperty('javax.net.ssl.trustStorePassword', 'changeit')
 
 apply from: new File('dependencies.gradle')
-apply from: new File('secrets.gradle')
 
 if (!project.hasProperty('gitHost')) {
     throw new GradleException('gitHost must be defined as an input parameter. E.g. -PgitHost=github.ibm.com')
 }
 
-if (!project.hasProperty('gitApiHost')) {
-    throw new GradleException('gitApiHost must be defined as an input parameter. E.g. -PgitApiHost=api.github.com')
-}
 
 import groovy.io.FileType
 
@@ -28,78 +24,65 @@ String getLib(String filename) {
     return files[0]
 }
 
-void createRepo(String repoName) {
-    println("creating repo ${repoName}")
-    def jsonBody = '{"name":"' + repoName + '", "auto_init": true}'
-    def result = exec {
-        commandLine 'curl', '-u', "${gitUser}:${token}",
-                "https://${gitApiHost}/user/repos", '-d', jsonBody
-    }
-    if (result.getExitValue() != 0) {
-        throw new GradleException("The git create repo ${repoName} failed: " + result)
-    } else {
-        println("The git create repo ${repoName} successful: " + result)
+boolean checkIfMasterBranchExists(String repoName) {
+    new ByteArrayOutputStream().withStream { os ->
+        def result = exec {
+            commandLine 'git', 'ls-remote', '--heads', "git@${gitHost}:${gitUser}/${repoName}.git", 'master'
+            ignoreExitValue true
+            standardOutput = os
+        }
+        if (result.getExitValue() != 0) {
+            throw new GradleException("Could not check if master branch exists for repo ${repoName}. Result = " + result)
+        }
+        return result.getExitValue() == 0 && os.toString().contains("master")
     }
 }
 
-void createReadMe(String repoName, String filePath) {
-    BufferedWriter w = null
-    try {
-        File file = new File(filePath)
-        if (file.exists()) {
-            return
-        }
-        w = new BufferedWriter(new FileWriter(file))
-        w.writeLine("# " + repoName)
-        w.flush()
-    } catch (IOException io) {
-        // ignore
-    } finally {
-        if (w != null) {
-            try {
-                w.close()
-            } catch (IOException io) {
-                // ignore
-            }
-        }
+void createMasterBranch(String repoName) {
+    exec {
+        commandLine "git", "remote", "add", "origin", "git@${gitHost}:${gitUser}/${repoName}.git"
+        commandLine "git", "push", "-u", "origin", "master"
     }
 }
 
 task loadGitRepos {
-    doLast {
-        gitRepos.each { repo ->
-            def repoDir = repo.split('/')[-1].replace('.git', '')
-            createRepo(repoDir)
-            delete "repos/${repoDir}/.git"
-            createReadMe(repoDir, "repos/${repoDir}/README.md")
-            exec {
-                commandLine 'git', 'init'
-                workingDir "repos/${repoDir}"
-            }
-            exec {
-                commandLine 'git', 'remote', 'add', 'origin', "git@${gitHost}:${repo}"
-                workingDir "repos/${repoDir}"
-            }
-            exec {
-                commandLine 'git', 'add', '--all'
-                workingDir "repos/${repoDir}"
-            }
-            new ByteArrayOutputStream().withStream { os ->
-                def result = exec {
-                    commandLine 'git', 'commit', '-m', 'code drop ' + new Date().format('yyyy/MMM/dd HH:mm')
-                    workingDir "repos/${repoDir}"
-                    ignoreExitValue true
-                    standardOutput = os
-                }
-                if (result.getExitValue() != 0 && !os.toString().contains('nothing to commit, working tree clean')) {
-                    throw new GradleException('The git commit failed: ' + os.toString())
-                } else if (result.getExitValue() == 0) {
-                    exec {
-                        commandLine 'git', 'push', '-f', '-u', 'origin', 'master'
-                        workingDir "repos/${repoDir}"
-                    }
-                }
-            }
-        }
+    if (!checkIfMasterBranchExists("test")) {
+        // create master branch as it does not exist
+        println("master branch do not exists for test repo")
+        createMasterBranch("test")
     }
+//    doLast {
+//        gitRepos.each { repo ->
+//            def repoDir = repo.split('/')[-1].replace('.git', '')
+//            delete "repos/${repoDir}/.git"
+//            exec {
+//                commandLine 'git', 'init'
+//                workingDir "repos/${repoDir}"
+//            }
+//            exec {
+//                commandLine 'git', 'remote', 'add', 'origin', "git@${gitHost}:${repo}"
+//                workingDir "repos/${repoDir}"
+//            }
+//            exec {
+//                commandLine 'git', 'add', '--all'
+//                workingDir "repos/${repoDir}"
+//            }
+//            new ByteArrayOutputStream().withStream { os ->
+//                def result = exec {
+//                    commandLine 'git', 'commit', '-m', 'code drop ' + new Date().format('yyyy/MMM/dd HH:mm')
+//                    workingDir "repos/${repoDir}"
+//                    ignoreExitValue true
+//                    standardOutput = os
+//                }
+//                if (result.getExitValue() != 0 && !os.toString().contains('nothing to commit, working tree clean')) {
+//                    throw new GradleException('The git commit failed: ' + os.toString())
+//                } else if (result.getExitValue() == 0) {
+//                    exec {
+//                        commandLine 'git', 'push', '-f', '-u', 'origin', 'master'
+//                        workingDir "repos/${repoDir}"
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

@@ -1,3 +1,4 @@
 ext {
+    gitUser = 'yogeshrnaik'
     gitRepos = ['yogeshrnaik/test1.git', 'yogeshrnaik/test2.git']
 }

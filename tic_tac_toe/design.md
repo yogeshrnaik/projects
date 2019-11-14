@@ -176,9 +176,13 @@ public class SocketTicTacToeClient {
 
     public void play() {
         // read from socket input stream
-        // send mode to server
-        // if mode == host wait for notification (read from socket input stream)
-        // if mode == join send game ID to server and wait for notification to make move
+        // server asks for Name - send name and go back to reading from socket input stream
+        // server asks for mode => send mode and go back to reading from socker input stream
+        // if mode == host then server sends gameID 
+        // - wait for notification from server till joiner joins this game ID
+        // - after receiving notification that joiner has joined, send move to server and wait for your turn
+        // else if mode == join send game ID to server and wait for notification to make move
+        // - when server notifies to make move, make your move and send move to server
     }
 }
 ```

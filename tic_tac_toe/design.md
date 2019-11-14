@@ -52,14 +52,15 @@ public class TicTacToeServer {
     private GameStore gameStore;
 
     public static void main(String[] args) throws Exception {
-        final int PORT = 8888;
-        final int THREAD_POOL_SIZE = 50;
+        final int PORT = 8888; // read from ENV
+        final int THREAD_POOL_SIZE = 50; // read from ENV
         try (var listener = new ServerSocket(PORT)) {
             System.out.println("Tic Tac Toe Game is Running on port " + PORT);
             var pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
             // start server and listen for players to connect
             while (true) {
+                // accept a connection from clients
                 pool.execute(new SocketBasedPlayer(listener.accept()));
             }
         }
@@ -148,6 +149,7 @@ public class Game {
             currPlayer = currPlayer == null || currPlayer == joiner ? host : joiner;
             Move move = currPlayer.getMove();
             moves.add(move);
+            board.makeMove(move);
 
             winner = board.getWinner();
         }
@@ -186,7 +188,6 @@ public class SocketTicTacToeClient {
     }
 }
 ```
-
 
 ## OO design for game
 This section describes the high level object-oriented design of the game.

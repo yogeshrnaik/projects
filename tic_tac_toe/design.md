@@ -49,7 +49,7 @@ Flow of game is as follows:
 ```java
 public class TicTacToeServer {
 
-    private Map<String, Game> gamesInProgress;
+    private GameStore gameStore;
 
     public static void main(String[] args) throws Exception {
         final int PORT = 8888;
@@ -193,6 +193,10 @@ This section describes the high level object-oriented design of the game.
 
 - TicTacToeServer
   - This class will act as the server
+
+- GameStore
+  - This class provides the abstract to stores the games
+  - This can be a in-memory map or a DB or cache like Redis
 
 - TicTacToeClient
   - This class acts as the client for the TicTacToeServer

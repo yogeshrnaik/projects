@@ -7,15 +7,17 @@ This document explains the various aspects of design for developing a Tic Tac To
   - [Table of content](#Table-of-content)
   - [Assumptions](#Assumptions)
   - [Overview](#Overview)
+  - [Game flow](#Game-flow)
+    - [Game start flow](#Game-start-flow)
+    - [Game loop](#Game-loop)
   - [OO design for game](#OO-design-for-game)
     - [Tic Tac Toe main program](#Tic-Tac-Toe-main-program)
-    - [Game loop](#Game-loop)
 
 
 ## Assumptions
 - This game is a two player game.
 - There won't be any spectators for this game.
-- There is no time limit for any player to make a move. But, it is assumed that player will make a move without blocking forever to make this a near real-time game. But the game design does not enforce any time limit.
+- There is no time limit for any player to make a move. But, it is assumed that player will make a move without blocking forever to make this a near real-time game. But the game design does not enforce any time limit as of now.
 
 ## Overview
 In this document, we will consider following aspects of the game design.
@@ -26,11 +28,56 @@ In this document, we will consider following aspects of the game design.
   - Decision regarding who has won & lost or draw
 
 - Game Display functionality
+  - This should be developed as a plugin so that we can use console display or GUI based display
 
 - Communication between players - This needs to be near-real time
 
+## Game flow
+There are two components to Tic Tac Toe game.
+- Server
+- Client 1 representing player 1
+- Client 2 representing player 2
+
+Flow of game is as follows:
+1) Game Server program starts and prints out the IP:PORT of the game server and then starts listening for connection on that
+2) Client program is executed by player 1 on his terminal passing in the IP:PORT of the game server
+3) Similary, another instance of client program is executed by player 2 on his terminal passing in the IP:PORT of the game server
+4) Game server upon receiving player 1's connection make that player the "host" player of that game and waits for another player to join the same game.
+5) When client 2 establishes the connection to game server, game server makes it player 2 and starts the game.
+
+### Game start flow
+1) When both player joins the game, Game server starts the game by calling game.start().
+2) The pseudo code of start() method is shown below.
+
+### Game loop
+```java
+// start method shows the pseudo code for game loop
+// this method is called when both player have joined the game
+public void start() {
+    String winner = null;
+    Player currPlayer = null;
+    while(winner == null && board.isMovePossible()) {
+        currPlayer = currPlayer == null || currPlayer == joiner ? host : joiner;
+        gameDisplay.render();
+        
+        Move move = currPlayer.makeMove();
+        moves.add(move);
+
+        winner = board.getWinner();
+    }
+    game.setResult(new GameResult(winner));
+}
+```
+
+
 ## OO design for game
 This section describes the high level object-oriented design of the game.
+
+- TicTacToeServer
+  - This class will act as the server
+
+- TicTacToeClient
+  - This class acts as the client for the TicTacToeServer
 
 - GameDisplay
   - render(game Game) - method to render the game
@@ -113,23 +160,3 @@ class TicTacToeProgram {
 }
 ```
 
-
-### Game loop
-```java
-// start method shows the pseudo code for game loop
-// this method is called when both player have joined the game
-public void play() {
-    String winner = null;
-    Player currPlayer = null;
-    while(winner == null && board.isMovePossible()) {
-        currPlayer = currPlayer == null || currPlayer == joiner ? host : joiner;
-        gameDisplay.render();
-        
-        Move move = currPlayer.makeMove();
-        moves.add(move);
-
-        winner = board.getWinner();
-    }
-    game.setResult(new GameResult(winner));
-}
-```

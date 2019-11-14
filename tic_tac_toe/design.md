@@ -48,16 +48,19 @@ Flow of game is as follows:
 
 ```java
 public class TicTacToeServer {
-    public static void main(String[] args) throws Exception {
-        try (var listener = new ServerSocket(8082)) {
-            System.out.println("Tic Tac Toe Server is Running on port 8082");
-            var pool = Executors.newFixedThreadPool(200);
 
-            // start server and listen for players to join
+    private Map<String, Game> gamesInProgress;
+
+    public static void main(String[] args) throws Exception {
+        final int PORT = 8888;
+        final int THREAD_POOL_SIZE = 50;
+        try (var listener = new ServerSocket(PORT)) {
+            System.out.println("Tic Tac Toe Game is Running on port " + PORT);
+            var pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+
+            // start server and listen for players to connect
             while (true) {
-                Game game = new Game();
-                pool.execute(game.setHost(new SocketBasedPlayer(listener.accept(), 'X')));
-                pool.execute(game.setJoiner(new SocketBasedPlayer(listener.accept(), 'O')));
+                pool.execute(new SocketBasedPlayer(listener.accept()));
             }
         }
     }
@@ -73,30 +76,83 @@ public class TicTacToeServer {
 ```java
 
 public class SocketBasedPlayer {
+
+    private TicTacToeServer server;
+
     private Socket socket;
-    private Game game;
+
+    private MoveStratergy moveStratergy;
+
+    // this player object is a POJO that holds state of the player
+    private Player player;
 
     public void run() {
         try {
-            // before starting to listen for moves, server asks for user to enter the player's name and waits for response
-            this.playerName = this.askName();
+            player = new Player();
+            // ask player's name
+            this.player.setName(this.askName());
 
-            play();
+            while (true) {
+                // ask what player wants to do? - host a game or join game
+                this.mode = askMode();
+
+                if mode == "exit" {
+                    // close socket and return
+                    return;
+                }
+
+                if mode == "host" {
+                    // create a new game and wait for other player to join
+                    Game game = server.createNewGame(this);
+
+                    // waitForOtherPlayer should wait on Game object till it is notified
+                    Player joiner = this.waitForOtherPlayer();
+                    if joiner == null {
+                        // send error: nobody joined your game
+                        server.removeGame(game);
+                        continue;
+                    }
+                    game.setJoiner(this.player)
+                    game.play();
+                } else if mode == "join" {
+                    gameID = askGameID()
+                    Game game = server.findGame(gameID)
+                    if game == null {
+                        // send error: game not found & continue
+                        continue;
+                    }
+                    game.setJoiner(this);
+
+                    // notifyHostPlayer notifies the Host Player thread
+                    game.notifyHostPlayer();
+                    game.play();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } 
     }
+}
+```
 
-    // play reads the input stream from socket and plays the game
+```java
+public class Game {
+
+    private SocketBasedPlayer host;
+    private SocketBasedPlayer joiner;
+
     public void play() {
-        while (socket.hasNextLine()) {
-            var moveStr = socket.nextLine();
-            if (moveStr.equals("EXIT")) {
-                return;
-            } else {
-                game.makeMove(new Move(moveStr, this.player));
-            }
+        String winner = null;
+        Player currPlayer = null;
+        while(winner == null && board.isMovePossible()) {
+            currPlayer = currPlayer == null || currPlayer == joiner ? host : joiner;
+            Move move = currPlayer.getMove();
+            moves.add(move);
+
+            winner = board.getWinner();
         }
+        game.setResult(new GameResult(winner));
+        game.notfiyAllPlayers();
     }
 }
 ```
@@ -116,6 +172,13 @@ public class SocketTicTacToeClient {
         socket = new Socket(serverAddress, 8082);
         SocketTicTacToeClient client = new SocketTicTacToeClient(socket);
         client.play();
+    }
+
+    public void play() {
+        // read from socket input stream
+        // send mode to server
+        // if mode == host wait for notification (read from socket input stream)
+        // if mode == join send game ID to server and wait for notification to make move
     }
 }
 ```

@@ -8,10 +8,10 @@ This document explains the various aspects of design for developing a Tic Tac To
   - [Assumptions](#Assumptions)
   - [Overview](#Overview)
   - [Game flow](#Game-flow)
-    - [Game start flow](#Game-start-flow)
-    - [Game loop](#Game-loop)
+    - [SocketBasedPlayer flow](#SocketBasedPlayer-flow)
+    - [SocketBasedPlayer run method](#SocketBasedPlayer-run-method)
+    - [SocketTicTacToeClient program](#SocketTicTacToeClient-program)
   - [OO design for game](#OO-design-for-game)
-    - [Tic Tac Toe main program](#Tic-Tac-Toe-main-program)
 
 
 ## Assumptions
@@ -31,9 +31,10 @@ In this document, we will consider following aspects of the game design.
   - This should be developed as a plugin so that we can use console display or GUI based display
 
 - Communication between players - This needs to be near-real time
+  - This can be via Socket or web-based API communication
 
 ## Game flow
-There are two components to Tic Tac Toe game.
+There are three components to Tic Tac Toe game.
 - Server
 - Client 1 representing player 1
 - Client 2 representing player 2
@@ -43,29 +44,79 @@ Flow of game is as follows:
 2) Client program is executed by player 1 on his terminal passing in the IP:PORT of the game server
 3) Similary, another instance of client program is executed by player 2 on his terminal passing in the IP:PORT of the game server
 4) Game server upon receiving player 1's connection make that player the "host" player of that game and waits for another player to join the same game.
-5) When client 2 establishes the connection to game server, game server makes it player 2 and starts the game.
+5) When client 2 establishes the connection to game server, game server makes it player 2 (joiner) and then waits for host to make the first move.
 
-### Game start flow
-1) When both player joins the game, Game server starts the game by calling game.start().
-2) The pseudo code of start() method is shown below.
-
-### Game loop
 ```java
-// start method shows the pseudo code for game loop
-// this method is called when both player have joined the game
-public void start() {
-    String winner = null;
-    Player currPlayer = null;
-    while(winner == null && board.isMovePossible()) {
-        currPlayer = currPlayer == null || currPlayer == joiner ? host : joiner;
-        gameDisplay.render();
-        
-        Move move = currPlayer.makeMove();
-        moves.add(move);
+public class TicTacToeServer {
+    public static void main(String[] args) throws Exception {
+        try (var listener = new ServerSocket(8082)) {
+            System.out.println("Tic Tac Toe Server is Running on port 8082");
+            var pool = Executors.newFixedThreadPool(200);
 
-        winner = board.getWinner();
+            // start server and listen for players to join
+            while (true) {
+                Game game = new Game();
+                pool.execute(game.setHost(new SocketBasedPlayer(listener.accept(), 'X')));
+                pool.execute(game.setJoiner(new SocketBasedPlayer(listener.accept(), 'O')));
+            }
+        }
     }
-    game.setResult(new GameResult(winner));
+}
+```
+
+### SocketBasedPlayer flow
+1) SocketBasedPlayer is a class that represents player and wraps the socket communication between server and client program
+2) SocketBasedPlayer implements runnable
+3) The pseudo code of the run method is shown below
+
+### SocketBasedPlayer run method
+```java
+
+public class SocketBasedPlayer {
+    private Socket socket;
+    private Game game;
+
+    public void run() {
+        try {
+            // before starting to listen for moves, server asks for user to enter the player's name and waits for response
+            this.playerName = this.askName();
+
+            play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } 
+    }
+
+    // play reads the input stream from socket and plays the game
+    public void play() {
+        while (socket.hasNextLine()) {
+            var moveStr = socket.nextLine();
+            if (moveStr.equals("EXIT")) {
+                return;
+            } else {
+                game.makeMove(new Move(moveStr, this.player));
+            }
+        }
+    }
+}
+```
+
+### SocketTicTacToeClient program
+- This will be the client side program that connects to the server to play Tic Tac Toe
+- This will establish a socket connection to the server
+- This also has GameDisplay reference to show the current state of the game to the player
+
+```java
+public class SocketTicTacToeClient {
+    private Socket socket;
+
+    private GameDisplay gameDisplay;
+
+    public static void main(String[] args) {
+        socket = new Socket(serverAddress, 8082);
+        SocketTicTacToeClient client = new SocketTicTacToeClient(socket);
+        client.play();
+    }
 }
 ```
 
@@ -114,49 +165,10 @@ We can have multiple implementations of the GameDisplay.
   - row, column int
   - player Player - Player who has made this move
 
-- Move
+- MoveStratergy
+  - board Board - has copy of the board to calculate next move
+  - getMove() Move - this method returns the next move
+  - This is an abstraction defined to have different move stratergies
+  - For example, RandomMoveStratergy, PlayToWinStratergy, UserInputsMoveStratergy
 
-
-### Tic Tac Toe main program
-
-When the program starts, it asks for the mode in which the player wants to continue.
-- host mode 
-  -  in this mode the player will be the host of a new game
-
-- join mode
-  - in this mode the player will be asked to enter ID of the game he/she wants to join
-
-```java
-class TicTacToeProgram {
-    private GameDisplay gameDisplay;
-
-    public TicTacToeProgram(GameDisplay display) {
-        this.display = display;
-    }
-
-    public static void main(String[] args) {
-        TicTacToeProgram program = new TicTacToeProgram(new ConsoleDisplay());
-        Player player = new Player(askName());
-        do {
-            String mode = gameDisplay.askMode();
-            if "host".equals(mode) {
-                Game game = new Game(gameDisplay, player);
-                Player joiner = game.waitForOtherPlayer();
-                game.setJoiner(joiner);
-                game.start();
-                game.showResult();
-            } else if "join".equals(mode) {
-                String gameID = askGameID();
-                Game game = joinGame(gameID);
-                game.start();
-                game.showResult();
-            } else if "single-player".equals(mode) {
-                Game game = new Game(gameDisplay, player);
-                game.setJoiner(new ComputerPlayer("computer"));
-                game.start();
-                game.showResult();
-            }
-        } while (!mode.equals("exit"))
-}
-```
 

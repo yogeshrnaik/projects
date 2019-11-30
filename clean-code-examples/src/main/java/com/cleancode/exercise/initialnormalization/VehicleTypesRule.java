@@ -8,16 +8,9 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.tomtom.places.unicorn.configuration.Configuration;
-import com.tomtom.places.unicorn.domain.avro.normalized.NormalizedPlace;
-import com.tomtom.places.unicorn.domain.avro.source.SourcePlace;
-import com.tomtom.places.unicorn.domain.avro.source.VehicleType;
-import com.tomtom.places.unicorn.normalization.rule.InitialNormalizationRule;
-import com.tomtom.places.unicorn.traces.Tracer;
 
 public class VehicleTypesRule implements InitialNormalizationRule {
 
-    @Override
     public NormalizedPlace apply(SourcePlace sourcePlace, NormalizedPlace mappedPlace, Configuration configuration, Tracer tracer) {
         mappedPlace.setVehicleTypes(getDistinctVehicleTypes(sourcePlace));
         populateMediumAndHeavyTruckIfAnyOnePresent(mappedPlace);
@@ -94,7 +87,6 @@ public class VehicleTypesRule implements InitialNormalizationRule {
 
     }
 
-    @Override
     public String getDescription() {
         return "Copies VehicleTypes to mapped place";
     }

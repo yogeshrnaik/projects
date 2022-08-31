@@ -1,4 +1,4 @@
-package com.atlassian.ratelimiter;
+package com.atlassian.ratelimiter1;
 
 import org.junit.Test;
 

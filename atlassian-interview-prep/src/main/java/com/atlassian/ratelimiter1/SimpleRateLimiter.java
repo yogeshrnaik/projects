@@ -1,4 +1,4 @@
-package com.atlassian.ratelimiter;
+package com.atlassian.ratelimiter1;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

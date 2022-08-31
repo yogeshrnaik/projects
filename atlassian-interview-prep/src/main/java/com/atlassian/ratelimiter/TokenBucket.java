@@ -1,4 +1,4 @@
-package atlassian.ratelimiter;
+package com.atlassian.ratelimiter;
 
 public class TokenBucket implements RateLimiter {
     @Override

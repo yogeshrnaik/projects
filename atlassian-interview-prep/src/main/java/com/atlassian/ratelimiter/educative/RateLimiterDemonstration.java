@@ -5,7 +5,11 @@ import java.util.Set;
 
 public class RateLimiterDemonstration {
     public static void main(String args[]) throws InterruptedException {
-        TokenBucketFilter.runTestMaxTokenIs1();
+        final TokenBucketFilter tokenBucketFilter = new TokenBucketFilter(5);
+        TokenBucketFilter.runTestMaxTokenIs1(tokenBucketFilter);
+        System.out.println("==================");
+        Thread.sleep(2000);
+        TokenBucketFilter.runTestMaxTokenIs1(tokenBucketFilter);
 //        TokenBucketFilter.runTestMaxTokenIsTen();
     }
 }
@@ -41,23 +45,10 @@ class TokenBucketFilter {
         return true;
     }
 
-    public static void runTestMaxTokenIs1() throws InterruptedException {
-
+    public static void runTestMaxTokenIs1(TokenBucketFilter tokenBucketFilter) throws InterruptedException {
         Set<Thread> allThreads = new HashSet<Thread>();
-        final TokenBucketFilter tokenBucketFilter = new TokenBucketFilter(5);
-
         for (int i = 0; i < 10; i++) {
-
-            Thread thread = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        tokenBucketFilter.getToken();
-                    } catch (InterruptedException ie) {
-                        System.out.println("We have a problem");
-                    }
-                }
-            });
-            thread.setName("Thread_" + (i + 1));
+            Thread thread = createThread(tokenBucketFilter, i);
             allThreads.add(thread);
         }
 
@@ -70,27 +61,30 @@ class TokenBucketFilter {
         }
     }
 
-    public static void runTestMaxTokenIsTen() throws InterruptedException {
+    private static Thread createThread(TokenBucketFilter tokenBucketFilter, int i) {
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    tokenBucketFilter.getToken();
+                } catch (InterruptedException ie) {
+                    System.out.println("We have a problem");
+                }
+            }
+        });
+        thread.setName("Thread_" + (i + 1));
+        return thread;
+    }
+
+    public static void runTestMaxTokenIsTen(TokenBucketFilter tokenBucketFilter) throws InterruptedException {
 
         Set<Thread> allThreads = new HashSet<Thread>();
-        final TokenBucketFilter tokenBucketFilter = new TokenBucketFilter(5);
 
         // Sleep for 10 seconds.
         Thread.sleep(10000);
 
         // Generate 12 threads requesting tokens almost all at once.
         for (int i = 0; i < 12; i++) {
-
-            Thread thread = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        tokenBucketFilter.getToken();
-                    } catch (InterruptedException ie) {
-                        System.out.println("We have a problem");
-                    }
-                }
-            });
-            thread.setName("Thread_" + (i + 1));
+            Thread thread = createThread(tokenBucketFilter, i);
             allThreads.add(thread);
         }
 

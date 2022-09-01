@@ -6,12 +6,18 @@ import java.util.concurrent.TimeUnit;
 
 public class RateLimiterDemonstration {
     public static void main(String args[]) throws InterruptedException {
-        final TokenBucketFilter tokenBucketFilter = new TokenBucketFilter(4, 100, TimeUnit.MILLISECONDS);
+        final TokenBucketFilter tokenBucketFilter = new TokenBucketFilter(1, 100, TimeUnit.MILLISECONDS);
         tokenBucketFilter.getToken();
         tokenBucketFilter.getToken();
         tokenBucketFilter.getToken();
-        System.out.println("==================");
-        Thread.sleep(200);
+        System.out.println("Waiting 100 ms ==================");
+        Thread.sleep(100);
+        tokenBucketFilter.getToken();
+        tokenBucketFilter.getToken();
+        tokenBucketFilter.getToken();
+        tokenBucketFilter.getToken();
+        System.out.println("Waiting 100 ms ==================");
+        Thread.sleep(100);
         tokenBucketFilter.getToken();
         tokenBucketFilter.getToken();
         tokenBucketFilter.getToken();

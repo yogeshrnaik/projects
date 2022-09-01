@@ -2,14 +2,25 @@ package com.atlassian.ratelimiter.educative;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class RateLimiterDemonstration {
     public static void main(String args[]) throws InterruptedException {
-        final TokenBucketFilter tokenBucketFilter = new TokenBucketFilter(5);
-        TokenBucketFilter.runTestMaxTokenIs1(tokenBucketFilter);
+        final TokenBucketFilter tokenBucketFilter = new TokenBucketFilter(4, 100, TimeUnit.MILLISECONDS);
+        tokenBucketFilter.getToken();
+        tokenBucketFilter.getToken();
+        tokenBucketFilter.getToken();
         System.out.println("==================");
-        Thread.sleep(2000);
-        TokenBucketFilter.runTestMaxTokenIs1(tokenBucketFilter);
+        Thread.sleep(200);
+        tokenBucketFilter.getToken();
+        tokenBucketFilter.getToken();
+        tokenBucketFilter.getToken();
+        tokenBucketFilter.getToken();
+        tokenBucketFilter.getToken();
+//        TokenBucketFilter.runTestMaxTokenIs1(tokenBucketFilter);
+        System.out.println("==================");
+//        Thread.sleep(4000);
+//        TokenBucketFilter.runTestMaxTokenIs1(tokenBucketFilter);
 //        TokenBucketFilter.runTestMaxTokenIsTen();
     }
 }
@@ -19,29 +30,47 @@ class TokenBucketFilter {
     private int MAX_TOKENS;
     private long lastRequestTime = System.currentTimeMillis();
     long possibleTokens = 0;
+    int timeInterval;
+    TimeUnit timeUnit;
 
-    public TokenBucketFilter(int maxTokens) {
+    public TokenBucketFilter(int maxTokens, int timeInterval, TimeUnit timeUnit) {
         MAX_TOKENS = maxTokens;
         possibleTokens = maxTokens;
+        this.timeInterval = timeInterval;
+        this.timeUnit = timeUnit;
+    }
+
+    private int getTimeWindowInMilliseconds() {
+        if (timeUnit == TimeUnit.SECONDS)
+            return this.timeInterval * 1000;
+
+        if (timeUnit == TimeUnit.MILLISECONDS)
+            return this.timeInterval;
+
+        if (timeUnit == TimeUnit.NANOSECONDS)
+            return this.timeInterval / 1000;
+
+        return timeInterval;
     }
 
     synchronized boolean getToken() throws InterruptedException {
 
-        possibleTokens += (System.currentTimeMillis() - lastRequestTime) / 1000;
+        long newTokens = (System.currentTimeMillis() - lastRequestTime) / getTimeWindowInMilliseconds();
+        this.possibleTokens += newTokens;
 
-        if (possibleTokens > MAX_TOKENS) {
-            possibleTokens = MAX_TOKENS;
+        if (this.possibleTokens > MAX_TOKENS) {
+            this.possibleTokens = MAX_TOKENS;
         }
 
-        if (possibleTokens == 0) {
-            System.out.println("Not Granting " + Thread.currentThread().getName() + " token at " + (System.currentTimeMillis() / 1000));
+        if (this.possibleTokens == 0) {
+            System.out.println("Not Granting " + Thread.currentThread().getName() + " token at " + System.currentTimeMillis());
             return false;
         } else {
-            possibleTokens--;
+            this.possibleTokens--;
         }
         lastRequestTime = System.currentTimeMillis();
 
-        System.out.println("Granting " + Thread.currentThread().getName() + " token at " + (System.currentTimeMillis() / 1000));
+        System.out.println("Granting " + Thread.currentThread().getName() + " token at " + System.currentTimeMillis() + ", newTokens: " + newTokens);
         return true;
     }
 

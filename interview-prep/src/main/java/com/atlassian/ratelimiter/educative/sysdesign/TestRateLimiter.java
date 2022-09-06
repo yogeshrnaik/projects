@@ -6,10 +6,31 @@ import org.junit.Test;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TestTokenBucket {
+public class TestRateLimiter {
 
     @Test
-    public void test10TokensPerSecond() throws InterruptedException {
+    public void testSlidingWindow_10TokensPerSecond() throws InterruptedException {
+        RateLimiter rateLimiter = new SlidingWindow(10, 1000);
+        assertRateLimiterAllowsXRequests(rateLimiter, 10);
+        Assert.assertFalse(rateLimiter.isAllowed());
+        Thread.sleep(1000);
+        assertRateLimiterAllowsXRequests(rateLimiter, 10);
+        Assert.assertFalse(rateLimiter.isAllowed());
+    }
+
+    @Test
+    public void testSlidingWindow_5TokensPer100Milliseconds() throws InterruptedException {
+        RateLimiter rateLimiter = new SlidingWindow(5, 100);
+        assertRateLimiterAllowsXRequests(rateLimiter, 5);
+        Assert.assertFalse(rateLimiter.isAllowed());
+        Thread.sleep(100);
+        assertRateLimiterAllowsXRequests(rateLimiter, 5);
+        Assert.assertFalse(rateLimiter.isAllowed());
+
+    }
+
+    @Test
+    public void testTokenBucket_10TokensPerSecond() throws InterruptedException {
         RateLimiter rateLimiter = new TokenBucket(10, 1000);
         assertRateLimiterAllowsXRequests(rateLimiter, 10);
         Assert.assertFalse(rateLimiter.isAllowed());
@@ -20,7 +41,7 @@ public class TestTokenBucket {
     }
 
     @Test
-    public void test5TokensPer100Milliseconds() throws InterruptedException {
+    public void testTokenBucket_5TokensPer100Milliseconds() throws InterruptedException {
         RateLimiter rateLimiter = new TokenBucket(5, 100);
         assertRateLimiterAllowsXRequests(rateLimiter, 5);
         Assert.assertFalse(rateLimiter.isAllowed());
@@ -31,7 +52,7 @@ public class TestTokenBucket {
     }
 
     private void assertRateLimiterAllowsXRequests(RateLimiter rateLimiter, int numOfRequests) throws InterruptedException {
-//        assertMultithreadedRateLimitAllowedXTimes(rateLimiter, numOfRequests);
+//        assertMultithreadedRateLimitAllowsXRequests(rateLimiter, numOfRequests);
         for (int i = 0; i < numOfRequests; i++) {
             Assert.assertTrue(rateLimiter.isAllowed());
         }

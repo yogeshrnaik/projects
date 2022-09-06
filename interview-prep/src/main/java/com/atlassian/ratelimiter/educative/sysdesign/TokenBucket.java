@@ -7,22 +7,24 @@ class TokenBucket implements RateLimiter {
     private int MAX_TOKENS;
     private long lastRequestTime;
     long availableTokens = 0;
-    int refillRatePerTimeUnit;
+    int refillRate;
+    int refillRateTime;
     TimeUnit timeUnit;
 
-    public TokenBucket(int maxTokens, int refillRatePerTimeUnit, TimeUnit timeUnit) {
+    public TokenBucket(int maxTokens, int refillRate, int refillRateTime, TimeUnit timeUnit) {
         MAX_TOKENS = maxTokens;
         availableTokens = maxTokens;
-        this.refillRatePerTimeUnit = refillRatePerTimeUnit;
+        this.refillRate = refillRate;
         lastRequestTime = System.currentTimeMillis();
+        this.refillRateTime = refillRateTime;
         this.timeUnit = timeUnit;
     }
 
     public synchronized boolean isAllowed() {
-        long numOfSecondsSinceLastRequest = (System.currentTimeMillis() - lastRequestTime) / getRefreshRatePerMillisecond();
-        long newTokens = refillRatePerTimeUnit * numOfSecondsSinceLastRequest;
+        long numOfSecondsSinceLastRequest = (System.currentTimeMillis() - lastRequestTime) / getRefillRatePerMillisecond();
+        long newTokens = refillRate * numOfSecondsSinceLastRequest;
         this.availableTokens = Math.min(newTokens + availableTokens, MAX_TOKENS);
-        if (this.availableTokens <= 0) {
+        if (this.availableTokens == 0) {
             System.out.println("Not Granting " + Thread.currentThread().getName() + " token at " + System.currentTimeMillis());
             return false;
         } else {
@@ -33,14 +35,14 @@ class TokenBucket implements RateLimiter {
         return true;
     }
 
-    private int getRefreshRatePerMillisecond() {
+    private int getRefillRatePerMillisecond() {
         if (timeUnit == TimeUnit.SECONDS)
-            return 1000;
+            return refillRateTime * 1000;
 
         if (timeUnit == TimeUnit.MILLISECONDS)
-            return refillRatePerTimeUnit;
+            return refillRateTime;
 
-        return refillRatePerTimeUnit;
+        return refillRateTime * refillRate;
     }
 }
 

@@ -31,10 +31,10 @@ public class TestTokenBucket {
     }
 
     private void assertRateLimitAllowedXTimes(RateLimiter rateLimiter, int maxTokens) throws InterruptedException {
-        assertMultithreadedRateLimitAllowedXTimes(rateLimiter, maxTokens);
-//        for (int i = 0; i < maxTokens; i++) {
-//            Assert.assertTrue(rateLimiter.isAllowed());
-//        }
+//        assertMultithreadedRateLimitAllowedXTimes(rateLimiter, maxTokens);
+        for (int i = 0; i < maxTokens; i++) {
+            Assert.assertTrue(rateLimiter.isAllowed());
+        }
     }
 
     private void assertMultithreadedRateLimitAllowedXTimes(RateLimiter rateLimiter, int maxTokens) throws InterruptedException {

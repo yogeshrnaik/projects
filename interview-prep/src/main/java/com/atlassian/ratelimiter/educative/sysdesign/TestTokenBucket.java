@@ -11,10 +11,10 @@ public class TestTokenBucket {
     @Test
     public void test10TokensPerSecond() throws InterruptedException {
         RateLimiter rateLimiter = new TokenBucket(10, 1000);
-        assertRateLimitAllowedXTimes(rateLimiter, 10);
+        assertRateLimiterAllowsXRequests(rateLimiter, 10);
         Assert.assertFalse(rateLimiter.isAllowed());
         Thread.sleep(1000);
-        assertRateLimitAllowedXTimes(rateLimiter, 10);
+        assertRateLimiterAllowsXRequests(rateLimiter, 10);
         Assert.assertFalse(rateLimiter.isAllowed());
 
     }
@@ -22,24 +22,24 @@ public class TestTokenBucket {
     @Test
     public void test5TokensPer100Milliseconds() throws InterruptedException {
         RateLimiter rateLimiter = new TokenBucket(5, 100);
-        assertRateLimitAllowedXTimes(rateLimiter, 5);
+        assertRateLimiterAllowsXRequests(rateLimiter, 5);
         Assert.assertFalse(rateLimiter.isAllowed());
         Thread.sleep(100);
-        assertRateLimitAllowedXTimes(rateLimiter, 5);
+        assertRateLimiterAllowsXRequests(rateLimiter, 5);
         Assert.assertFalse(rateLimiter.isAllowed());
 
     }
 
-    private void assertRateLimitAllowedXTimes(RateLimiter rateLimiter, int maxTokens) throws InterruptedException {
-//        assertMultithreadedRateLimitAllowedXTimes(rateLimiter, maxTokens);
-        for (int i = 0; i < maxTokens; i++) {
+    private void assertRateLimiterAllowsXRequests(RateLimiter rateLimiter, int numOfRequests) throws InterruptedException {
+//        assertMultithreadedRateLimitAllowedXTimes(rateLimiter, numOfRequests);
+        for (int i = 0; i < numOfRequests; i++) {
             Assert.assertTrue(rateLimiter.isAllowed());
         }
     }
 
-    private void assertMultithreadedRateLimitAllowedXTimes(RateLimiter rateLimiter, int maxTokens) throws InterruptedException {
+    private void assertMultithreadedRateLimitAllowsXRequests(RateLimiter rateLimiter, int numOfRequests) throws InterruptedException {
         Set<Thread> allThreads = new HashSet<Thread>();
-        for (int i = 0; i < maxTokens; i++) {
+        for (int i = 0; i < numOfRequests; i++) {
             Thread thread = new Thread(() -> Assert.assertTrue(rateLimiter.isAllowed()));
             thread.setName("Thread_" + (i + 1));
             allThreads.add(thread);

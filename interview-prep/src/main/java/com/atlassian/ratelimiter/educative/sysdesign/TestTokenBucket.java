@@ -31,21 +31,16 @@ public class TestTokenBucket {
     }
 
     private void assertRateLimitAllowedXTimes(RateLimiter rateLimiter, int maxTokens) throws InterruptedException {
-//        assertMultithreadedRateLimitAllowedXTimes(rateLimiter, maxTokens);
-        for (int i = 0; i < maxTokens; i++) {
-            Assert.assertTrue(rateLimiter.isAllowed());
-        }
+        assertMultithreadedRateLimitAllowedXTimes(rateLimiter, maxTokens);
+//        for (int i = 0; i < maxTokens; i++) {
+//            Assert.assertTrue(rateLimiter.isAllowed());
+//        }
     }
 
     private void assertMultithreadedRateLimitAllowedXTimes(RateLimiter rateLimiter, int maxTokens) throws InterruptedException {
         Set<Thread> allThreads = new HashSet<Thread>();
         for (int i = 0; i < maxTokens; i++) {
-            Thread thread = new Thread(new Runnable() {
-
-                public void run() {
-                    Assert.assertTrue(rateLimiter.isAllowed());
-                }
-            });
+            Thread thread = new Thread(() -> Assert.assertTrue(rateLimiter.isAllowed()));
             thread.setName("Thread_" + (i + 1));
             allThreads.add(thread);
         }

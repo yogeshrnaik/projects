@@ -10,6 +10,16 @@ import java.util.concurrent.TimeUnit;
 public class TestRateLimiter {
 
     @Test
+    public void testTokenBucket_1TokenPerSecond() throws InterruptedException {
+        RateLimiter rateLimiter = new TokenBucket(1, 1, 1000);
+        assertRateLimiterAllowsXRequests(rateLimiter, 1);
+        Assert.assertFalse(rateLimiter.isAllowed());
+        Thread.sleep(1000);
+        assertRateLimiterAllowsXRequests(rateLimiter, 1);
+        Assert.assertFalse(rateLimiter.isAllowed());
+    }
+
+    @Test
     public void testTokenBucket_10TokensPerSecond() throws InterruptedException {
         RateLimiter rateLimiter = new TokenBucket(10, 10, 1000);
         assertRateLimiterAllowsXRequests(rateLimiter, 10);

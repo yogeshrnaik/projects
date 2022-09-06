@@ -19,8 +19,7 @@ class TokenBucket implements RateLimiter {
     }
 
     public synchronized boolean isAllowed() {
-        long numOfSecondsSinceLastRequest = (System.currentTimeMillis() - lastRequestTime) / refillRateInMillis;
-        long newTokens = refillRate * numOfSecondsSinceLastRequest;
+        long newTokens = refillRate * ((System.currentTimeMillis() - lastRequestTime) / refillRateInMillis);
         this.availableTokens = Math.min(newTokens + availableTokens, MAX_TOKENS);
         if (this.availableTokens == 0) {
             System.out.println("Not Granting " + Thread.currentThread().getName() + " token at " + System.currentTimeMillis());

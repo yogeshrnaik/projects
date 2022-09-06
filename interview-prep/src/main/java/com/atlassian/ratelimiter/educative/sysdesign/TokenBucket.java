@@ -8,20 +8,18 @@ class TokenBucket implements RateLimiter {
     private long lastRequestTime;
     long availableTokens = 0;
     int refillRate;
-    int refillRateTime;
-    TimeUnit timeUnit;
+    int refillRateInMillis;
 
-    public TokenBucket(int maxTokens, int refillRate, int refillRateTime, TimeUnit timeUnit) {
+    public TokenBucket(int maxTokens, int refillRate, int refillRateInMillis) {
         MAX_TOKENS = maxTokens;
         availableTokens = maxTokens;
         this.refillRate = refillRate;
         lastRequestTime = System.currentTimeMillis();
-        this.refillRateTime = refillRateTime;
-        this.timeUnit = timeUnit;
+        this.refillRateInMillis = refillRateInMillis;
     }
 
     public synchronized boolean isAllowed() {
-        long numOfSecondsSinceLastRequest = (System.currentTimeMillis() - lastRequestTime) / getRefillRatePerMillisecond();
+        long numOfSecondsSinceLastRequest = (System.currentTimeMillis() - lastRequestTime) / refillRateInMillis;
         long newTokens = refillRate * numOfSecondsSinceLastRequest;
         this.availableTokens = Math.min(newTokens + availableTokens, MAX_TOKENS);
         if (this.availableTokens == 0) {
@@ -33,16 +31,6 @@ class TokenBucket implements RateLimiter {
         lastRequestTime = System.currentTimeMillis();
         System.out.println("Granting " + Thread.currentThread().getName() + " token at " + System.currentTimeMillis() + ", newTokens: " + newTokens);
         return true;
-    }
-
-    private int getRefillRatePerMillisecond() {
-        if (timeUnit == TimeUnit.SECONDS)
-            return refillRateTime * 1000;
-
-        if (timeUnit == TimeUnit.MILLISECONDS)
-            return refillRateTime;
-
-        return refillRateTime * refillRate;
     }
 }
 

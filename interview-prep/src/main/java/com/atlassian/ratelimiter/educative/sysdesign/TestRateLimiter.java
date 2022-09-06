@@ -11,7 +11,7 @@ public class TestRateLimiter {
 
     @Test
     public void testTokenBucket_10TokensPerSecond() throws InterruptedException {
-        RateLimiter rateLimiter = new TokenBucket(10, 10, 1, TimeUnit.SECONDS);
+        RateLimiter rateLimiter = new TokenBucket(10, 10, 1000);
         assertRateLimiterAllowsXRequests(rateLimiter, 10);
         Assert.assertFalse(rateLimiter.isAllowed());
         Thread.sleep(1000);
@@ -21,7 +21,7 @@ public class TestRateLimiter {
 
     @Test
     public void testTokenBucket_5TokensPer100Milliseconds() throws InterruptedException {
-        RateLimiter rateLimiter = new TokenBucket(5, 5, 100, TimeUnit.MILLISECONDS);
+        RateLimiter rateLimiter = new TokenBucket(5, 5, 100);
         assertRateLimiterAllowsXRequests(rateLimiter, 5);
         Assert.assertFalse(rateLimiter.isAllowed());
         Thread.sleep(100);

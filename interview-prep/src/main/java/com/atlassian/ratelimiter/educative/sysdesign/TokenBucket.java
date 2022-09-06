@@ -30,4 +30,3 @@ class TokenBucket implements RateLimiter {
         return true;
     }
 }
-

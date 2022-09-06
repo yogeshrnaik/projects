@@ -7,18 +7,29 @@ public class TestTokenBucket {
 
     @Test
     public void test10TokensPerSecond() throws InterruptedException {
-        TokenBucket tokenBucket = new TokenBucket(10);
-        assert10TokensPerSecond(tokenBucket);
+        RateLimiter rateLimiter = new TokenBucket(10, 1000);
+        assertRateLimitAllowedXTimes(rateLimiter, 10);
+        Assert.assertFalse(rateLimiter.isAllowed());
         Thread.sleep(1000);
-        assert10TokensPerSecond(tokenBucket);
+        assertRateLimitAllowedXTimes(rateLimiter, 10);
+        Assert.assertFalse(rateLimiter.isAllowed());
 
     }
 
-    private void assert10TokensPerSecond(TokenBucket tokenBucket) {
-        for (int i = 0; i < 10; i++) {
-            Assert.assertTrue(tokenBucket.isAllowed());
+    @Test
+    public void test5TokensPer100Milliseconds() throws InterruptedException {
+        RateLimiter rateLimiter = new TokenBucket(5, 100);
+        assertRateLimitAllowedXTimes(rateLimiter, 5);
+        Assert.assertFalse(rateLimiter.isAllowed());
+        Thread.sleep(100);
+        assertRateLimitAllowedXTimes(rateLimiter, 5);
+        Assert.assertFalse(rateLimiter.isAllowed());
+
+    }
+
+    private void assertRateLimitAllowedXTimes(RateLimiter rateLimiter, int maxTokens) {
+        for (int i = 0; i < maxTokens; i++) {
+            Assert.assertTrue(rateLimiter.isAllowed());
         }
-        Assert.assertFalse(tokenBucket.isAllowed());
     }
-
 }

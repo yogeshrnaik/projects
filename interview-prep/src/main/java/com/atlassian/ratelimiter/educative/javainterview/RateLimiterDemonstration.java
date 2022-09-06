@@ -1,4 +1,4 @@
-package com.atlassian.ratelimiter.educative;
+package com.atlassian.ratelimiter.educative.javainterview;
 
 import java.util.HashSet;
 import java.util.Set;

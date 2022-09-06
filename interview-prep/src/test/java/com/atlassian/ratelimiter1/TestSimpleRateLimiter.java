@@ -1,5 +1,6 @@
 package com.atlassian.ratelimiter1;
 
+import com.atlassian.ratelimiter.semaphore.SimpleRateLimiter;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;

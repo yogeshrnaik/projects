@@ -5,8 +5,30 @@ import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class TestRateLimiter {
+
+    @Test
+    public void testTokenBucket_10TokensPerSecond() throws InterruptedException {
+        RateLimiter rateLimiter = new TokenBucket(10, 10, TimeUnit.SECONDS);
+        assertRateLimiterAllowsXRequests(rateLimiter, 10);
+        Assert.assertFalse(rateLimiter.isAllowed());
+        Thread.sleep(1000);
+        assertRateLimiterAllowsXRequests(rateLimiter, 10);
+        Assert.assertFalse(rateLimiter.isAllowed());
+    }
+
+    @Test
+    public void testTokenBucket_5TokensPer100Milliseconds() throws InterruptedException {
+        RateLimiter rateLimiter = new TokenBucket(5, 5, TimeUnit.MILLISECONDS);
+        assertRateLimiterAllowsXRequests(rateLimiter, 5);
+        Assert.assertFalse(rateLimiter.isAllowed());
+        Thread.sleep(100);
+        assertRateLimiterAllowsXRequests(rateLimiter, 5);
+        Assert.assertFalse(rateLimiter.isAllowed());
+
+    }
 
     @Test
     public void testSlidingWindow_10TokensPerSecond() throws InterruptedException {
@@ -30,8 +52,8 @@ public class TestRateLimiter {
     }
 
     @Test
-    public void testTokenBucket_10TokensPerSecond() throws InterruptedException {
-        RateLimiter rateLimiter = new TokenBucket(10, 1000);
+    public void testFixedWindow_10TokensPerSecond() throws InterruptedException {
+        RateLimiter rateLimiter = new FixedWindow(10, 1000);
         assertRateLimiterAllowsXRequests(rateLimiter, 10);
         Assert.assertFalse(rateLimiter.isAllowed());
         Thread.sleep(1000);
@@ -41,8 +63,8 @@ public class TestRateLimiter {
     }
 
     @Test
-    public void testTokenBucket_5TokensPer100Milliseconds() throws InterruptedException {
-        RateLimiter rateLimiter = new TokenBucket(5, 100);
+    public void testFixedWindow_5TokensPer100Milliseconds() throws InterruptedException {
+        RateLimiter rateLimiter = new FixedWindow(5, 100);
         assertRateLimiterAllowsXRequests(rateLimiter, 5);
         Assert.assertFalse(rateLimiter.isAllowed());
         Thread.sleep(100);

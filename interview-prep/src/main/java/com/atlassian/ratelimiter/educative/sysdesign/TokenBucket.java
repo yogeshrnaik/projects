@@ -1,61 +1,46 @@
 package com.atlassian.ratelimiter.educative.sysdesign;
 
-public class TokenBucket implements RateLimiter {
+import java.util.concurrent.TimeUnit;
 
-    private int maxTokens;
-    private int availableTokens;
-    private int refreshRateInMillis;
-    private long lastRequestedTime;
+class TokenBucket implements RateLimiter {
 
-    public TokenBucket(int tokens, int refreshRateInMillis) {
-        this.maxTokens = tokens;
-        this.refreshRateInMillis = refreshRateInMillis;
-        this.availableTokens = tokens;
-        lastRequestedTime = System.currentTimeMillis();
-//        Thread dt = new Thread(() -> demonThreadToRefreshTokens());
-//        dt.setDaemon(true);
-//        dt.start();
+    private int MAX_TOKENS;
+    private long lastRequestTime;
+    long availableTokens = 0;
+    int refillRatePerTimeUnit;
+    TimeUnit timeUnit;
+
+    public TokenBucket(int maxTokens, int refillRatePerTimeUnit, TimeUnit timeUnit) {
+        MAX_TOKENS = maxTokens;
+        availableTokens = maxTokens;
+        this.refillRatePerTimeUnit = refillRatePerTimeUnit;
+        lastRequestTime = System.currentTimeMillis();
+        this.timeUnit = timeUnit;
     }
 
-    @Override
     public synchronized boolean isAllowed() {
-        return withOutDemonThread();
+        long numOfSecondsSinceLastRequest = (System.currentTimeMillis() - lastRequestTime) / getRefreshRatePerMillisecond();
+        long newTokens = refillRatePerTimeUnit * numOfSecondsSinceLastRequest;
+        this.availableTokens = Math.min(newTokens + availableTokens, MAX_TOKENS);
+        if (this.availableTokens <= 0) {
+            System.out.println("Not Granting " + Thread.currentThread().getName() + " token at " + System.currentTimeMillis());
+            return false;
+        } else {
+            this.availableTokens--;
+        }
+        lastRequestTime = System.currentTimeMillis();
+        System.out.println("Granting " + Thread.currentThread().getName() + " token at " + System.currentTimeMillis() + ", newTokens: " + newTokens);
+        return true;
     }
 
-    private synchronized boolean withDemonThread() {
-        if (availableTokens > 0) {
-            availableTokens--;
-            return true;
-        }
-        return false;
-    }
+    private int getRefreshRatePerMillisecond() {
+        if (timeUnit == TimeUnit.SECONDS)
+            return 1000;
 
-    private boolean withOutDemonThread() {
-        long currentTime = System.currentTimeMillis();
-        long timeDiffSinceLastReq = (currentTime - lastRequestedTime);
-        if (timeDiffSinceLastReq >= refreshRateInMillis) {
-            availableTokens = maxTokens;
-            lastRequestedTime = currentTime;
-        }
-        if (availableTokens > 0) {
-            availableTokens--;
-            return true;
-        }
-        return false;
-    }
+        if (timeUnit == TimeUnit.MILLISECONDS)
+            return refillRatePerTimeUnit;
 
-    private void demonThreadToRefreshTokens() {
-        while (true) {
-            synchronized (this) {
-                if (availableTokens < maxTokens) {
-                    availableTokens = maxTokens;
-                }
-            }
-            try {
-                Thread.sleep(refreshRateInMillis);
-            } catch (InterruptedException e) {
-                // swallow
-            }
-        }
+        return refillRatePerTimeUnit;
     }
 }
+

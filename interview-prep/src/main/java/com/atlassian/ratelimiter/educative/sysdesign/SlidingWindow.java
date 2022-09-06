@@ -7,17 +7,17 @@ public class SlidingWindow implements RateLimiter {
 
     private List<Long> lastRequestedTimes;
     private int maxRequestsAllowed;
-    private int refreshRateInMills;
+    private int timeWindowInMillis;
 
-    public SlidingWindow(int maxRequestsAllowed, int refreshRateInMills) {
+    public SlidingWindow(int maxRequestsAllowed, int timeWindowInMillis) {
         this.maxRequestsAllowed = maxRequestsAllowed;
-        this.refreshRateInMills = refreshRateInMills;
+        this.timeWindowInMillis = timeWindowInMillis;
         lastRequestedTimes = new ArrayList<>();
     }
 
     @Override
     public synchronized boolean isAllowed() {
-        lastRequestedTimes.removeIf(time -> (System.currentTimeMillis() - time) > refreshRateInMills);
+        lastRequestedTimes.removeIf(time -> (System.currentTimeMillis() - time) > timeWindowInMillis);
         if (lastRequestedTimes.size() >= maxRequestsAllowed) {
             return false;
         }

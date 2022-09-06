@@ -1,4 +1,4 @@
-package com.atlassian.ratelimiter;
+package com.atlassian.ratelimiter.youtube;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.atlassian.ratelimiter;
+package com.atlassian.ratelimiter.youtube;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;

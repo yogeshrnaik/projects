@@ -1,7 +1,4 @@
-package com.atlassian.ratelimiter;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+package com.atlassian.ratelimiter.youtube;
 
 public class Application {
     public static void main(String[] args) throws InterruptedException {

@@ -18,12 +18,8 @@ class TokenBucket implements RateLimiter {
 
     public synchronized boolean isAllowed() {
         long currentTimeMillis = System.currentTimeMillis();
-        if (currentTimeMillis - lastRefillTimeInMillis >= refillRateInMillis) {
-            long newTokens = refillRate * ((currentTimeMillis - lastRefillTimeInMillis) / refillRateInMillis);
-            this.availableTokens = Math.min(newTokens + availableTokens, max_tokens);
-            lastRefillTimeInMillis = currentTimeMillis;
-            System.out.println("New Tokens: " + newTokens + ", " + Thread.currentThread().getName() + " token at " + currentTimeMillis);
-        }
+        refillTokens();
+
         if (this.availableTokens == 0) {
             System.out.println("Not Granting " + Thread.currentThread().getName() + " token at " + currentTimeMillis);
             return false;
@@ -32,5 +28,15 @@ class TokenBucket implements RateLimiter {
         }
         System.out.println("Granting " + Thread.currentThread().getName() + " token at " + currentTimeMillis);
         return true;
+    }
+
+    private void refillTokens() {
+        long currentTimeMillis = System.currentTimeMillis();
+        if (currentTimeMillis - lastRefillTimeInMillis >= refillRateInMillis) {
+            long newTokens = refillRate * ((currentTimeMillis - lastRefillTimeInMillis) / refillRateInMillis);
+            this.availableTokens = Math.min(newTokens + availableTokens, max_tokens);
+            lastRefillTimeInMillis = currentTimeMillis;
+            System.out.println("New Tokens: " + newTokens + ", " + Thread.currentThread().getName() + " token at " + currentTimeMillis);
+        }
     }
 }

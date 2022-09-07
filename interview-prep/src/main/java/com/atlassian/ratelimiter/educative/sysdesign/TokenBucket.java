@@ -3,7 +3,7 @@ package com.atlassian.ratelimiter.educative.sysdesign;
 class TokenBucket implements RateLimiter {
 
     private int max_tokens;
-    private long lastRequestTime;
+    private long lastRefillTimeInMillis;
     private long availableTokens;
     private int refillRate;
     private int refillRateInMillis;
@@ -12,24 +12,25 @@ class TokenBucket implements RateLimiter {
         max_tokens = maxTokens;
         availableTokens = maxTokens;
         this.refillRate = refillRate;
-        lastRequestTime = System.currentTimeMillis();
+        lastRefillTimeInMillis = System.currentTimeMillis();
         this.refillRateInMillis = refillRateInMillis;
     }
 
     public synchronized boolean isAllowed() {
-        if (System.currentTimeMillis() - lastRequestTime >= refillRateInMillis) {
-            long newTokens = refillRate * ((System.currentTimeMillis() - lastRequestTime) / refillRateInMillis);
+        long currentTimeMillis = System.currentTimeMillis();
+        if (currentTimeMillis - lastRefillTimeInMillis >= refillRateInMillis) {
+            long newTokens = refillRate * ((currentTimeMillis - lastRefillTimeInMillis) / refillRateInMillis);
             this.availableTokens = Math.min(newTokens + availableTokens, max_tokens);
-            lastRequestTime = System.currentTimeMillis();
-            System.out.println("New Tokens: " + newTokens + ", " + Thread.currentThread().getName() + " token at " + System.currentTimeMillis());
+            lastRefillTimeInMillis = currentTimeMillis;
+            System.out.println("New Tokens: " + newTokens + ", " + Thread.currentThread().getName() + " token at " + currentTimeMillis);
         }
         if (this.availableTokens == 0) {
-            System.out.println("Not Granting " + Thread.currentThread().getName() + " token at " + System.currentTimeMillis());
+            System.out.println("Not Granting " + Thread.currentThread().getName() + " token at " + currentTimeMillis);
             return false;
         } else {
             this.availableTokens--;
         }
-        System.out.println("Granting " + Thread.currentThread().getName() + " token at " + System.currentTimeMillis());
+        System.out.println("Granting " + Thread.currentThread().getName() + " token at " + currentTimeMillis);
         return true;
     }
 }
